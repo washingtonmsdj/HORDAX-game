@@ -7,12 +7,22 @@ namespace HORDAX.Player
     {
         [SerializeField] private float maxHealth = 100f;
 
+        private float baseMaxHealth;
+
         public float MaxHealth => maxHealth;
         public float CurrentHealth { get; private set; }
         public float Normalized => maxHealth <= 0f ? 0f : CurrentHealth / maxHealth;
 
         private void Awake()
         {
+            baseMaxHealth = Mathf.Max(1f, maxHealth);
+            maxHealth = baseMaxHealth;
+            CurrentHealth = maxHealth;
+        }
+
+        public void SetPermanentHealthMultiplier(float multiplier)
+        {
+            maxHealth = Mathf.Max(1f, baseMaxHealth * Mathf.Max(0.01f, multiplier));
             CurrentHealth = maxHealth;
         }
 

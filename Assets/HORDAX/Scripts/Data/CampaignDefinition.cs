@@ -12,12 +12,19 @@ namespace HORDAX.Data
 
         public string CampaignId => campaignId;
         public string DisplayName => displayName;
-        public IReadOnlyList<LevelDefinition> Levels => levels;
-        public int LevelCount => levels.Count;
+        public IReadOnlyList<LevelDefinition> Levels => levels ?? (levels = new List<LevelDefinition>());
+        public int LevelCount => levels != null ? levels.Count : 0;
 
         public LevelDefinition GetLevel(int index)
         {
-            return index >= 0 && index < levels.Count ? levels[index] : null;
+            return index >= 0 && index < LevelCount ? levels[index] : null;
+        }
+
+        public void ConfigureRuntime(string id, string label, IEnumerable<LevelDefinition> runtimeLevels)
+        {
+            campaignId = id;
+            displayName = label;
+            levels = runtimeLevels != null ? new List<LevelDefinition>(runtimeLevels) : new List<LevelDefinition>();
         }
     }
 }

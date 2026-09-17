@@ -19,8 +19,10 @@ O projeto já possui:
 - recompensas por inimigo;
 - moedas e score da corrida;
 - bônus de conclusão;
-- save local de wallet e fases concluídas;
+- save local de wallet, fases concluídas e upgrades permanentes;
 - CampaignDefinition para organizar várias fases;
+- campanha blockout com 5 fases gerada em runtime;
+- front-end blockout com seleção de fase e compra de upgrades;
 - LevelDefinition com Horde, Elite, Boss, Gate, Upgrade, Weapon e Finish;
 - HUD de blockout;
 - validador de dados;

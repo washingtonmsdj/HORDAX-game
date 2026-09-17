@@ -87,12 +87,19 @@ Implementado:
 - ProgressionService;
 - CampaignDefinition.
 
+Implementado nesta branch:
+
+- front-end de blockout criado em runtime;
+- seleção sequencial de 5 fases de protótipo;
+- bloqueio/desbloqueio de fase;
+- upgrades permanentes de vida, dano e cadência;
+- custos progressivos de upgrade;
+- GameSession para transportar a fase escolhida;
+- gerador seguro da cena FrontEnd.
+
 Pendente:
 
-- menu principal;
-- seleção de fase;
-- tela de resultados;
-- upgrades permanentes;
+- tela de resultados dedicada;
 - unlock de armas;
 - loja;
 - missões;

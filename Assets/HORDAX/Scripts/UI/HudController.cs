@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using HORDAX.Combat;
 using HORDAX.Core;
@@ -45,20 +46,23 @@ namespace HORDAX.UI
             statsText.text =
                 $"HP {Mathf.CeilToInt(health.CurrentHealth)}   {weapon.DisplayName} [{weapon.Rarity}] LV {weapon.UpgradeLevel}   " +
                 $"DMG {weapon.Damage:0.#}   ROF {weapon.FireRate:0.#}   x{weapon.ProjectilesPerShot}   " +
-                $"KILLS {GameManager.Instance.EnemyKills}   BOSS {GameManager.Instance.BossKills}/{GameManager.Instance.RequiredBossKills}   " +\n                $"COINS {GameManager.Instance.RunCoins}   SCORE {GameManager.Instance.Score}";
+                $"KILLS {GameManager.Instance.EnemyKills}   BOSS {GameManager.Instance.BossKills}/{GameManager.Instance.RequiredBossKills}   " +
+                $"COINS {GameManager.Instance.RunCoins}   SCORE {GameManager.Instance.Score}";
 
             switch (state)
             {
                 case GameState.Won:
                     statusText.text =
                         $"HORDAX\nFASE CONCLUÍDA\n+{GameManager.Instance.RunCoins} COINS   SCORE {GameManager.Instance.Score}\n\n" +
-                        "TOQUE / CLIQUE / R PARA REINICIAR";
+                        "R = REINICIAR   M = MENU";
                     break;
+
                 case GameState.Lost:
                     statusText.text =
                         $"HORDAX\nDERROTA\nKILLS {GameManager.Instance.EnemyKills}   SCORE {GameManager.Instance.Score}\n\n" +
-                        "TOQUE / CLIQUE / R PARA REINICIAR";
+                        "R = REINICIAR   M = MENU";
                     break;
+
                 default:
                     statusText.text = string.Empty;
                     break;
@@ -66,12 +70,11 @@ namespace HORDAX.UI
 
             if ((state == GameState.Won || state == GameState.Lost) && Time.unscaledTime >= restartAllowedAt)
             {
-                bool restartPressed = Input.GetKeyDown(KeyCode.R) || Input.GetMouseButtonDown(0);
-                if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
-                    restartPressed = true;
-
-                if (restartPressed)
+                if (Input.GetKeyDown(KeyCode.R))
                     GameManager.Instance.Restart();
+
+                if (Input.GetKeyDown(KeyCode.M))
+                    SceneManager.LoadScene("FrontEnd");
             }
         }
 

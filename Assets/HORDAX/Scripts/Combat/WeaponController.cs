@@ -32,6 +32,8 @@ namespace HORDAX.Combat
         private float flashTimer;
         private GameObject muzzleFlash;
         private int upgradeLevel = 1;
+        private float permanentDamageMultiplier = 1f;
+        private float permanentFireRateMultiplier = 1f;
 
         public event Action ShotFired;
         public event Action WeaponChanged;
@@ -75,6 +77,7 @@ namespace HORDAX.Combat
             range = Mathf.Max(1f, range);
             projectilesPerShot = Mathf.Clamp(projectilesPerShot, 1, 16);
             spreadDegrees = Mathf.Max(0f, spreadDegrees);
+            ApplyPersistentBonusesToCurrentStats();
 
             upgradeLevel = 1;
             shotTimer = 0f;
@@ -138,7 +141,25 @@ namespace HORDAX.Combat
                     break;
             }
 
+            ApplyPersistentBonusesToCurrentStats();
             WeaponChanged?.Invoke();
+        }
+
+        public void SetPermanentBonuses(float damageMultiplier, float fireRateMultiplier)
+        {
+            damage /= Mathf.Max(0.01f, permanentDamageMultiplier);
+            fireRate /= Mathf.Max(0.01f, permanentFireRateMultiplier);
+
+            permanentDamageMultiplier = Mathf.Max(0.01f, damageMultiplier);
+            permanentFireRateMultiplier = Mathf.Max(0.01f, fireRateMultiplier);
+            ApplyPersistentBonusesToCurrentStats();
+            WeaponChanged?.Invoke();
+        }
+
+        private void ApplyPersistentBonusesToCurrentStats()
+        {
+            damage *= permanentDamageMultiplier;
+            fireRate = Mathf.Clamp(fireRate * permanentFireRateMultiplier, 0.1f, 32f);
         }
 
         public void ApplyUpgrade(float damageAdd, float fireRateMultiplier)

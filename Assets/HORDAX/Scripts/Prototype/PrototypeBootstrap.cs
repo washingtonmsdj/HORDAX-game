@@ -16,11 +16,15 @@ namespace HORDAX.Prototype
         [SerializeField] private LevelDefinition levelDefinition;
 
         private RunnerController player;
+        private WeaponController playerWeapon;
         private float finishZ;
 
         private void Awake()
         {
             if (FindObjectOfType<RunnerController>() != null) return;
+
+            if (GameSession.SelectedLevel != null)
+                levelDefinition = GameSession.SelectedLevel;
 
             finishZ = levelDefinition != null ? Mathf.Max(20f, levelDefinition.Length) : DefaultFinishZ;
             Application.targetFrameRate = 60;
@@ -29,6 +33,7 @@ namespace HORDAX.Prototype
             BuildLighting();
             BuildRoad();
             BuildPlayer();
+            ApplyPermanentProgression();
             BuildEnemyPool();
             BuildCombatFxPool();
             BuildCamera();
@@ -101,7 +106,7 @@ namespace HORDAX.Prototype
 
             player = root.AddComponent<RunnerController>();
             root.AddComponent<PlayerHealth>();
-            WeaponController weapon = root.AddComponent<WeaponController>();
+            playerWeapon = root.AddComponent<WeaponController>();
 
             GameObject visual = CreatePrimitiveWithoutCollider(PrimitiveType.Capsule, "Player Visual", root.transform);
             visual.transform.localPosition = Vector3.zero;
@@ -114,10 +119,29 @@ namespace HORDAX.Prototype
             GameObject muzzle = new GameObject("Muzzle");
             muzzle.transform.SetParent(root.transform, false);
             muzzle.transform.localPosition = new Vector3(0.45f, 0.35f, 1.18f);
-            weapon.SetMuzzle(muzzle.transform);
+            playerWeapon.SetMuzzle(muzzle.transform);
 
             PrototypeWeaponView weaponView = root.AddComponent<PrototypeWeaponView>();
-            weaponView.Initialize(weapon, weaponVisual.transform);
+            weaponView.Initialize(playerWeapon, weaponVisual.transform);
+        }
+
+        private void ApplyPermanentProgression()
+        {
+            ProgressionService progression = ProgressionService.GetOrCreate();
+            PermanentUpgradeDefinition healthUpgrade = PrototypeUpgradeCatalog.Get(PermanentUpgradeType.MaxHealth);
+            PermanentUpgradeDefinition damageUpgrade = PrototypeUpgradeCatalog.Get(PermanentUpgradeType.WeaponDamage);
+            PermanentUpgradeDefinition fireRateUpgrade = PrototypeUpgradeCatalog.Get(PermanentUpgradeType.FireRate);
+
+            PlayerHealth health = player != null ? player.GetComponent<PlayerHealth>() : null;
+            if (health != null)
+                health.SetPermanentHealthMultiplier(progression.GetUpgradeMultiplier(healthUpgrade));
+
+            if (playerWeapon != null)
+            {
+                playerWeapon.SetPermanentBonuses(
+                    progression.GetUpgradeMultiplier(damageUpgrade),
+                    progression.GetUpgradeMultiplier(fireRateUpgrade));
+            }
         }
 
         private void BuildEnemyPool()

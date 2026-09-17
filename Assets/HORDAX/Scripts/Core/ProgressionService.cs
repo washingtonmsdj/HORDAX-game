@@ -10,17 +10,28 @@ namespace HORDAX.Core
         private const string SaveKey = "HORDAX_PROGRESS_V1";
 
         [Serializable]
+        private sealed class UpgradeEntry
+        {
+            public string id;
+            public int level;
+        }
+
+        [Serializable]
         private sealed class SaveData
         {
             public int walletCoins;
             public List<string> completedLevelIds = new List<string>();
+            public List<UpgradeEntry> upgrades = new List<UpgradeEntry>();
         }
 
         private SaveData data;
 
         public static ProgressionService Instance { get; private set; }
         public int WalletCoins => data != null ? data.walletCoins : 0;
-        public IReadOnlyList<string> CompletedLevelIds => data != null && data.completedLevelIds != null\n            ? (IReadOnlyList<string>)data.completedLevelIds\n            : Array.Empty<string>();
+        public IReadOnlyList<string> CompletedLevelIds =>
+            data != null && data.completedLevelIds != null
+                ? (IReadOnlyList<string>)data.completedLevelIds
+                : Array.Empty<string>();
 
         public static ProgressionService GetOrCreate()
         {
@@ -48,8 +59,17 @@ namespace HORDAX.Core
 
         public bool IsLevelCompleted(string levelId)
         {
-            if (string.IsNullOrWhiteSpace(levelId) || data == null) return false;
-            return data.completedLevelIds.Contains(levelId);
+            EnsureData();
+            return !string.IsNullOrWhiteSpace(levelId) && data.completedLevelIds.Contains(levelId);
+        }
+
+        public bool IsLevelUnlocked(CampaignDefinition campaign, int levelIndex)
+        {
+            if (campaign == null || levelIndex < 0 || levelIndex >= campaign.LevelCount) return false;
+            if (levelIndex == 0) return true;
+
+            LevelDefinition previous = campaign.GetLevel(levelIndex - 1);
+            return previous != null && IsLevelCompleted(previous.LevelId);
         }
 
         public void CompleteLevel(string levelId, int earnedCoins)
@@ -63,13 +83,45 @@ namespace HORDAX.Core
             Save();
         }
 
-        public bool IsLevelUnlocked(CampaignDefinition campaign, int levelIndex)
+        public int GetUpgradeLevel(string upgradeId)
         {
-            if (campaign == null || levelIndex < 0 || levelIndex >= campaign.LevelCount) return false;
-            if (levelIndex == 0) return true;
+            UpgradeEntry entry = FindUpgrade(upgradeId);
+            return entry != null ? Mathf.Max(0, entry.level) : 0;
+        }
 
-            LevelDefinition previous = campaign.GetLevel(levelIndex - 1);
-            return previous != null && IsLevelCompleted(previous.LevelId);
+        public float GetUpgradeMultiplier(PermanentUpgradeDefinition definition)
+        {
+            if (definition == null) return 1f;
+            return definition.GetMultiplier(GetUpgradeLevel(definition.UpgradeId));
+        }
+
+        public int GetUpgradeCost(PermanentUpgradeDefinition definition)
+        {
+            if (definition == null) return int.MaxValue;
+            return definition.GetCost(GetUpgradeLevel(definition.UpgradeId));
+        }
+
+        public bool TryPurchaseUpgrade(PermanentUpgradeDefinition definition)
+        {
+            if (definition == null) return false;
+
+            EnsureData();
+            int level = GetUpgradeLevel(definition.UpgradeId);
+            if (level >= definition.MaxLevel) return false;
+
+            int cost = definition.GetCost(level);
+            if (!TrySpendCoins(cost)) return false;
+
+            UpgradeEntry entry = FindUpgrade(definition.UpgradeId);
+            if (entry == null)
+            {
+                entry = new UpgradeEntry { id = definition.UpgradeId, level = 0 };
+                data.upgrades.Add(entry);
+            }
+
+            entry.level = Mathf.Min(definition.MaxLevel, entry.level + 1);
+            Save();
+            return true;
         }
 
         public bool TrySpendCoins(int amount)
@@ -98,6 +150,21 @@ namespace HORDAX.Core
             PlayerPrefs.Save();
         }
 
+        private UpgradeEntry FindUpgrade(string id)
+        {
+            EnsureData();
+            if (string.IsNullOrWhiteSpace(id)) return null;
+
+            for (int i = 0; i < data.upgrades.Count; i++)
+            {
+                UpgradeEntry entry = data.upgrades[i];
+                if (entry != null && entry.id == id)
+                    return entry;
+            }
+
+            return null;
+        }
+
         private void Load()
         {
             string json = PlayerPrefs.GetString(SaveKey, string.Empty);
@@ -122,6 +189,7 @@ namespace HORDAX.Core
         {
             if (data == null) data = new SaveData();
             if (data.completedLevelIds == null) data.completedLevelIds = new List<string>();
+            if (data.upgrades == null) data.upgrades = new List<UpgradeEntry>();
         }
     }
 }

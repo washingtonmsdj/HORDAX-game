@@ -16,7 +16,9 @@ namespace HORDAX.Core
         public int RunCoins { get; private set; }
         public int Score { get; private set; }
         public float FinishZ { get; set; } = 165f;
-        public string CurrentLevelId { get; private set; } = "prototype_level";\n        public int RequiredBossKills { get; private set; }\n        public bool CanFinish => BossKills >= RequiredBossKills;
+        public string CurrentLevelId { get; private set; } = "prototype_level";
+        public int RequiredBossKills { get; private set; }
+        public bool CanFinish => BossKills >= RequiredBossKills;
 
         public event Action Changed;
 
@@ -72,7 +74,9 @@ namespace HORDAX.Core
 
         public void Win()
         {
-            if (State != GameState.Playing || !CanFinish) return;\n\n            RunCoins += completionCoins;
+            if (State != GameState.Playing || !CanFinish) return;
+
+            RunCoins += completionCoins;
             Score += completionScore;
             State = GameState.Won;
             ProgressionService.GetOrCreate().CompleteLevel(CurrentLevelId, RunCoins);

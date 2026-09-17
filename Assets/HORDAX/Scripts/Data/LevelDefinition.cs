@@ -68,5 +68,21 @@ namespace HORDAX.Data
         public int CompletionCoins => completionCoins;
         public int CompletionScore => completionScore;
         public IReadOnlyList<LevelStep> Steps => steps;
+
+        public void ConfigureRuntime(
+            string id,
+            string label,
+            float levelLength,
+            int coins,
+            int score,
+            IEnumerable<LevelStep> sequence)
+        {
+            levelId = id;
+            displayName = label;
+            length = Mathf.Max(20f, levelLength);
+            completionCoins = Mathf.Max(0, coins);
+            completionScore = Mathf.Max(0, score);
+            steps = sequence != null ? new List<LevelStep>(sequence) : new List<LevelStep>();
+        }
     }
 }
