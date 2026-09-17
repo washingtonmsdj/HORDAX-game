@@ -9,6 +9,7 @@ namespace HORDAX.Data
         Horde,
         Gate,
         Upgrade,
+        Weapon,
         Finish
     }
 
@@ -34,6 +35,11 @@ namespace HORDAX.Data
         public float damageAdd = 3f;
         [Min(0.01f)] public float fireRateMultiplier = 1.12f;
         public string upgradeLabel = "+POWER";
+
+        [Header("Weapon")]
+        public WeaponData weaponData;
+        public WeaponArchetype prototypeWeapon = WeaponArchetype.SMG;
+        public string weaponLabel = "NEW WEAPON";
     }
 
     [CreateAssetMenu(fileName = "LevelDefinition", menuName = "HORDAX/Level Definition")]
