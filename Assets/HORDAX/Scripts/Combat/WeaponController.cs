@@ -17,6 +17,8 @@ namespace HORDAX.Combat
 
         private readonly Stack<Bullet> bulletPool = new Stack<Bullet>();
         private float shotTimer;
+        private float flashTimer;
+        private GameObject muzzleFlash;
 
         public float Damage => damage;
         public float FireRate => fireRate;
@@ -29,8 +31,19 @@ namespace HORDAX.Combat
             fireRate = Mathf.Clamp(fireRate * fireRateMultiplier, 1f, 30f);
         }
 
+        private void Start()
+        {
+            BuildPrototypeMuzzleFlash();
+        }
+
         private void Update()
         {
+            if (flashTimer > 0f)
+            {
+                flashTimer -= Time.deltaTime;
+                if (flashTimer <= 0f && muzzleFlash != null) muzzleFlash.SetActive(false);
+            }
+
             if (GameManager.Instance == null || GameManager.Instance.State != GameState.Playing) return;
 
             shotTimer -= Time.deltaTime;
@@ -75,6 +88,14 @@ namespace HORDAX.Combat
             bullet.transform.position = origin.position;
             bullet.transform.rotation = origin.rotation;
             bullet.Initialize(target, damage, bulletSpeed, RecycleBullet);
+
+            if (muzzleFlash != null)
+            {
+                muzzleFlash.SetActive(false);
+                muzzleFlash.transform.localScale = Vector3.one * Random.Range(0.18f, 0.32f);
+                muzzleFlash.SetActive(true);
+                flashTimer = 0.045f;
+            }
         }
 
         private Bullet AcquireBullet()
@@ -107,6 +128,21 @@ namespace HORDAX.Combat
             if (bullet == null) return;
             bullet.gameObject.SetActive(false);
             bulletPool.Push(bullet);
+        }
+
+        private void BuildPrototypeMuzzleFlash()
+        {
+            if (muzzle == null || muzzleFlash != null) return;
+
+            muzzleFlash = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            muzzleFlash.name = "Prototype Muzzle Flash";
+            muzzleFlash.transform.SetParent(muzzle, false);
+            muzzleFlash.transform.localPosition = Vector3.forward * 0.1f;
+            Collider collider = muzzleFlash.GetComponent<Collider>();
+            if (collider != null) Destroy(collider);
+            Renderer renderer = muzzleFlash.GetComponent<Renderer>();
+            if (renderer != null) renderer.sharedMaterial = PrototypeMaterials.Bullet;
+            muzzleFlash.SetActive(false);
         }
     }
 }

@@ -1,6 +1,6 @@
 # HORDAX — Roadmap
 
-## Fase 0 — Blockout jogável (feito nesta base)
+## Fase 0 — Blockout jogável ✅
 
 - runner automático;
 - strafe por touch/mouse/teclado;
@@ -12,20 +12,33 @@
 - vitória/derrota;
 - cena procedural de protótipo.
 
-## Fase 1 — Feel do jogo
+## Fase 1 — Feel do jogo 🟡 em andamento
 
-- recoil e spread visual;
-- hit flash e floating damage;
-- muzzle flash/tracer;
-- feedback ao destruir gate;
-- câmera com shake leve;
-- curvas de velocidade/dificuldade;
+Implementado nesta etapa:
+- muzzle flash placeholder;
+- hit punch em inimigos e gates;
+- camera shake leve em impactos importantes;
+- pickup com rotação + bob;
+- leitura visual melhor de upgrades;
+- cenário blockout com mais profundidade;
+- curva de hordas 30 → 48 → 72.
+
+Próximo:
+- floating damage opcional;
 - áudio placeholder;
-- melhor leitura de pickup e perigo.
+- partículas baratas de impacto/morte;
+- recoil visual da arma;
+- tuning fino da câmera e velocidade.
 
-## Fase 2 — Horda otimizada
+## Fase 2 — Horda otimizada 🟡 iniciada
 
-- object pool de inimigos;
+Implementado:
+- object pool compartilhado de inimigos;
+- prewarm de 96 unidades;
+- reciclagem na morte;
+- spawn com pequena variação para quebrar o aspecto de grade.
+
+Próximo:
 - LOD lógico por distância;
 - animação barata para unidades distantes;
 - GPU instancing;

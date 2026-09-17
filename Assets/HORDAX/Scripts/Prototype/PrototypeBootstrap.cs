@@ -12,7 +12,7 @@ namespace HORDAX.Prototype
     public sealed class PrototypeBootstrap : MonoBehaviour
     {
         private const float RoadHalfWidth = 6f;
-        private const float FinishZ = 165f;
+        private const float FinishZ = 185f;
         private RunnerController player;
 
         private void Awake()
@@ -24,6 +24,7 @@ namespace HORDAX.Prototype
             BuildLighting();
             BuildRoad();
             BuildPlayer();
+            BuildEnemyPool();
             BuildCamera();
             BuildHud();
             BuildLevel();
@@ -49,6 +50,7 @@ namespace HORDAX.Prototype
             Light light = lightObject.AddComponent<Light>();
             light.type = LightType.Directional;
             light.intensity = 1.15f;
+            light.shadows = LightShadows.Soft;
             lightObject.transform.rotation = Quaternion.Euler(48f, -28f, 0f);
         }
 
@@ -56,7 +58,7 @@ namespace HORDAX.Prototype
         {
             GameObject world = new GameObject("WORLD - Replace visuals here");
 
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < 10; i++)
             {
                 float centerZ = i * 20f + 10f;
                 CreateBlock("Road", new Vector3(0f, -0.3f, centerZ), new Vector3(12f, 0.6f, 20.2f), PrototypeMaterials.Road, world.transform, true);
@@ -66,6 +68,12 @@ namespace HORDAX.Prototype
 
             for (float z = 4f; z < FinishZ; z += 8f)
                 CreateBlock("Lane Mark", new Vector3(0f, 0.02f, z), new Vector3(0.12f, 0.03f, 2.5f), PrototypeMaterials.Bullet, world.transform, false);
+
+            for (float z = 18f; z < FinishZ; z += 24f)
+            {
+                CreateBlock("Left Background Pillar", new Vector3(-14f, 4f, z), new Vector3(1.6f, 8f, 1.6f), PrototypeMaterials.Rail, world.transform, false);
+                CreateBlock("Right Background Pillar", new Vector3(14f, 3f, z + 10f), new Vector3(1.4f, 6f, 1.4f), PrototypeMaterials.Rail, world.transform, false);
+            }
         }
 
         private void BuildPlayer()
@@ -97,6 +105,12 @@ namespace HORDAX.Prototype
             weapon.SetMuzzle(muzzle.transform);
         }
 
+        private void BuildEnemyPool()
+        {
+            GameObject poolObject = new GameObject("ENEMY POOL - Replace enemy prefab later");
+            poolObject.AddComponent<EnemyPool>();
+        }
+
         private void BuildCamera()
         {
             GameObject cameraObject = new GameObject("Main Camera");
@@ -118,17 +132,17 @@ namespace HORDAX.Prototype
 
         private void BuildLevel()
         {
-            CreateHorde("Wave 01", 30f, 18, 6, 5f, 3.0f, 8f);
-            CreateGate("Gate 50", 52f, 50f);
-            CreateUpgrade("Upgrade 01", 57f, 3f, 1.12f);
+            CreateHorde("Wave 01", 30f, 30, 6, 5f, 3.1f, 7f);
+            CreateGate("Gate 50", 54f, 50f);
+            CreateUpgrade("Upgrade 01", 60f, 3f, 1.12f, "+DMG");
 
-            CreateHorde("Wave 02", 76f, 28, 7, 8f, 3.3f, 9f);
-            CreateGate("Gate 120", 98f, 120f);
-            CreateUpgrade("Upgrade 02", 103f, 4f, 1.15f);
+            CreateHorde("Wave 02", 82f, 48, 8, 8f, 3.45f, 8f);
+            CreateGate("Gate 120", 108f, 120f);
+            CreateUpgrade("Upgrade 02", 114f, 4f, 1.15f, "+FIRE");
 
-            CreateHorde("Wave 03", 124f, 42, 7, 12f, 3.7f, 10f);
-            CreateGate("Gate 230", 146f, 230f);
-            CreateUpgrade("Upgrade 03", 151f, 5f, 1.15f);
+            CreateHorde("Wave 03", 136f, 72, 9, 11f, 3.8f, 9f);
+            CreateGate("Gate 230", 165f, 230f);
+            CreateUpgrade("Upgrade 03", 171f, 5f, 1.15f, "POWER");
 
             CreateFinish(FinishZ);
         }
@@ -161,13 +175,14 @@ namespace HORDAX.Prototype
             text.alignment = TextAlignment.Center;
             text.fontSize = 90;
             text.characterSize = 0.08f;
+            text.fontStyle = FontStyle.Bold;
             text.color = Color.white;
 
             DamageGate gate = root.AddComponent<DamageGate>();
             gate.Initialize(hitPoints, text);
         }
 
-        private void CreateUpgrade(string label, float z, float damage, float cadence)
+        private void CreateUpgrade(string label, float z, float damage, float cadence, string displayText)
         {
             GameObject root = new GameObject(label);
             root.transform.position = new Vector3(0f, 0.9f, z);
@@ -182,6 +197,19 @@ namespace HORDAX.Prototype
             GameObject top = CreateBlock("Upgrade Icon", Vector3.zero, new Vector3(0.24f, 0.9f, 0.24f), PrototypeMaterials.Bullet, root.transform, false);
             top.transform.localPosition = new Vector3(0f, 0.65f, 0f);
             top.transform.localRotation = Quaternion.Euler(0f, 0f, 45f);
+
+            GameObject textObject = new GameObject("Upgrade Label");
+            textObject.transform.SetParent(root.transform, false);
+            textObject.transform.localPosition = new Vector3(0f, 1.45f, 0f);
+            textObject.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
+            TextMesh text = textObject.AddComponent<TextMesh>();
+            text.anchor = TextAnchor.MiddleCenter;
+            text.alignment = TextAlignment.Center;
+            text.fontSize = 64;
+            text.characterSize = 0.055f;
+            text.fontStyle = FontStyle.Bold;
+            text.color = Color.white;
+            text.text = displayText;
 
             UpgradePickup pickup = root.AddComponent<UpgradePickup>();
             pickup.Configure(damage, cadence);
