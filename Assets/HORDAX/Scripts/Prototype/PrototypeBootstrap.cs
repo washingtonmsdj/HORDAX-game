@@ -39,7 +39,8 @@ namespace HORDAX.Prototype
             GameManager.Instance.ConfigureLevel(
                 levelDefinition != null ? levelDefinition.LevelId : "prototype_level",
                 levelDefinition != null ? levelDefinition.CompletionCoins : 100,
-                levelDefinition != null ? levelDefinition.CompletionScore : 1000);
+                levelDefinition != null ? levelDefinition.CompletionScore : 1000,
+                CountRequiredBossKills());
             GameManager.Instance.Begin();
         }
 
@@ -218,6 +219,30 @@ namespace HORDAX.Prototype
             }
 
             BuildDefaultLevel();
+        }
+
+        private int CountRequiredBossKills()
+        {
+            if (levelDefinition == null || levelDefinition.Steps.Count == 0)
+                return 1;
+
+            int required = 0;
+            for (int i = 0; i < levelDefinition.Steps.Count; i++)
+            {
+                LevelStep step = levelDefinition.Steps[i];
+                if (step == null) continue;
+
+                if (step.type == LevelStepType.Boss)
+                {
+                    required++;
+                    continue;
+                }
+
+                if (step.enemyData != null && step.enemyData.Rank == EnemyRank.Boss)
+                    required += step.type == LevelStepType.Horde ? Mathf.Max(1, step.enemyCount) : 1;
+            }
+
+            return required;
         }
 
         private void BuildDefaultLevel()
