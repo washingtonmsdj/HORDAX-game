@@ -5,47 +5,61 @@ using HORDAX.Prototype;
 namespace HORDAX.Enemies
 {
     /// <summary>
-    /// Lightweight pool used by the blockout horde. Keeping enemy lifetime out of
-    /// Instantiate/Destroy makes it possible to push crowd counts much higher on mobile.
-    /// For final art, replace the prototype cube through the prefab field without changing gameplay code.
+    /// Pool keyed by prefab source so future enemy archetypes do not get mixed together.
+    /// Null prefab means the built-in prototype cube.
     /// </summary>
     public sealed class EnemyPool : MonoBehaviour
     {
         [SerializeField] private GameObject enemyPrefab;
         [SerializeField] private int prewarmCount = 96;
 
-        private readonly Queue<EnemyAgent> inactive = new Queue<EnemyAgent>();
+        private readonly Queue<EnemyAgent> prototypeInactive = new Queue<EnemyAgent>();
+        private readonly Dictionary<GameObject, Queue<EnemyAgent>> prefabInactive = new Dictionary<GameObject, Queue<EnemyAgent>>();
+        private readonly Dictionary<EnemyAgent, GameObject> sourcePrefabByAgent = new Dictionary<EnemyAgent, GameObject>();
         private int createdCount;
 
         public int CreatedCount => createdCount;
-        public int AvailableCount => inactive.Count;
+        public int AvailableCount
+        {
+            get
+            {
+                int total = prototypeInactive.Count;
+                foreach (KeyValuePair<GameObject, Queue<EnemyAgent>> pair in prefabInactive)
+                    total += pair.Value.Count;
+                return total;
+            }
+        }
 
         private void Awake()
         {
-            Prewarm(prewarmCount);
+            Prewarm(prewarmCount, enemyPrefab);
         }
 
         public void Configure(GameObject prefab, int initialCapacity)
         {
             enemyPrefab = prefab;
             prewarmCount = Mathf.Max(0, initialCapacity);
+            Prewarm(prewarmCount, enemyPrefab);
         }
 
-        public void Prewarm(int count)
+        public void Prewarm(int count, GameObject prefab = null)
         {
-            while (createdCount < count)
+            Queue<EnemyAgent> queue = GetQueue(prefab);
+            while (queue.Count < count)
             {
-                EnemyAgent agent = CreateAgent(enemyPrefab);
-                inactive.Enqueue(agent);
+                EnemyAgent agent = CreateAgent(prefab);
+                queue.Enqueue(agent);
             }
         }
 
         public EnemyAgent Acquire(GameObject overridePrefab = null)
         {
-            if (inactive.Count > 0)
-                return inactive.Dequeue();
+            GameObject requestedPrefab = overridePrefab != null ? overridePrefab : enemyPrefab;
+            Queue<EnemyAgent> queue = GetQueue(requestedPrefab);
+            if (queue.Count > 0)
+                return queue.Dequeue();
 
-            return CreateAgent(overridePrefab != null ? overridePrefab : enemyPrefab);
+            return CreateAgent(requestedPrefab);
         }
 
         public void Release(EnemyAgent agent)
@@ -54,7 +68,23 @@ namespace HORDAX.Enemies
 
             agent.gameObject.SetActive(false);
             agent.transform.SetParent(transform, false);
-            inactive.Enqueue(agent);
+
+            GameObject sourcePrefab;
+            sourcePrefabByAgent.TryGetValue(agent, out sourcePrefab);
+            GetQueue(sourcePrefab).Enqueue(agent);
+        }
+
+        private Queue<EnemyAgent> GetQueue(GameObject prefab)
+        {
+            if (prefab == null) return prototypeInactive;
+
+            Queue<EnemyAgent> queue;
+            if (!prefabInactive.TryGetValue(prefab, out queue))
+            {
+                queue = new Queue<EnemyAgent>();
+                prefabInactive.Add(prefab, queue);
+            }
+            return queue;
         }
 
         private EnemyAgent CreateAgent(GameObject prefab)
@@ -77,6 +107,7 @@ namespace HORDAX.Enemies
             EnemyAgent agent = enemy.GetComponent<EnemyAgent>();
             if (agent == null) agent = enemy.AddComponent<EnemyAgent>();
 
+            sourcePrefabByAgent[agent] = prefab;
             createdCount++;
             enemy.SetActive(false);
             return agent;
