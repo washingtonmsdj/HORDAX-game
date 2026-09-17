@@ -8,8 +8,28 @@ namespace HORDAX.EditorTools
 {
     public static class ProjectValidator
     {
+        public sealed class ValidationReport
+        {
+            public IReadOnlyList<string> Errors { get; }
+            public IReadOnlyList<string> Warnings { get; }
+            public int ErrorCount => Errors.Count;
+            public int WarningCount => Warnings.Count;
+            public bool IsValid => ErrorCount == 0;
+
+            public ValidationReport(List<string> errors, List<string> warnings)
+            {
+                Errors = errors;
+                Warnings = warnings;
+            }
+        }
+
         [MenuItem("HORDAX/Validate Project Data")]
         public static void ValidateProjectData()
+        {
+            LogReport(RunValidation());
+        }
+
+        public static ValidationReport RunValidation()
         {
             List<string> errors = new List<string>();
             List<string> warnings = new List<string>();
@@ -19,16 +39,27 @@ namespace HORDAX.EditorTools
             ValidateLevels(errors, warnings);
             ValidateCampaigns(errors, warnings);
 
-            for (int i = 0; i < warnings.Count; i++)
-                Debug.LogWarning("[HORDAX] " + warnings[i]);
+            return new ValidationReport(errors, warnings);
+        }
 
-            for (int i = 0; i < errors.Count; i++)
-                Debug.LogError("[HORDAX] " + errors[i]);
+        public static void LogReport(ValidationReport report)
+        {
+            if (report == null)
+            {
+                Debug.LogError("[HORDAX] Validation report was null.");
+                return;
+            }
 
-            if (errors.Count == 0)
-                Debug.Log($"[HORDAX] Validation complete: no blocking errors. {warnings.Count} warning(s).");
+            for (int i = 0; i < report.Warnings.Count; i++)
+                Debug.LogWarning("[HORDAX] " + report.Warnings[i]);
+
+            for (int i = 0; i < report.Errors.Count; i++)
+                Debug.LogError("[HORDAX] " + report.Errors[i]);
+
+            if (report.IsValid)
+                Debug.Log($"[HORDAX] Validation complete: no blocking errors. {report.WarningCount} warning(s).");
             else
-                Debug.LogError($"[HORDAX] Validation failed with {errors.Count} error(s) and {warnings.Count} warning(s).");
+                Debug.LogError($"[HORDAX] Validation failed with {report.ErrorCount} error(s) and {report.WarningCount} warning(s).");
         }
 
         private static void ValidateWeapons(List<string> errors, List<string> warnings)
