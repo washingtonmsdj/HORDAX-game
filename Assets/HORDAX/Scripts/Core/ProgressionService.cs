@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using HORDAX.Data;
 
 namespace HORDAX.Core
 {
@@ -19,7 +20,7 @@ namespace HORDAX.Core
 
         public static ProgressionService Instance { get; private set; }
         public int WalletCoins => data != null ? data.walletCoins : 0;
-        public IReadOnlyList<string> CompletedLevelIds => data != null ? data.completedLevelIds : Array.Empty<string>();
+        public IReadOnlyList<string> CompletedLevelIds => data != null && data.completedLevelIds != null\n            ? (IReadOnlyList<string>)data.completedLevelIds\n            : Array.Empty<string>();
 
         public static ProgressionService GetOrCreate()
         {
@@ -59,6 +60,34 @@ namespace HORDAX.Core
             if (!string.IsNullOrWhiteSpace(levelId) && !data.completedLevelIds.Contains(levelId))
                 data.completedLevelIds.Add(levelId);
 
+            Save();
+        }
+
+        public bool IsLevelUnlocked(CampaignDefinition campaign, int levelIndex)
+        {
+            if (campaign == null || levelIndex < 0 || levelIndex >= campaign.LevelCount) return false;
+            if (levelIndex == 0) return true;
+
+            LevelDefinition previous = campaign.GetLevel(levelIndex - 1);
+            return previous != null && IsLevelCompleted(previous.LevelId);
+        }
+
+        public bool TrySpendCoins(int amount)
+        {
+            EnsureData();
+            amount = Mathf.Max(0, amount);
+            if (data.walletCoins < amount) return false;
+
+            data.walletCoins -= amount;
+            Save();
+            return true;
+        }
+
+        public void AddCoins(int amount)
+        {
+            if (amount <= 0) return;
+            EnsureData();
+            data.walletCoins += amount;
             Save();
         }
 
