@@ -16,7 +16,7 @@ namespace HORDAX.Core
         public int RunCoins { get; private set; }
         public int Score { get; private set; }
         public float FinishZ { get; set; } = 165f;
-        public string CurrentLevelId { get; private set; } = "prototype_level";
+        public string CurrentLevelId { get; private set; } = "prototype_level";\n        public int RequiredBossKills { get; private set; }\n        public bool CanFinish => BossKills >= RequiredBossKills;
 
         public event Action Changed;
 
@@ -34,11 +34,12 @@ namespace HORDAX.Core
             Instance = this;
         }
 
-        public void ConfigureLevel(string levelId, int coinsOnComplete, int scoreOnComplete)
+        public void ConfigureLevel(string levelId, int coinsOnComplete, int scoreOnComplete, int requiredBossKills = 0)
         {
             CurrentLevelId = string.IsNullOrWhiteSpace(levelId) ? "prototype_level" : levelId;
             completionCoins = Mathf.Max(0, coinsOnComplete);
             completionScore = Mathf.Max(0, scoreOnComplete);
+            RequiredBossKills = Mathf.Max(0, requiredBossKills);
         }
 
         public void Begin()
@@ -71,9 +72,7 @@ namespace HORDAX.Core
 
         public void Win()
         {
-            if (State != GameState.Playing) return;
-
-            RunCoins += completionCoins;
+            if (State != GameState.Playing || !CanFinish) return;\n\n            RunCoins += completionCoins;
             Score += completionScore;
             State = GameState.Won;
             ProgressionService.GetOrCreate().CompleteLevel(CurrentLevelId, RunCoins);
