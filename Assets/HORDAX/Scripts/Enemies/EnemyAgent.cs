@@ -15,6 +15,11 @@ namespace HORDAX.Enemies
         [SerializeField] private float hitPunch = 0.16f;
         [SerializeField] private float hitPunchRecovery = 14f;
 
+        [Header("Crowd LOD")]
+        [SerializeField] private float nearLogicInterval = 0.045f;
+        [SerializeField] private float farLogicInterval = 0.16f;
+        [SerializeField] private float farDistance = 22f;
+
         private RunnerController player;
         private PlayerHealth playerHealth;
         private EnemyPool ownerPool;
@@ -22,6 +27,9 @@ namespace HORDAX.Enemies
         private float attackTimer;
         private Vector3 baseScale;
         private float punch;
+        private float logicTimer;
+        private float cachedDistance = float.MaxValue;
+        private Vector3 cachedDirection;
 
         public override Vector3 TargetPoint => transform.position + Vector3.up * 0.55f;
 
@@ -37,6 +45,9 @@ namespace HORDAX.Enemies
             attackTimer = Random.Range(0f, attackInterval * 0.5f);
             punch = 0f;
             baseScale = transform.localScale;
+            logicTimer = Random.Range(0f, nearLogicInterval);
+            cachedDistance = float.MaxValue;
+            cachedDirection = Vector3.back;
         }
 
         protected override void OnEnable()
@@ -55,26 +66,17 @@ namespace HORDAX.Enemies
 
         private void Update()
         {
-            if (punch > 0f)
-            {
-                punch = Mathf.MoveTowards(punch, 0f, hitPunchRecovery * Time.deltaTime);
-                transform.localScale = baseScale * (1f + punch);
-            }
-            else if (transform.localScale != baseScale)
-            {
-                transform.localScale = baseScale;
-            }
+            UpdateHitPunch();
 
             if (player == null || GameManager.Instance == null || GameManager.Instance.State != GameState.Playing) return;
 
-            Vector3 toPlayer = player.transform.position - transform.position;
-            float planarDistance = new Vector2(toPlayer.x, toPlayer.z).magnitude;
+            logicTimer -= Time.deltaTime;
+            if (logicTimer <= 0f)
+                RefreshSteering();
 
-            if (planarDistance > attackDistance)
+            if (cachedDistance > attackDistance)
             {
-                Vector3 direction = new Vector3(toPlayer.x, 0f, toPlayer.z).normalized;
-                transform.position += direction * moveSpeed * Time.deltaTime;
-                if (direction.sqrMagnitude > 0.01f) transform.forward = direction;
+                transform.position += cachedDirection * moveSpeed * Time.deltaTime;
             }
             else
             {
@@ -87,6 +89,33 @@ namespace HORDAX.Enemies
             }
         }
 
+        private void RefreshSteering()
+        {
+            Vector3 toPlayer = player.transform.position - transform.position;
+            Vector3 planar = new Vector3(toPlayer.x, 0f, toPlayer.z);
+            cachedDistance = planar.magnitude;
+            if (planar.sqrMagnitude > 0.001f)
+            {
+                cachedDirection = planar / Mathf.Max(0.001f, cachedDistance);
+                transform.forward = cachedDirection;
+            }
+
+            logicTimer = cachedDistance > farDistance ? farLogicInterval : nearLogicInterval;
+        }
+
+        private void UpdateHitPunch()
+        {
+            if (punch > 0f)
+            {
+                punch = Mathf.MoveTowards(punch, 0f, hitPunchRecovery * Time.deltaTime);
+                transform.localScale = baseScale * (1f + punch);
+            }
+            else if (transform.localScale != baseScale)
+            {
+                transform.localScale = baseScale;
+            }
+        }
+
         public override void TakeDamage(float amount)
         {
             if (health <= 0f) return;
@@ -96,11 +125,14 @@ namespace HORDAX.Enemies
             if (health > 0f) return;
 
             if (GameManager.Instance != null) GameManager.Instance.RegisterEnemyKill();
+            CombatFxPool.Instance?.PlayDeath(transform.position + Vector3.up * 0.55f, Mathf.Max(0.45f, baseScale.magnitude * 0.38f));
             Die();
         }
 
         private void Die()
         {
+            transform.localScale = baseScale;
+
             if (ownerPool != null)
             {
                 ownerPool.Release(this);
