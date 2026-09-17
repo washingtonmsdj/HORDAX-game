@@ -9,16 +9,18 @@ namespace HORDAX.World
     {
         [SerializeField] private WeaponData weaponData;
         [SerializeField] private WeaponArchetype prototypeWeapon = WeaponArchetype.SMG;
+        [SerializeField] private Transform visualRoot;
         [SerializeField] private float rotationSpeed = 80f;
         [SerializeField] private float bobHeight = 0.16f;
         [SerializeField] private float bobSpeed = 2.4f;
 
         private float baseY;
 
-        public void Configure(WeaponData definition, WeaponArchetype fallback)
+        public void Configure(WeaponData definition, WeaponArchetype fallback, Transform visual = null)
         {
             weaponData = definition;
             prototypeWeapon = fallback;
+            visualRoot = visual;
         }
 
         private void Start()
@@ -28,7 +30,9 @@ namespace HORDAX.World
 
         private void Update()
         {
-            transform.Rotate(0f, rotationSpeed * Time.deltaTime, 0f, Space.World);
+            if (visualRoot != null)
+                visualRoot.Rotate(0f, rotationSpeed * Time.deltaTime, 0f, Space.World);
+
             Vector3 position = transform.position;
             position.y = baseY + Mathf.Sin(Time.time * bobSpeed) * bobHeight;
             transform.position = position;
