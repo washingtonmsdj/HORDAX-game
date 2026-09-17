@@ -9,15 +9,27 @@ namespace HORDAX.Combat
         private float damage;
         private float speed;
         private float age;
+        private Vector3 aimOffset;
         private Action<Bullet> recycle;
+        private Vector3 baseScale;
+        private bool hasBaseScale;
 
-        public void Initialize(ShootableTarget newTarget, float newDamage, float newSpeed, Action<Bullet> recycleAction)
+        public void Initialize(ShootableTarget newTarget, float newDamage, float newSpeed, Vector3 newAimOffset, float scaleMultiplier, Action<Bullet> recycleAction)
         {
             target = newTarget;
             damage = newDamage;
             speed = newSpeed;
+            aimOffset = newAimOffset;
             recycle = recycleAction;
             age = 0f;
+
+            if (!hasBaseScale)
+            {
+                baseScale = transform.localScale;
+                hasBaseScale = true;
+            }
+
+            transform.localScale = baseScale * Mathf.Max(0.1f, scaleMultiplier);
             gameObject.SetActive(true);
         }
 
@@ -31,23 +43,27 @@ namespace HORDAX.Combat
                 return;
             }
 
-            Vector3 toTarget = target.TargetPoint - transform.position;
+            Vector3 targetPoint = target.TargetPoint + aimOffset;
+            Vector3 toTarget = targetPoint - transform.position;
             float step = speed * Time.deltaTime;
 
             if (toTarget.sqrMagnitude <= step * step || toTarget.sqrMagnitude < 0.20f)
             {
+                CombatFxPool.Instance?.PlayImpact(targetPoint, 0.18f * transform.localScale.magnitude);
                 target.TakeDamage(damage);
                 Recycle();
                 return;
             }
 
-            transform.position += toTarget.normalized * step;
-            transform.forward = toTarget.normalized;
+            Vector3 direction = toTarget.normalized;
+            transform.position += direction * step;
+            if (direction.sqrMagnitude > 0.001f) transform.forward = direction;
         }
 
         private void Recycle()
         {
             target = null;
+            aimOffset = Vector3.zero;
             recycle?.Invoke(this);
         }
     }
