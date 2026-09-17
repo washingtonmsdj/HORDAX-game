@@ -15,6 +15,8 @@ namespace HORDAX.UI
         private Text statsText;
         private Image healthFill;
         private Image progressFill;
+        private GameState lastState = GameState.Booting;
+        private float restartAllowedAt;
 
         public void Initialize(RunnerController player)
         {
@@ -28,27 +30,42 @@ namespace HORDAX.UI
         {
             if (runner == null || health == null || weapon == null || GameManager.Instance == null) return;
 
+            GameState state = GameManager.Instance.State;
+            if (state != lastState)
+            {
+                lastState = state;
+                if (state == GameState.Won || state == GameState.Lost)
+                    restartAllowedAt = Time.unscaledTime + 0.45f;
+            }
+
             healthFill.fillAmount = health.Normalized;
             float finish = Mathf.Max(1f, GameManager.Instance.FinishZ);
             progressFill.fillAmount = Mathf.Clamp01(runner.transform.position.z / finish);
 
-            statsText.text = $"HP {Mathf.CeilToInt(health.CurrentHealth)}   DMG {weapon.Damage:0.#}   KILLS {GameManager.Instance.EnemyKills}";
+            statsText.text = $"HP {Mathf.CeilToInt(health.CurrentHealth)}   WPN LV {weapon.UpgradeLevel}   DMG {weapon.Damage:0.#}   ROF {weapon.FireRate:0.#}   KILLS {GameManager.Instance.EnemyKills}";
 
-            switch (GameManager.Instance.State)
+            switch (state)
             {
                 case GameState.Won:
-                    statusText.text = "HORDAX\nFASE CONCLUÍDA";
+                    statusText.text = "HORDAX\nFASE CONCLUÍDA\n\nTOQUE / CLIQUE / R PARA REINICIAR";
                     break;
                 case GameState.Lost:
-                    statusText.text = "HORDAX\nDERROTA";
+                    statusText.text = "HORDAX\nDERROTA\n\nTOQUE / CLIQUE / R PARA REINICIAR";
                     break;
                 default:
                     statusText.text = string.Empty;
                     break;
             }
 
-            if (GameManager.Instance.State != GameState.Playing && Input.GetKeyDown(KeyCode.R))
-                GameManager.Instance.Restart();
+            if ((state == GameState.Won || state == GameState.Lost) && Time.unscaledTime >= restartAllowedAt)
+            {
+                bool restartPressed = Input.GetKeyDown(KeyCode.R) || Input.GetMouseButtonDown(0);
+                if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+                    restartPressed = true;
+
+                if (restartPressed)
+                    GameManager.Instance.Restart();
+            }
         }
 
         private void BuildUi()
@@ -68,9 +85,9 @@ namespace HORDAX.UI
             statsRect.anchorMax = new Vector2(0f, 1f);
             statsRect.pivot = new Vector2(0f, 1f);
             statsRect.anchoredPosition = new Vector2(40f, -35f);
-            statsRect.sizeDelta = new Vector2(1000f, 60f);
+            statsRect.sizeDelta = new Vector2(1500f, 60f);
 
-            statusText = CreateText("Status", transform, font, 70, TextAnchor.MiddleCenter);
+            statusText = CreateText("Status", transform, font, 62, TextAnchor.MiddleCenter);
             RectTransform statusRect = statusText.rectTransform;
             statusRect.anchorMin = Vector2.zero;
             statusRect.anchorMax = Vector2.one;

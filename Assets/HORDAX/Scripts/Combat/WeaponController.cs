@@ -19,9 +19,11 @@ namespace HORDAX.Combat
         private float shotTimer;
         private float flashTimer;
         private GameObject muzzleFlash;
+        private int upgradeLevel = 1;
 
         public float Damage => damage;
         public float FireRate => fireRate;
+        public int UpgradeLevel => upgradeLevel;
 
         public void SetMuzzle(Transform value) => muzzle = value;
 
@@ -29,6 +31,7 @@ namespace HORDAX.Combat
         {
             damage += damageAdd;
             fireRate = Mathf.Clamp(fireRate * fireRateMultiplier, 1f, 30f);
+            upgradeLevel++;
         }
 
         private void Start()

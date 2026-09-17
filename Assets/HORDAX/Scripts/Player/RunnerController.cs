@@ -7,6 +7,7 @@ namespace HORDAX.Player
     {
         [Header("Runner")]
         [SerializeField] private float forwardSpeed = 8f;
+        [SerializeField] private float maxForwardSpeed = 10.5f;
         [SerializeField] private float keyboardLateralSpeed = 9f;
         [SerializeField] private float dragSensitivity = 14f;
         [SerializeField] private float laneHalfWidth = 5.2f;
@@ -14,12 +15,15 @@ namespace HORDAX.Player
         private float desiredX;
         private float lastPointerX;
         private bool pointerDown;
+        private float currentForwardSpeed;
 
-        public float ForwardSpeed => forwardSpeed;
+        public float ForwardSpeed => currentForwardSpeed;
+        public float LaneHalfWidth => laneHalfWidth;
 
         private void Start()
         {
             desiredX = transform.position.x;
+            currentForwardSpeed = forwardSpeed;
         }
 
         private void Update()
@@ -29,10 +33,14 @@ namespace HORDAX.Player
             ReadKeyboard();
             ReadPointer();
 
+            float finishZ = Mathf.Max(1f, GameManager.Instance.FinishZ);
+            float progress = Mathf.Clamp01(transform.position.z / finishZ);
+            currentForwardSpeed = Mathf.Lerp(forwardSpeed, maxForwardSpeed, progress);
+
             desiredX = Mathf.Clamp(desiredX, -laneHalfWidth, laneHalfWidth);
             Vector3 position = transform.position;
             position.x = Mathf.MoveTowards(position.x, desiredX, dragSensitivity * Time.deltaTime);
-            position.z += forwardSpeed * Time.deltaTime;
+            position.z += currentForwardSpeed * Time.deltaTime;
             transform.position = position;
         }
 
