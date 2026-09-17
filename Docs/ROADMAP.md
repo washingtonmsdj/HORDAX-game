@@ -14,17 +14,18 @@
 
 ## Fase 1 — Feel do jogo 🟡 em andamento
 
-Implementado nesta etapa:
+Implementado:
 - muzzle flash placeholder;
 - hit punch em inimigos e gates;
 - camera shake leve em impactos importantes;
 - pickup com rotação + bob;
 - leitura visual melhor de upgrades;
 - cenário blockout com mais profundidade;
+- aceleração progressiva do runner;
+- restart rápido para playtest;
 - curva de hordas 30 → 48 → 72.
 
 Próximo:
-- floating damage opcional;
 - áudio placeholder;
 - partículas baratas de impacto/morte;
 - recoil visual da arma;
@@ -39,20 +40,27 @@ Implementado:
 - spawn com pequena variação para quebrar o aspecto de grade.
 
 Próximo:
+- pool por arquétipo/prefab quando houver múltiplos inimigos;
 - LOD lógico por distância;
 - animação barata para unidades distantes;
 - GPU instancing;
 - orçamento de inimigos por aparelho;
 - profiling em Android/iOS.
 
-## Fase 3 — Conteúdo autorável
+## Fase 3 — Conteúdo autorável 🟡 iniciada
 
+Implementado:
 - `WeaponData` ScriptableObject;
 - `EnemyData` ScriptableObject;
 - `LevelDefinition` ScriptableObject;
-- editor de sequência de waves/gates/upgrades;
+- sequência autorável de hordas/gates/upgrades/finish;
+- fallback para o nível blockout sem assets externos.
+
+Próximo:
+- inspector/editor dedicado para sequência da fase;
 - múltiplas armas e raridades;
-- chefes e eventos de pista.
+- chefes e eventos de pista;
+- validação automática de level data.
 
 ## Fase 4 — Arte 3D
 

@@ -1,4 +1,5 @@
 using UnityEngine;
+using HORDAX.Data;
 using HORDAX.Player;
 using HORDAX.Prototype;
 
@@ -13,13 +14,14 @@ namespace HORDAX.Enemies
         [SerializeField] private float enemySpeed = 3.2f;
         [SerializeField] private float enemyDamage = 8f;
         [SerializeField] private float spawnJitter = 0.24f;
+        [SerializeField] private EnemyData enemyData;
         [SerializeField] private GameObject enemyPrefab;
 
         private RunnerController player;
         private EnemyPool pool;
         private bool spawned;
 
-        public void Configure(RunnerController runner, int enemyCount, int columnCount, float health, float speed, float damage)
+        public void Configure(RunnerController runner, int enemyCount, int columnCount, float health, float speed, float damage, EnemyData definition = null)
         {
             player = runner;
             count = Mathf.Max(1, enemyCount);
@@ -27,6 +29,7 @@ namespace HORDAX.Enemies
             enemyHealth = health;
             enemySpeed = speed;
             enemyDamage = damage;
+            enemyData = definition;
         }
 
         private void Start()
@@ -55,6 +58,11 @@ namespace HORDAX.Enemies
             const float spacingX = 1.24f;
             const float spacingZ = 1.10f;
 
+            float health = enemyData != null ? enemyData.Health : enemyHealth;
+            float speed = enemyData != null ? enemyData.MoveSpeed : enemySpeed;
+            float damage = enemyData != null ? enemyData.ContactDamage : enemyDamage;
+            GameObject requestedPrefab = enemyData != null && enemyData.VisualPrefab != null ? enemyData.VisualPrefab : enemyPrefab;
+
             for (int i = 0; i < count; i++)
             {
                 int col = i % columns;
@@ -63,7 +71,7 @@ namespace HORDAX.Enemies
                 float x = col * spacingX - widthOffset + Random.Range(-spawnJitter, spawnJitter);
                 float z = row * spacingZ + Random.Range(-spawnJitter, spawnJitter);
 
-                EnemyAgent agent = pool.Acquire(enemyPrefab);
+                EnemyAgent agent = pool.Acquire(requestedPrefab);
                 GameObject enemy = agent.gameObject;
                 enemy.name = $"{name}_Enemy_{i:000}";
                 enemy.transform.SetParent(null, true);
@@ -72,9 +80,9 @@ namespace HORDAX.Enemies
                 enemy.transform.localScale = new Vector3(0.86f, Random.Range(1.05f, 1.28f), 0.86f);
 
                 Renderer renderer = enemy.GetComponentInChildren<Renderer>();
-                if (renderer != null && enemyPrefab == null) renderer.sharedMaterial = PrototypeMaterials.Enemy;
+                if (renderer != null && requestedPrefab == null) renderer.sharedMaterial = PrototypeMaterials.Enemy;
 
-                agent.Initialize(player, enemyHealth, enemySpeed, enemyDamage, pool);
+                agent.Initialize(player, health, speed, damage, pool);
                 enemy.SetActive(true);
             }
         }

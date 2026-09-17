@@ -2,6 +2,7 @@ using UnityEngine;
 using HORDAX.CameraSystem;
 using HORDAX.Combat;
 using HORDAX.Core;
+using HORDAX.Data;
 using HORDAX.Enemies;
 using HORDAX.Player;
 using HORDAX.UI;
@@ -11,14 +12,17 @@ namespace HORDAX.Prototype
 {
     public sealed class PrototypeBootstrap : MonoBehaviour
     {
-        private const float RoadHalfWidth = 6f;
-        private const float FinishZ = 185f;
+        private const float DefaultFinishZ = 185f;
+        [SerializeField] private LevelDefinition levelDefinition;
+
         private RunnerController player;
+        private float finishZ;
 
         private void Awake()
         {
             if (FindObjectOfType<RunnerController>() != null) return;
 
+            finishZ = levelDefinition != null ? Mathf.Max(20f, levelDefinition.Length) : DefaultFinishZ;
             Application.targetFrameRate = 60;
             BuildGameManager();
             BuildLighting();
@@ -29,7 +33,7 @@ namespace HORDAX.Prototype
             BuildHud();
             BuildLevel();
 
-            GameManager.Instance.FinishZ = FinishZ;
+            GameManager.Instance.FinishZ = finishZ;
             GameManager.Instance.Begin();
         }
 
@@ -57,8 +61,9 @@ namespace HORDAX.Prototype
         private void BuildRoad()
         {
             GameObject world = new GameObject("WORLD - Replace visuals here");
+            int roadSegments = Mathf.CeilToInt(finishZ / 20f) + 1;
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < roadSegments; i++)
             {
                 float centerZ = i * 20f + 10f;
                 CreateBlock("Road", new Vector3(0f, -0.3f, centerZ), new Vector3(12f, 0.6f, 20.2f), PrototypeMaterials.Road, world.transform, true);
@@ -66,10 +71,10 @@ namespace HORDAX.Prototype
                 CreateBlock("Right Rail", new Vector3(6.25f, 0.25f, centerZ), new Vector3(0.35f, 1.1f, 20.2f), PrototypeMaterials.Rail, world.transform, false);
             }
 
-            for (float z = 4f; z < FinishZ; z += 8f)
+            for (float z = 4f; z < finishZ; z += 8f)
                 CreateBlock("Lane Mark", new Vector3(0f, 0.02f, z), new Vector3(0.12f, 0.03f, 2.5f), PrototypeMaterials.Bullet, world.transform, false);
 
-            for (float z = 18f; z < FinishZ; z += 24f)
+            for (float z = 18f; z < finishZ; z += 24f)
             {
                 CreateBlock("Left Background Pillar", new Vector3(-14f, 4f, z), new Vector3(1.6f, 8f, 1.6f), PrototypeMaterials.Rail, world.transform, false);
                 CreateBlock("Right Background Pillar", new Vector3(14f, 3f, z + 10f), new Vector3(1.4f, 6f, 1.4f), PrototypeMaterials.Rail, world.transform, false);
@@ -132,6 +137,41 @@ namespace HORDAX.Prototype
 
         private void BuildLevel()
         {
+            if (levelDefinition != null && levelDefinition.Steps.Count > 0)
+            {
+                bool hasFinish = false;
+                for (int i = 0; i < levelDefinition.Steps.Count; i++)
+                {
+                    LevelStep step = levelDefinition.Steps[i];
+                    if (step == null) continue;
+
+                    switch (step.type)
+                    {
+                        case LevelStepType.Horde:
+                            CreateHorde(step.label, step.z, step.enemyCount, step.columns, step.enemyHealth, step.enemySpeed, step.enemyDamage, step.enemyData);
+                            break;
+                        case LevelStepType.Gate:
+                            CreateGate(step.label, step.z, step.gateHitPoints);
+                            break;
+                        case LevelStepType.Upgrade:
+                            CreateUpgrade(step.label, step.z, step.damageAdd, step.fireRateMultiplier, step.upgradeLabel);
+                            break;
+                        case LevelStepType.Finish:
+                            CreateFinish(step.z);
+                            hasFinish = true;
+                            break;
+                    }
+                }
+
+                if (!hasFinish) CreateFinish(finishZ);
+                return;
+            }
+
+            BuildDefaultLevel();
+        }
+
+        private void BuildDefaultLevel()
+        {
             CreateHorde("Wave 01", 30f, 30, 6, 5f, 3.1f, 7f);
             CreateGate("Gate 50", 54f, 50f);
             CreateUpgrade("Upgrade 01", 60f, 3f, 1.12f, "+DMG");
@@ -144,20 +184,20 @@ namespace HORDAX.Prototype
             CreateGate("Gate 230", 165f, 230f);
             CreateUpgrade("Upgrade 03", 171f, 5f, 1.15f, "POWER");
 
-            CreateFinish(FinishZ);
+            CreateFinish(finishZ);
         }
 
-        private void CreateHorde(string label, float z, int count, int columns, float health, float speed, float damage)
+        private void CreateHorde(string label, float z, int count, int columns, float health, float speed, float damage, EnemyData data = null)
         {
-            GameObject spawner = new GameObject(label);
+            GameObject spawner = new GameObject(string.IsNullOrWhiteSpace(label) ? "Horde" : label);
             spawner.transform.position = new Vector3(0f, 0f, z);
             HordeSpawner horde = spawner.AddComponent<HordeSpawner>();
-            horde.Configure(player, count, columns, health, speed, damage);
+            horde.Configure(player, count, columns, health, speed, damage, data);
         }
 
         private void CreateGate(string label, float z, float hitPoints)
         {
-            GameObject root = new GameObject(label);
+            GameObject root = new GameObject(string.IsNullOrWhiteSpace(label) ? "Gate" : label);
             root.transform.position = new Vector3(0f, 1.55f, z);
             BoxCollider trigger = root.AddComponent<BoxCollider>();
             trigger.isTrigger = true;
@@ -184,7 +224,7 @@ namespace HORDAX.Prototype
 
         private void CreateUpgrade(string label, float z, float damage, float cadence, string displayText)
         {
-            GameObject root = new GameObject(label);
+            GameObject root = new GameObject(string.IsNullOrWhiteSpace(label) ? "Upgrade" : label);
             root.transform.position = new Vector3(0f, 0.9f, z);
             BoxCollider trigger = root.AddComponent<BoxCollider>();
             trigger.isTrigger = true;
@@ -209,7 +249,7 @@ namespace HORDAX.Prototype
             text.characterSize = 0.055f;
             text.fontStyle = FontStyle.Bold;
             text.color = Color.white;
-            text.text = displayText;
+            text.text = string.IsNullOrWhiteSpace(displayText) ? "+POWER" : displayText;
 
             UpgradePickup pickup = root.AddComponent<UpgradePickup>();
             pickup.Configure(damage, cadence);

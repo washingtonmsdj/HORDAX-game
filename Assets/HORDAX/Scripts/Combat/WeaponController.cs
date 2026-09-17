@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using HORDAX.Core;
+using HORDAX.Data;
 using HORDAX.Prototype;
 
 namespace HORDAX.Combat
@@ -8,6 +9,7 @@ namespace HORDAX.Combat
     public sealed class WeaponController : MonoBehaviour
     {
         [Header("Weapon")]
+        [SerializeField] private WeaponData weaponData;
         [SerializeField] private float damage = 5f;
         [SerializeField] private float fireRate = 12f;
         [SerializeField] private float range = 34f;
@@ -24,8 +26,22 @@ namespace HORDAX.Combat
         public float Damage => damage;
         public float FireRate => fireRate;
         public int UpgradeLevel => upgradeLevel;
+        public WeaponData Definition => weaponData;
 
         public void SetMuzzle(Transform value) => muzzle = value;
+
+        public void ApplyDefinition(WeaponData definition)
+        {
+            if (definition == null) return;
+
+            weaponData = definition;
+            damage = definition.Damage;
+            fireRate = definition.FireRate;
+            range = definition.Range;
+            bulletSpeed = definition.BulletSpeed;
+            if (definition.BulletPrefab != null) bulletPrefab = definition.BulletPrefab;
+            upgradeLevel = 1;
+        }
 
         public void ApplyUpgrade(float damageAdd, float fireRateMultiplier)
         {
@@ -36,6 +52,7 @@ namespace HORDAX.Combat
 
         private void Start()
         {
+            if (weaponData != null) ApplyDefinition(weaponData);
             BuildPrototypeMuzzleFlash();
         }
 
