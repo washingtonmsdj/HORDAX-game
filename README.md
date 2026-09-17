@@ -22,7 +22,8 @@ O projeto já possui:
 - save local de wallet, fases concluídas e upgrades permanentes;
 - CampaignDefinition para organizar várias fases;
 - campanha blockout com 5 fases gerada em runtime;
-- front-end blockout com seleção de fase e compra de upgrades;
+- front-end blockout com seleção de fase, upgrades permanentes e armory;
+- desbloqueio/equipamento persistente de Rifle, SMG, Shotgun e Minigun;
 - LevelDefinition com Horde, Elite, Boss, Gate, Upgrade, Weapon e Finish;
 - HUD de blockout;
 - validador de dados;

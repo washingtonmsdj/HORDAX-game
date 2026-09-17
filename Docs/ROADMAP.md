@@ -100,8 +100,13 @@ Implementado nesta branch:
 Pendente:
 
 - tela de resultados dedicada;
-- unlock de armas;
-- loja;
+- armory blockout com Rifle, SMG, Shotgun e Minigun;
+- compra/desbloqueio persistente de armas;
+- arma equipada persistente e aplicada no início da fase.
+
+Pendente:
+
+- loja visual final;
 - missões;
 - cloud save.
 

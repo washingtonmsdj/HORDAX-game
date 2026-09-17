@@ -22,12 +22,23 @@ namespace HORDAX.Core
             public int walletCoins;
             public List<string> completedLevelIds = new List<string>();
             public List<UpgradeEntry> upgrades = new List<UpgradeEntry>();
+            public List<string> unlockedWeaponIds = new List<string> { "rifle" };
+            public string equippedWeaponId = "rifle";
         }
 
         private SaveData data;
 
         public static ProgressionService Instance { get; private set; }
         public int WalletCoins => data != null ? data.walletCoins : 0;
+        public string EquippedWeaponId
+        {
+            get
+            {
+                EnsureData();
+                return string.IsNullOrWhiteSpace(data.equippedWeaponId) ? "rifle" : data.equippedWeaponId;
+            }
+        }
+
         public IReadOnlyList<string> CompletedLevelIds =>
             data != null && data.completedLevelIds != null
                 ? (IReadOnlyList<string>)data.completedLevelIds
@@ -81,6 +92,35 @@ namespace HORDAX.Core
                 data.completedLevelIds.Add(levelId);
 
             Save();
+        }
+
+        public bool IsWeaponUnlocked(string weaponId)
+        {
+            EnsureData();
+            return !string.IsNullOrWhiteSpace(weaponId) && data.unlockedWeaponIds.Contains(weaponId);
+        }
+
+        public bool TryUnlockWeapon(WeaponUnlockDefinition definition)
+        {
+            if (definition == null) return false;
+            EnsureData();
+
+            if (IsWeaponUnlocked(definition.WeaponId)) return true;
+            if (!TrySpendCoins(definition.UnlockCost)) return false;
+
+            data.unlockedWeaponIds.Add(definition.WeaponId);
+            Save();
+            return true;
+        }
+
+        public bool EquipWeapon(WeaponUnlockDefinition definition)
+        {
+            if (definition == null || !IsWeaponUnlocked(definition.WeaponId)) return false;
+
+            EnsureData();
+            data.equippedWeaponId = definition.WeaponId;
+            Save();
+            return true;
         }
 
         public int GetUpgradeLevel(string upgradeId)
@@ -190,6 +230,10 @@ namespace HORDAX.Core
             if (data == null) data = new SaveData();
             if (data.completedLevelIds == null) data.completedLevelIds = new List<string>();
             if (data.upgrades == null) data.upgrades = new List<UpgradeEntry>();
+            if (data.unlockedWeaponIds == null) data.unlockedWeaponIds = new List<string>();
+            if (!data.unlockedWeaponIds.Contains("rifle")) data.unlockedWeaponIds.Add("rifle");
+            if (string.IsNullOrWhiteSpace(data.equippedWeaponId) || !data.unlockedWeaponIds.Contains(data.equippedWeaponId))
+                data.equippedWeaponId = "rifle";
         }
     }
 }

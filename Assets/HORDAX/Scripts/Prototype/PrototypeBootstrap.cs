@@ -33,6 +33,7 @@ namespace HORDAX.Prototype
             BuildLighting();
             BuildRoad();
             BuildPlayer();
+            ApplyStartingLoadout();
             ApplyPermanentProgression();
             BuildEnemyPool();
             BuildCombatFxPool();
@@ -123,6 +124,16 @@ namespace HORDAX.Prototype
 
             PrototypeWeaponView weaponView = root.AddComponent<PrototypeWeaponView>();
             weaponView.Initialize(playerWeapon, weaponVisual.transform);
+        }
+
+        private void ApplyStartingLoadout()
+        {
+            if (playerWeapon == null) return;
+
+            ProgressionService progression = ProgressionService.GetOrCreate();
+            WeaponUnlockDefinition equipped = PrototypeArmoryCatalog.GetById(progression.EquippedWeaponId);
+            if (equipped != null)
+                playerWeapon.ApplyPrototype(equipped.PrototypeWeapon);
         }
 
         private void ApplyPermanentProgression()

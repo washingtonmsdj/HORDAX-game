@@ -22,6 +22,8 @@ namespace HORDAX.UI
         private readonly List<Text> levelLabels = new List<Text>();
         private readonly List<Button> upgradeButtons = new List<Button>();
         private readonly List<Text> upgradeLabels = new List<Text>();
+        private readonly List<Button> weaponButtons = new List<Button>();
+        private readonly List<Text> weaponLabels = new List<Text>();
 
         private void Start()
         {
@@ -95,8 +97,8 @@ namespace HORDAX.UI
                 levelLabels.Add(button.GetComponentInChildren<Text>());
             }
 
-            Text upgradesTitle = CreateText("Upgrades Title", transform, "PERMANENT UPGRADES", 40, TextAnchor.MiddleCenter);
-            Position(upgradesTitle.rectTransform, new Vector2(1400f, 840f), new Vector2(700f, 70f));
+            Text upgradesTitle = CreateText("Upgrades Title", transform, "PERMANENT UPGRADES", 38, TextAnchor.MiddleCenter);
+            Position(upgradesTitle.rectTransform, new Vector2(1400f, 875f), new Vector2(700f, 60f));
 
             IReadOnlyList<PermanentUpgradeDefinition> upgrades = PrototypeUpgradeCatalog.All;
             for (int i = 0; i < upgrades.Count; i++)
@@ -105,12 +107,30 @@ namespace HORDAX.UI
                 Button button = CreateButton(
                     "Upgrade " + definition.UpgradeId,
                     transform,
-                    new Vector2(1400f, 710f - i * 150f),
-                    new Vector2(700f, 112f),
+                    new Vector2(1400f, 790f - i * 115f),
+                    new Vector2(700f, 88f),
                     () => Purchase(definition));
 
                 upgradeButtons.Add(button);
                 upgradeLabels.Add(button.GetComponentInChildren<Text>());
+            }
+
+            Text armoryTitle = CreateText("Armory Title", transform, "ARMORY", 38, TextAnchor.MiddleCenter);
+            Position(armoryTitle.rectTransform, new Vector2(1400f, 430f), new Vector2(700f, 60f));
+
+            IReadOnlyList<WeaponUnlockDefinition> weapons = PrototypeArmoryCatalog.All;
+            for (int i = 0; i < weapons.Count; i++)
+            {
+                WeaponUnlockDefinition definition = weapons[i];
+                Button button = CreateButton(
+                    "Weapon " + definition.WeaponId,
+                    transform,
+                    new Vector2(1400f, 355f - i * 82f),
+                    new Vector2(700f, 64f),
+                    () => SelectWeapon(definition));
+
+                weaponButtons.Add(button);
+                weaponLabels.Add(button.GetComponentInChildren<Text>());
             }
 
             Text hint = CreateText(
@@ -157,6 +177,24 @@ namespace HORDAX.UI
                         ? $"{definition.DisplayName}   LV {level}/{definition.MaxLevel}   MAX"
                         : $"{definition.DisplayName}   LV {level}/{definition.MaxLevel}   COST {cost}";
             }
+
+            IReadOnlyList<WeaponUnlockDefinition> weapons = PrototypeArmoryCatalog.All;
+            for (int i = 0; i < weaponButtons.Count && i < weapons.Count; i++)
+            {
+                WeaponUnlockDefinition definition = weapons[i];
+                bool unlocked = progression.IsWeaponUnlocked(definition.WeaponId);
+                bool equipped = progression.EquippedWeaponId == definition.WeaponId;
+
+                weaponButtons[i].interactable =
+                    unlocked || definition.UnlockCost == 0 || progression.WalletCoins >= definition.UnlockCost;
+
+                weaponLabels[i].text =
+                    equipped
+                        ? $"{definition.DisplayName}   EQUIPPED"
+                        : unlocked
+                            ? $"{definition.DisplayName}   EQUIP"
+                            : $"{definition.DisplayName}   UNLOCK {definition.UnlockCost}";
+            }
         }
 
         private void PlayLevel(int index)
@@ -170,6 +208,17 @@ namespace HORDAX.UI
         private void Purchase(PermanentUpgradeDefinition definition)
         {
             progression.TryPurchaseUpgrade(definition);
+            Refresh();
+        }
+
+        private void SelectWeapon(WeaponUnlockDefinition definition)
+        {
+            if (!progression.IsWeaponUnlocked(definition.WeaponId))
+            {
+                if (!progression.TryUnlockWeapon(definition)) return;
+            }
+
+            progression.EquipWeapon(definition);
             Refresh();
         }
 
