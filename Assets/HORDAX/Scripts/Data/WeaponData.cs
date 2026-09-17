@@ -40,7 +40,7 @@ namespace HORDAX.Data
         public float SpreadDegrees => spreadDegrees;
         public float RecoilKick => recoilKick;
         public float ProjectileScale => projectileScale;
-        public IReadOnlyList<WeaponModifierData> Modifiers => modifiers;
+        public IReadOnlyList<WeaponModifierData> Modifiers => modifiers ?? (modifiers = new List<WeaponModifierData>());
         public GameObject VisualPrefab => visualPrefab;
         public GameObject BulletPrefab => bulletPrefab;
     }
