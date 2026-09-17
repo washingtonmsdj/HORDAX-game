@@ -1,7 +1,6 @@
 #if UNITY_EDITOR
 using System;
 using UnityEditor;
-using UnityEditor.Compilation;
 using UnityEngine;
 
 namespace HORDAX.EditorTools
@@ -24,9 +23,6 @@ namespace HORDAX.EditorTools
                     EditorApplication.Exit(2);
                     return;
                 }
-
-                Assembly[] assemblies = CompilationPipeline.GetAssemblies(AssembliesType.PlayerWithoutTestAssemblies);
-                Debug.Log(Prefix + " Player assemblies discovered: " + assemblies.Length);
 
                 AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
 
