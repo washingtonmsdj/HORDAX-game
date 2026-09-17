@@ -45,7 +45,7 @@ namespace HORDAX.UI
             statsText.text =
                 $"HP {Mathf.CeilToInt(health.CurrentHealth)}   {weapon.DisplayName} [{weapon.Rarity}] LV {weapon.UpgradeLevel}   " +
                 $"DMG {weapon.Damage:0.#}   ROF {weapon.FireRate:0.#}   x{weapon.ProjectilesPerShot}   " +
-                $"KILLS {GameManager.Instance.EnemyKills}   COINS {GameManager.Instance.RunCoins}   SCORE {GameManager.Instance.Score}";
+                $"KILLS {GameManager.Instance.EnemyKills}   BOSS {GameManager.Instance.BossKills}/{GameManager.Instance.RequiredBossKills}   " +\n                $"COINS {GameManager.Instance.RunCoins}   SCORE {GameManager.Instance.Score}";
 
             switch (state)
             {
