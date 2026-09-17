@@ -24,7 +24,9 @@ namespace HORDAX.Combat
         [SerializeField] private Transform muzzle;
         [SerializeField] private GameObject bulletPrefab;
 
-        private readonly Stack<Bullet> bulletPool = new Stack<Bullet>();
+        private readonly Stack<Bullet> prototypeBulletPool = new Stack<Bullet>();
+        private readonly Dictionary<GameObject, Stack<Bullet>> prefabBulletPools = new Dictionary<GameObject, Stack<Bullet>>();
+        private readonly Dictionary<Bullet, GameObject> sourcePrefabByBullet = new Dictionary<Bullet, GameObject>();
         private float shotTimer;
         private float flashTimer;
         private GameObject muzzleFlash;
@@ -207,7 +209,7 @@ namespace HORDAX.Combat
             {
                 muzzleFlash.SetActive(false);
                 float flashSize = Mathf.Lerp(0.18f, 0.42f, Mathf.Clamp01(recoilKick / 0.14f));
-                muzzleFlash.transform.localScale = Vector3.one * Random.Range(flashSize * 0.8f, flashSize * 1.15f);
+                muzzleFlash.transform.localScale = Vector3.one * UnityEngine.Random.Range(flashSize * 0.8f, flashSize * 1.15f);
                 muzzleFlash.SetActive(true);
                 flashTimer = 0.045f;
             }
@@ -228,12 +230,14 @@ namespace HORDAX.Combat
 
         private Bullet AcquireBullet()
         {
-            if (bulletPool.Count > 0) return bulletPool.Pop();
+            GameObject requestedPrefab = bulletPrefab;
+            Stack<Bullet> pool = GetBulletPool(requestedPrefab);
+            if (pool.Count > 0) return pool.Pop();
 
             GameObject instance;
-            if (bulletPrefab != null)
+            if (requestedPrefab != null)
             {
-                instance = Instantiate(bulletPrefab);
+                instance = Instantiate(requestedPrefab);
             }
             else
             {
@@ -248,14 +252,31 @@ namespace HORDAX.Combat
 
             Bullet bullet = instance.GetComponent<Bullet>();
             if (bullet == null) bullet = instance.AddComponent<Bullet>();
+            sourcePrefabByBullet[bullet] = requestedPrefab;
             return bullet;
+        }
+
+        private Stack<Bullet> GetBulletPool(GameObject prefab)
+        {
+            if (prefab == null) return prototypeBulletPool;
+
+            Stack<Bullet> pool;
+            if (!prefabBulletPools.TryGetValue(prefab, out pool))
+            {
+                pool = new Stack<Bullet>();
+                prefabBulletPools.Add(prefab, pool);
+            }
+            return pool;
         }
 
         private void RecycleBullet(Bullet bullet)
         {
             if (bullet == null) return;
+
+            GameObject sourcePrefab;
+            sourcePrefabByBullet.TryGetValue(bullet, out sourcePrefab);
             bullet.gameObject.SetActive(false);
-            bulletPool.Push(bullet);
+            GetBulletPool(sourcePrefab).Push(bullet);
         }
 
         private void BuildPrototypeMuzzleFlash()
