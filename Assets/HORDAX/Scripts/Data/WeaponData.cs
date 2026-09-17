@@ -7,19 +7,33 @@ namespace HORDAX.Data
     {
         [SerializeField] private string weaponId = "rifle_basic";
         [SerializeField] private string displayName = "Basic Rifle";
-        [SerializeField] private float damage = 5f;
-        [SerializeField] private float fireRate = 12f;
-        [SerializeField] private float range = 34f;
-        [SerializeField] private float bulletSpeed = 45f;
+        [SerializeField] private WeaponArchetype archetype = WeaponArchetype.Rifle;
+
+        [Header("Combat")]
+        [SerializeField, Min(0.1f)] private float damage = 5f;
+        [SerializeField, Min(0.1f)] private float fireRate = 12f;
+        [SerializeField, Min(1f)] private float range = 34f;
+        [SerializeField, Min(1f)] private float bulletSpeed = 45f;
+        [SerializeField, Min(1)] private int projectilesPerShot = 1;
+        [SerializeField, Min(0f)] private float spreadDegrees = 0.4f;
+        [SerializeField, Min(0f)] private float recoilKick = 0.05f;
+        [SerializeField, Min(0.1f)] private float projectileScale = 1f;
+
+        [Header("Presentation")]
         [SerializeField] private GameObject visualPrefab;
         [SerializeField] private GameObject bulletPrefab;
 
         public string WeaponId => weaponId;
         public string DisplayName => displayName;
+        public WeaponArchetype Archetype => archetype;
         public float Damage => damage;
         public float FireRate => fireRate;
         public float Range => range;
         public float BulletSpeed => bulletSpeed;
+        public int ProjectilesPerShot => projectilesPerShot;
+        public float SpreadDegrees => spreadDegrees;
+        public float RecoilKick => recoilKick;
+        public float ProjectileScale => projectileScale;
         public GameObject VisualPrefab => visualPrefab;
         public GameObject BulletPrefab => bulletPrefab;
     }
