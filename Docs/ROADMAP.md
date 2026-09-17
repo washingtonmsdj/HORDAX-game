@@ -59,7 +59,14 @@ Pendente:
 
 - editor visual de fase;
 - mais arquétipos;
-- eventos especiais de pista;
+- eventos de pista autoráveis: heal, reward e hazard;
+- objetivos opcionais por fase com bônus de moedas;
+- persistência do melhor número de objetivos concluídos.
+
+Pendente:
+
+- editor visual de fase;
+- mais arquétipos;
 - curvas formais de balanceamento.
 
 ## Fase 4 — Arte 3D
@@ -96,7 +103,7 @@ Pendente:
 
 - tela de resultados com arte final;
 - loja visual final;
-- missões;
+- missões globais/diárias além dos objetivos de fase;
 - cloud save.
 
 ## Fase 6 — Produção mobile

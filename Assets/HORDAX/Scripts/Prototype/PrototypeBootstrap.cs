@@ -48,7 +48,8 @@ namespace HORDAX.Prototype
                 levelDefinition != null ? levelDefinition.CompletionScore : 1000,
                 CountRequiredBossKills(),
                 levelDefinition != null ? levelDefinition.TwoStarScore : 1800,
-                levelDefinition != null ? levelDefinition.ThreeStarScore : 3000);
+                levelDefinition != null ? levelDefinition.ThreeStarScore : 3000,
+                levelDefinition != null ? levelDefinition.Objectives : null);
             GameManager.Instance.Begin();
         }
 
@@ -244,6 +245,18 @@ namespace HORDAX.Prototype
                             CreateWeaponPickup(step.label, step.z, step.weaponData, step.prototypeWeapon, step.weaponLabel);
                             break;
 
+                        case LevelStepType.Heal:
+                            CreateHealPickup(step.label, step.z, step.laneX, step.healAmount, step.eventLabel);
+                            break;
+
+                        case LevelStepType.Reward:
+                            CreateRewardPickup(step.label, step.z, step.laneX, step.eventCoins, step.eventScore, step.eventLabel);
+                            break;
+
+                        case LevelStepType.Hazard:
+                            CreateHazard(step.label, step.z, step.laneX, step.hazardDamage, step.eventWidth, step.eventLabel);
+                            break;
+
                         case LevelStepType.Finish:
                             CreateFinish(step.z);
                             hasFinish = true;
@@ -415,6 +428,68 @@ namespace HORDAX.Prototype
 
             WeaponPickup pickup = root.AddComponent<WeaponPickup>();
             pickup.Configure(data, fallback, visualRoot.transform);
+        }
+
+        private void CreateHealPickup(string label, float z, float x, float amount, string displayText)
+        {
+            GameObject root = new GameObject(string.IsNullOrWhiteSpace(label) ? "Heal Pickup" : label);
+            root.transform.position = new Vector3(Mathf.Clamp(x, -5.2f, 5.2f), 0.85f, z);
+
+            BoxCollider trigger = root.AddComponent<BoxCollider>();
+            trigger.isTrigger = true;
+            trigger.size = new Vector3(1.8f, 2.2f, 1.8f);
+
+            GameObject visual = CreatePrimitiveWithoutCollider(PrimitiveType.Sphere, "Heal Visual", root.transform);
+            visual.transform.localScale = Vector3.one * 0.72f;
+            visual.GetComponent<Renderer>().sharedMaterial = PrototypeMaterials.Heal;
+
+            CreateWorldLabel(root.transform, string.IsNullOrWhiteSpace(displayText) ? "HEAL" : displayText, new Vector3(0f, 1.35f, 0f), 48, 0.05f);
+
+            HealPickup pickup = root.AddComponent<HealPickup>();
+            pickup.Configure(amount);
+        }
+
+        private void CreateRewardPickup(string label, float z, float x, int coins, int score, string displayText)
+        {
+            GameObject root = new GameObject(string.IsNullOrWhiteSpace(label) ? "Reward Pickup" : label);
+            root.transform.position = new Vector3(Mathf.Clamp(x, -5.2f, 5.2f), 0.8f, z);
+
+            BoxCollider trigger = root.AddComponent<BoxCollider>();
+            trigger.isTrigger = true;
+            trigger.size = new Vector3(1.9f, 2.2f, 1.9f);
+
+            GameObject visual = CreateBlock("Reward Visual", root.transform.position, new Vector3(1.0f, 1.0f, 1.0f), PrototypeMaterials.Reward, root.transform, false);
+            visual.transform.localPosition = Vector3.zero;
+            visual.transform.localRotation = Quaternion.Euler(0f, 45f, 0f);
+
+            CreateWorldLabel(root.transform, string.IsNullOrWhiteSpace(displayText) ? $"+{coins} COINS" : displayText, new Vector3(0f, 1.35f, 0f), 48, 0.05f);
+
+            RewardPickup pickup = root.AddComponent<RewardPickup>();
+            pickup.Configure(coins, score);
+        }
+
+        private void CreateHazard(string label, float z, float x, float damage, float width, string displayText)
+        {
+            GameObject root = new GameObject(string.IsNullOrWhiteSpace(label) ? "Hazard" : label);
+            root.transform.position = new Vector3(Mathf.Clamp(x, -5.2f, 5.2f), 0.18f, z);
+
+            BoxCollider trigger = root.AddComponent<BoxCollider>();
+            trigger.isTrigger = true;
+            trigger.size = new Vector3(Mathf.Max(0.8f, width), 1.1f, 1.5f);
+
+            GameObject visual = CreateBlock(
+                "Hazard Visual",
+                root.transform.position,
+                new Vector3(Mathf.Max(0.8f, width), 0.35f, 1.5f),
+                PrototypeMaterials.Hazard,
+                root.transform,
+                false);
+            visual.transform.localPosition = Vector3.zero;
+
+            CreateWorldLabel(root.transform, string.IsNullOrWhiteSpace(displayText) ? "DANGER" : displayText, new Vector3(0f, 1.0f, 0f), 42, 0.048f);
+
+            HazardZone hazard = root.AddComponent<HazardZone>();
+            hazard.Configure(damage);
         }
 
         private void CreateFinish(float z)

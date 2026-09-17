@@ -25,6 +25,7 @@ namespace HORDAX.Core
             public int bestKills;
             public int bestCoins;
             public int bestStars;
+            public int bestObjectives;
         }
 
         [Serializable]
@@ -42,6 +43,7 @@ namespace HORDAX.Core
 
         public static ProgressionService Instance { get; private set; }
         public int WalletCoins => data != null ? data.walletCoins : 0;
+
         public string EquippedWeaponId
         {
             get
@@ -97,10 +99,16 @@ namespace HORDAX.Core
 
         public void CompleteLevel(string levelId, int earnedCoins)
         {
-            CompleteLevel(levelId, earnedCoins, 0, 0, 1);
+            CompleteLevel(levelId, earnedCoins, 0, 0, 1, 0);
         }
 
-        public void CompleteLevel(string levelId, int earnedCoins, int score, int kills, int stars)
+        public void CompleteLevel(
+            string levelId,
+            int earnedCoins,
+            int score,
+            int kills,
+            int stars,
+            int objectivesCompleted)
         {
             EnsureData();
             data.walletCoins = Mathf.Max(0, data.walletCoins + Mathf.Max(0, earnedCoins));
@@ -122,6 +130,7 @@ namespace HORDAX.Core
                 record.bestKills = Mathf.Max(record.bestKills, Mathf.Max(0, kills));
                 record.bestCoins = Mathf.Max(record.bestCoins, Mathf.Max(0, earnedCoins));
                 record.bestStars = Mathf.Max(record.bestStars, Mathf.Clamp(stars, 0, 3));
+                record.bestObjectives = Mathf.Max(record.bestObjectives, Mathf.Max(0, objectivesCompleted));
             }
 
             Save();
@@ -137,6 +146,12 @@ namespace HORDAX.Core
         {
             LevelRecord record = FindLevelRecord(levelId);
             return record != null ? record.bestStars : 0;
+        }
+
+        public int GetBestObjectives(string levelId)
+        {
+            LevelRecord record = FindLevelRecord(levelId);
+            return record != null ? record.bestObjectives : 0;
         }
 
         public int GetCompletionCount(string levelId)
@@ -299,6 +314,7 @@ namespace HORDAX.Core
             if (data.unlockedWeaponIds == null) data.unlockedWeaponIds = new List<string>();
             if (data.levelRecords == null) data.levelRecords = new List<LevelRecord>();
             if (!data.unlockedWeaponIds.Contains("rifle")) data.unlockedWeaponIds.Add("rifle");
+
             if (string.IsNullOrWhiteSpace(data.equippedWeaponId) || !data.unlockedWeaponIds.Contains(data.equippedWeaponId))
                 data.equippedWeaponId = "rifle";
         }

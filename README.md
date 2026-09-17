@@ -25,7 +25,9 @@ O projeto já possui:
 - front-end blockout com seleção de fase, upgrades permanentes e armory;
 - desbloqueio/equipamento persistente de Rifle, SMG, Shotgun e Minigun;
 - rating de 1 a 3 estrelas e recordes por fase;
-- LevelDefinition com Horde, Elite, Boss, Gate, Upgrade, Weapon e Finish;
+- objetivos opcionais com bônus e recorde por fase;
+- eventos de pista: cura, recompensa e perigo;
+- LevelDefinition com Horde, Elite, Boss, Gate, Upgrade, Weapon, Heal, Reward, Hazard e Finish;
 - HUD de blockout;
 - validador de dados;
 - fallback completo em blocos.

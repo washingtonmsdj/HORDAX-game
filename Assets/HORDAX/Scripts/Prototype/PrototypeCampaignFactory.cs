@@ -41,14 +41,18 @@ namespace HORDAX.Prototype
             int firstCount = 18 + tier * 6;
             int secondCount = 28 + tier * 10;
             int thirdCount = 38 + tier * 12;
+            int eliteCount = Mathf.Min(2 + tier, 6);
 
             List<LevelStep> steps = new List<LevelStep>
             {
                 Horde(28f, firstCount, 6 + tier, hp, speed, damage),
                 Gate(54f, 35f + tier * 25f),
                 Weapon(64f, tier == 1 ? WeaponArchetype.SMG : WeaponArchetype.Rifle),
+                Reward(76f, tier % 2 == 0 ? -2.6f : 2.6f, 15 + tier * 5, 80 + tier * 20),
                 Horde(92f, secondCount, 7 + tier, hp * 1.35f, speed + 0.15f, damage + 1f),
-                Elite(122f, Mathf.Min(2 + tier, 6), hp * 4f, speed + 0.3f, damage * 1.7f),
+                Hazard(108f, tier % 2 == 0 ? 2.4f : -2.4f, 14f + tier * 3f, 2.1f + tier * 0.12f),
+                Elite(122f, eliteCount, hp * 4f, speed + 0.3f, damage * 1.7f),
+                Heal(134f, tier % 2 == 0 ? -2.8f : 2.8f, 18f + tier * 4f),
                 Upgrade(142f, 2f + tier, 1.06f + tier * 0.01f),
                 Horde(length - 72f, thirdCount, 8 + tier, hp * 1.7f, speed + 0.28f, damage + 2f),
                 Weapon(length - 48f, tier >= 4 ? WeaponArchetype.Minigun : WeaponArchetype.Shotgun),
@@ -56,12 +60,58 @@ namespace HORDAX.Prototype
                 Finish(length)
             };
 
-            LevelDefinition level = ScriptableObject.CreateInstance<LevelDefinition>();
-            level.name = label;
             int twoStars = completionScore + 450 + tier * 180;
             int threeStars = completionScore + 1050 + tier * 320;
-            level.ConfigureRuntime(id, label, length, completionCoins, completionScore, steps, twoStars, threeStars);
+            int totalEnemies = firstCount + secondCount + thirdCount + eliteCount + 1;
+
+            List<LevelObjective> objectives = new List<LevelObjective>
+            {
+                Objective(
+                    "CLEAR THE HORDE",
+                    LevelObjectiveType.KillEnemies,
+                    Mathf.Max(20, Mathf.RoundToInt(totalEnemies * 0.58f)),
+                    20 + tier * 5),
+                Objective(
+                    "ELITE HUNTER",
+                    LevelObjectiveType.KillElites,
+                    Mathf.Max(1, eliteCount - 1),
+                    25 + tier * 6),
+                Objective(
+                    "STAY ALIVE",
+                    LevelObjectiveType.FinishWithHealthPercent,
+                    Mathf.Max(25f, 55f - tier * 4f),
+                    30 + tier * 8)
+            };
+
+            LevelDefinition level = ScriptableObject.CreateInstance<LevelDefinition>();
+            level.name = label;
+            level.ConfigureRuntime(
+                id,
+                label,
+                length,
+                completionCoins,
+                completionScore,
+                steps,
+                twoStars,
+                threeStars,
+                objectives);
+
             return level;
+        }
+
+        private static LevelObjective Objective(
+            string label,
+            LevelObjectiveType type,
+            float target,
+            int bonusCoins)
+        {
+            return new LevelObjective
+            {
+                label = label,
+                type = type,
+                target = target,
+                bonusCoins = bonusCoins
+            };
         }
 
         private static LevelStep Horde(float z, int count, int columns, float hp, float speed, float damage)
@@ -150,6 +200,47 @@ namespace HORDAX.Prototype
                 z = z,
                 prototypeWeapon = weapon,
                 weaponLabel = weapon.ToString().ToUpperInvariant()
+            };
+        }
+
+        private static LevelStep Heal(float z, float laneX, float amount)
+        {
+            return new LevelStep
+            {
+                type = LevelStepType.Heal,
+                label = "MEDKIT",
+                z = z,
+                laneX = laneX,
+                healAmount = amount,
+                eventLabel = "HEAL"
+            };
+        }
+
+        private static LevelStep Reward(float z, float laneX, int coins, int score)
+        {
+            return new LevelStep
+            {
+                type = LevelStepType.Reward,
+                label = "REWARD",
+                z = z,
+                laneX = laneX,
+                eventCoins = coins,
+                eventScore = score,
+                eventLabel = $"+{coins}"
+            };
+        }
+
+        private static LevelStep Hazard(float z, float laneX, float damage, float width)
+        {
+            return new LevelStep
+            {
+                type = LevelStepType.Hazard,
+                label = "HAZARD",
+                z = z,
+                laneX = laneX,
+                hazardDamage = damage,
+                eventWidth = width,
+                eventLabel = "DANGER"
             };
         }
 

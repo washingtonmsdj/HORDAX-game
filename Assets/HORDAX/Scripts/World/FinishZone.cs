@@ -7,11 +7,15 @@ namespace HORDAX.World
     public sealed class FinishZone : MonoBehaviour
     {
         private bool playerReached;
+        private PlayerHealth playerHealth;
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.GetComponent<RunnerController>() == null) return;
+            RunnerController runner = other.GetComponent<RunnerController>();
+            if (runner == null) return;
+
             playerReached = true;
+            playerHealth = runner.GetComponent<PlayerHealth>();
             TryFinish();
         }
 
@@ -26,7 +30,7 @@ namespace HORDAX.World
             if (GameManager.Instance == null || GameManager.Instance.State != GameState.Playing) return;
             if (!GameManager.Instance.CanFinish) return;
 
-            GameManager.Instance.Win();
+            GameManager.Instance.Win(playerHealth != null ? playerHealth.Normalized : 1f);
         }
     }
 }

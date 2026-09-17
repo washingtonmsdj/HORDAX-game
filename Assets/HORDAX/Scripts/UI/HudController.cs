@@ -62,7 +62,8 @@ namespace HORDAX.UI
                 case GameState.Won:
                     statusText.text =
                         $"HORDAX\nFASE CONCLUÍDA\nSTARS {GameManager.Instance.EarnedStars}/3   " +
-                        $"+{GameManager.Instance.RunCoins} COINS   SCORE {GameManager.Instance.Score}";
+                        $"+{GameManager.Instance.RunCoins} COINS   SCORE {GameManager.Instance.Score}\n" +
+                        GameManager.Instance.GetObjectiveResultSummary();
                     RefreshNextButton();
                     break;
 

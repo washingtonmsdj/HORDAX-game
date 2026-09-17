@@ -157,13 +157,15 @@ namespace HORDAX.UI
                 bool completed = level != null && progression.IsLevelCompleted(level.LevelId);
                 int bestStars = level != null ? progression.GetBestStars(level.LevelId) : 0;
                 int bestScore = level != null ? progression.GetBestScore(level.LevelId) : 0;
+                int bestObjectives = level != null ? progression.GetBestObjectives(level.LevelId) : 0;
+                int objectiveTotal = level != null ? level.Objectives.Count : 0;
 
                 levelButtons[i].interactable = unlocked;
                 levelLabels[i].text =
                     level == null
                         ? "INVALID LEVEL"
                         : $"{i + 1:00}  {level.DisplayName}   " +
-                          $"{(completed ? $"BEST {bestStars}/3  {bestScore}" : unlocked ? "PLAY" : "LOCKED")}";
+                          $"{(completed ? $"BEST {bestStars}/3  OBJ {bestObjectives}/{objectiveTotal}  {bestScore}" : unlocked ? "PLAY" : "LOCKED")}";
             }
 
             IReadOnlyList<PermanentUpgradeDefinition> upgrades = PrototypeUpgradeCatalog.All;

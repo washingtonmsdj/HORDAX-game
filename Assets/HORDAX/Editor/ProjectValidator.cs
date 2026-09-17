@@ -99,6 +99,25 @@ namespace HORDAX.EditorTools
                 if (level.ThreeStarScore < level.TwoStarScore)
                     errors.Add($"Level '{name}' three-star threshold is below the two-star threshold.");
 
+                for (int objectiveIndex = 0; objectiveIndex < level.Objectives.Count; objectiveIndex++)
+                {
+                    LevelObjective objective = level.Objectives[objectiveIndex];
+                    if (objective == null)
+                    {
+                        warnings.Add($"Level '{name}' contains a null objective at index {objectiveIndex}.");
+                        continue;
+                    }
+
+                    if (objective.target <= 0f)
+                        errors.Add($"Level '{name}' objective '{objective.label}' has target <= 0.");
+
+                    if (objective.bonusCoins < 0)
+                        errors.Add($"Level '{name}' objective '{objective.label}' has negative bonus coins.");
+
+                    if (objective.type == LevelObjectiveType.FinishWithHealthPercent && objective.target > 100f)
+                        warnings.Add($"Level '{name}' health objective '{objective.label}' is above 100%.");
+                }
+
                 for (int stepIndex = 0; stepIndex < level.Steps.Count; stepIndex++)
                 {
                     LevelStep step = level.Steps[stepIndex];
@@ -139,6 +158,20 @@ namespace HORDAX.EditorTools
 
                         case LevelStepType.Upgrade:
                             if (step.fireRateMultiplier <= 0f) errors.Add($"Level '{name}' upgrade '{step.label}' has invalid fire-rate multiplier.");
+                            break;
+
+                        case LevelStepType.Heal:
+                            if (step.healAmount <= 0f) errors.Add($"Level '{name}' heal '{step.label}' has amount <= 0.");
+                            break;
+
+                        case LevelStepType.Reward:
+                            if (step.eventCoins <= 0 && step.eventScore <= 0)
+                                warnings.Add($"Level '{name}' reward '{step.label}' grants neither coins nor score.");
+                            break;
+
+                        case LevelStepType.Hazard:
+                            if (step.hazardDamage <= 0f) errors.Add($"Level '{name}' hazard '{step.label}' has damage <= 0.");
+                            if (step.eventWidth <= 0f) errors.Add($"Level '{name}' hazard '{step.label}' has invalid width.");
                             break;
 
                         case LevelStepType.Finish:
