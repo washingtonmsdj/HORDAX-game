@@ -54,7 +54,14 @@ namespace HORDAX.UI
 
             gameObject.AddComponent<GraphicRaycaster>();
 
-            Image background = gameObject.AddComponent<Image>();
+            GameObject backgroundObject = new GameObject("Background", typeof(RectTransform), typeof(Image));
+            backgroundObject.transform.SetParent(transform, false);
+            RectTransform backgroundRect = backgroundObject.GetComponent<RectTransform>();
+            backgroundRect.anchorMin = Vector2.zero;
+            backgroundRect.anchorMax = Vector2.one;
+            backgroundRect.offsetMin = Vector2.zero;
+            backgroundRect.offsetMax = Vector2.zero;
+            Image background = backgroundObject.GetComponent<Image>();
             background.color = new Color(0.035f, 0.045f, 0.065f, 1f);
 
             Text title = CreateText("Title", transform, "HORDAX", 86, TextAnchor.UpperCenter);

@@ -36,10 +36,15 @@ Nenhum asset externo é obrigatório para o blockout.
 
 ## Como executar quando chegar a hora do playtest
 
+Fluxo completo:
 1. clone o repositório;
 2. abra no Unity Hub;
-3. use HORDAX > Open Prototype Scene;
-4. pressione Play.
+3. use HORDAX > Open Front End;
+4. escolha uma fase e pressione o botão correspondente.
+
+Para testar só o gameplay, use HORDAX > Open Prototype Scene.
+
+No resultado da fase existem botões de Restart, Menu e Next quando houver próxima fase desbloqueada.
 
 ## Desenvolvimento atual sem Unity
 

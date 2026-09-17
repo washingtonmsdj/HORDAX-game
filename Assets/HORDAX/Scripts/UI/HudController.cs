@@ -1,8 +1,10 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using HORDAX.Combat;
 using HORDAX.Core;
+using HORDAX.Data;
 using HORDAX.Player;
 
 namespace HORDAX.UI
@@ -16,6 +18,8 @@ namespace HORDAX.UI
         private Text statsText;
         private Image healthFill;
         private Image progressFill;
+        private GameObject resultControls;
+        private Button nextButton;
         private GameState lastState = GameState.Booting;
         private float restartAllowedAt;
 
@@ -49,18 +53,22 @@ namespace HORDAX.UI
                 $"KILLS {GameManager.Instance.EnemyKills}   BOSS {GameManager.Instance.BossKills}/{GameManager.Instance.RequiredBossKills}   " +
                 $"COINS {GameManager.Instance.RunCoins}   SCORE {GameManager.Instance.Score}";
 
+            bool ended = state == GameState.Won || state == GameState.Lost;
+            if (resultControls != null && resultControls.activeSelf != ended)
+                resultControls.SetActive(ended);
+
             switch (state)
             {
                 case GameState.Won:
                     statusText.text =
-                        $"HORDAX\nFASE CONCLUÍDA\n+{GameManager.Instance.RunCoins} COINS   SCORE {GameManager.Instance.Score}\n\n" +
-                        "R = REINICIAR   M = MENU";
+                        $"HORDAX\nFASE CONCLUÍDA\n+{GameManager.Instance.RunCoins} COINS   SCORE {GameManager.Instance.Score}";
+                    RefreshNextButton();
                     break;
 
                 case GameState.Lost:
                     statusText.text =
-                        $"HORDAX\nDERROTA\nKILLS {GameManager.Instance.EnemyKills}   SCORE {GameManager.Instance.Score}\n\n" +
-                        "R = REINICIAR   M = MENU";
+                        $"HORDAX\nDERROTA\nKILLS {GameManager.Instance.EnemyKills}   SCORE {GameManager.Instance.Score}";
+                    if (nextButton != null) nextButton.gameObject.SetActive(false);
                     break;
 
                 default:
@@ -68,24 +76,69 @@ namespace HORDAX.UI
                     break;
             }
 
-            if ((state == GameState.Won || state == GameState.Lost) && Time.unscaledTime >= restartAllowedAt)
+            if (ended && Time.unscaledTime >= restartAllowedAt)
             {
                 if (Input.GetKeyDown(KeyCode.R))
-                    GameManager.Instance.Restart();
+                    Restart();
 
                 if (Input.GetKeyDown(KeyCode.M))
-                    SceneManager.LoadScene("FrontEnd");
+                    BackToMenu();
+
+                if (state == GameState.Won && Input.GetKeyDown(KeyCode.N))
+                    NextLevel();
             }
+        }
+
+        private void Restart()
+        {
+            if (GameManager.Instance != null)
+                GameManager.Instance.Restart();
+        }
+
+        private void BackToMenu()
+        {
+            SceneManager.LoadScene("FrontEnd");
+        }
+
+        private void NextLevel()
+        {
+            CampaignDefinition campaign = GameSession.ActiveCampaign;
+            int nextIndex = GameSession.SelectedLevelIndex + 1;
+            if (campaign == null || nextIndex < 0 || nextIndex >= campaign.LevelCount) return;
+
+            ProgressionService progression = ProgressionService.GetOrCreate();
+            if (!progression.IsLevelUnlocked(campaign, nextIndex)) return;
+            if (!GameSession.SelectLevel(campaign, nextIndex)) return;
+
+            SceneManager.LoadScene("Prototype");
+        }
+
+        private void RefreshNextButton()
+        {
+            if (nextButton == null) return;
+
+            CampaignDefinition campaign = GameSession.ActiveCampaign;
+            int nextIndex = GameSession.SelectedLevelIndex + 1;
+            bool available =
+                campaign != null &&
+                nextIndex >= 0 &&
+                nextIndex < campaign.LevelCount &&
+                ProgressionService.GetOrCreate().IsLevelUnlocked(campaign, nextIndex);
+
+            nextButton.gameObject.SetActive(available);
         }
 
         private void BuildUi()
         {
             Canvas canvas = gameObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
             CanvasScaler scaler = gameObject.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920f, 1080f);
+
             gameObject.AddComponent<GraphicRaycaster>();
+            EnsureEventSystem();
 
             Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
 
@@ -101,11 +154,70 @@ namespace HORDAX.UI
             RectTransform statusRect = statusText.rectTransform;
             statusRect.anchorMin = Vector2.zero;
             statusRect.anchorMax = Vector2.one;
-            statusRect.offsetMin = Vector2.zero;
+            statusRect.offsetMin = new Vector2(0f, 140f);
             statusRect.offsetMax = Vector2.zero;
 
             healthFill = CreateBar("Health", new Vector2(40f, -95f), new Vector2(520f, 30f));
             progressFill = CreateBar("Progress", new Vector2(0f, 28f), new Vector2(760f, 18f), true);
+
+            resultControls = new GameObject("Result Controls", typeof(RectTransform));
+            resultControls.transform.SetParent(transform, false);
+            RectTransform resultRect = resultControls.GetComponent<RectTransform>();
+            resultRect.anchorMin = new Vector2(0.5f, 0.5f);
+            resultRect.anchorMax = new Vector2(0.5f, 0.5f);
+            resultRect.pivot = new Vector2(0.5f, 0.5f);
+            resultRect.anchoredPosition = new Vector2(0f, -150f);
+            resultRect.sizeDelta = new Vector2(1000f, 180f);
+
+            CreateButton("Restart", resultControls.transform, new Vector2(-300f, 0f), "RESTART", Restart);
+            CreateButton("Menu", resultControls.transform, Vector2.zero, "MENU", BackToMenu);
+            nextButton = CreateButton("Next", resultControls.transform, new Vector2(300f, 0f), "NEXT", NextLevel);
+
+            resultControls.SetActive(false);
+        }
+
+        private static void EnsureEventSystem()
+        {
+            if (FindObjectOfType<EventSystem>() != null) return;
+
+            GameObject eventSystem = new GameObject("EventSystem");
+            eventSystem.AddComponent<EventSystem>();
+            eventSystem.AddComponent<StandaloneInputModule>();
+        }
+
+        private Button CreateButton(
+            string objectName,
+            Transform parent,
+            Vector2 position,
+            string label,
+            UnityEngine.Events.UnityAction action)
+        {
+            GameObject go = new GameObject(objectName, typeof(RectTransform), typeof(Image), typeof(Button));
+            go.transform.SetParent(parent, false);
+
+            RectTransform rect = go.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = position;
+            rect.sizeDelta = new Vector2(250f, 90f);
+
+            Image image = go.GetComponent<Image>();
+            image.color = new Color(0.10f, 0.15f, 0.22f, 0.96f);
+
+            Button button = go.GetComponent<Button>();
+            button.targetGraphic = image;
+            button.onClick.AddListener(action);
+
+            Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            Text text = CreateText("Label", go.transform, font, 30, TextAnchor.MiddleCenter);
+            text.text = label;
+            text.rectTransform.anchorMin = Vector2.zero;
+            text.rectTransform.anchorMax = Vector2.one;
+            text.rectTransform.offsetMin = Vector2.zero;
+            text.rectTransform.offsetMax = Vector2.zero;
+
+            return button;
         }
 
         private Text CreateText(string objectName, Transform parent, Font font, int size, TextAnchor anchor)
@@ -141,6 +253,7 @@ namespace HORDAX.UI
                 bgRect.anchorMax = new Vector2(0f, 1f);
                 bgRect.pivot = new Vector2(0f, 1f);
             }
+
             bgRect.anchoredPosition = position;
             bgRect.sizeDelta = size;
 
