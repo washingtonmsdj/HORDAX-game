@@ -9,6 +9,7 @@ namespace HORDAX.Combat
         private float damage;
         private float speed;
         private float age;
+        private float impactScale;
         private Vector3 aimOffset;
         private Action<Bullet> recycle;
         private Vector3 baseScale;
@@ -29,7 +30,9 @@ namespace HORDAX.Combat
                 hasBaseScale = true;
             }
 
-            transform.localScale = baseScale * Mathf.Max(0.1f, scaleMultiplier);
+            float safeScale = Mathf.Max(0.1f, scaleMultiplier);
+            transform.localScale = baseScale * safeScale;
+            impactScale = 0.22f * safeScale;
             gameObject.SetActive(true);
         }
 
@@ -49,7 +52,7 @@ namespace HORDAX.Combat
 
             if (toTarget.sqrMagnitude <= step * step || toTarget.sqrMagnitude < 0.20f)
             {
-                CombatFxPool.Instance?.PlayImpact(targetPoint, 0.18f * transform.localScale.magnitude);
+                CombatFxPool.Instance?.PlayImpact(targetPoint, impactScale);
                 target.TakeDamage(damage);
                 Recycle();
                 return;
