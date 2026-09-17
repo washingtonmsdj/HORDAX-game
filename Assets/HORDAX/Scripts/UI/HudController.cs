@@ -42,7 +42,7 @@ namespace HORDAX.UI
             float finish = Mathf.Max(1f, GameManager.Instance.FinishZ);
             progressFill.fillAmount = Mathf.Clamp01(runner.transform.position.z / finish);
 
-            statsText.text = $"HP {Mathf.CeilToInt(health.CurrentHealth)}   WPN LV {weapon.UpgradeLevel}   DMG {weapon.Damage:0.#}   ROF {weapon.FireRate:0.#}   KILLS {GameManager.Instance.EnemyKills}";
+            statsText.text = $"HP {Mathf.CeilToInt(health.CurrentHealth)}   {weapon.DisplayName} LV {weapon.UpgradeLevel}   DMG {weapon.Damage:0.#}   ROF {weapon.FireRate:0.#}   x{weapon.ProjectilesPerShot}   KILLS {GameManager.Instance.EnemyKills}";
 
             switch (state)
             {
@@ -79,13 +79,13 @@ namespace HORDAX.UI
 
             Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
 
-            statsText = CreateText("Stats", transform, font, 34, TextAnchor.UpperLeft);
+            statsText = CreateText("Stats", transform, font, 32, TextAnchor.UpperLeft);
             RectTransform statsRect = statsText.rectTransform;
             statsRect.anchorMin = new Vector2(0f, 1f);
             statsRect.anchorMax = new Vector2(0f, 1f);
             statsRect.pivot = new Vector2(0f, 1f);
             statsRect.anchoredPosition = new Vector2(40f, -35f);
-            statsRect.sizeDelta = new Vector2(1500f, 60f);
+            statsRect.sizeDelta = new Vector2(1700f, 60f);
 
             statusText = CreateText("Status", transform, font, 62, TextAnchor.MiddleCenter);
             RectTransform statusRect = statusText.rectTransform;
