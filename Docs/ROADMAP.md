@@ -78,34 +78,23 @@ Pendente:
 
 Implementado:
 
-- moedas de corrida;
-- score;
-- recompensa por inimigo;
-- bônus por conclusão;
-- wallet persistente;
-- registro de fases concluídas;
-- ProgressionService;
-- CampaignDefinition.
-
-Implementado nesta branch:
-
 - front-end de blockout criado em runtime;
 - seleção sequencial de 5 fases de protótipo;
 - bloqueio/desbloqueio de fase;
 - upgrades permanentes de vida, dano e cadência;
 - custos progressivos de upgrade;
 - GameSession para transportar a fase escolhida;
-- gerador seguro da cena FrontEnd.
-
-Pendente:
-
-- tela de resultados dedicada;
+- gerador seguro da cena FrontEnd;
 - armory blockout com Rifle, SMG, Shotgun e Minigun;
 - compra/desbloqueio persistente de armas;
-- arma equipada persistente e aplicada no início da fase.
+- arma equipada persistente e aplicada no início da fase;
+- rating de 1 a 3 estrelas por score;
+- best score, best stars e contador de conclusões por fase;
+- resultado inline com restart/menu/next.
 
 Pendente:
 
+- tela de resultados com arte final;
 - loja visual final;
 - missões;
 - cloud save.

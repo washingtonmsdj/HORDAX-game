@@ -58,7 +58,9 @@ namespace HORDAX.Prototype
 
             LevelDefinition level = ScriptableObject.CreateInstance<LevelDefinition>();
             level.name = label;
-            level.ConfigureRuntime(id, label, length, completionCoins, completionScore, steps);
+            int twoStars = completionScore + 450 + tier * 180;
+            int threeStars = completionScore + 1050 + tier * 320;
+            level.ConfigureRuntime(id, label, length, completionCoins, completionScore, steps, twoStars, threeStars);
             return level;
         }
 

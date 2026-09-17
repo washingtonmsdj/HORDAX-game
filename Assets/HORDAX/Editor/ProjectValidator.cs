@@ -94,6 +94,10 @@ namespace HORDAX.EditorTools
 
                 if (level.CompletionCoins < 0 || level.CompletionScore < 0)
                     errors.Add($"Level '{name}' has negative completion rewards.");
+                if (level.TwoStarScore < level.CompletionScore)
+                    warnings.Add($"Level '{name}' two-star threshold is below completion score.");
+                if (level.ThreeStarScore < level.TwoStarScore)
+                    errors.Add($"Level '{name}' three-star threshold is below the two-star threshold.");
 
                 for (int stepIndex = 0; stepIndex < level.Steps.Count; stepIndex++)
                 {

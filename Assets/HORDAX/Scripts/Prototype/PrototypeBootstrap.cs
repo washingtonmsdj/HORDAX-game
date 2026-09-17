@@ -46,7 +46,9 @@ namespace HORDAX.Prototype
                 levelDefinition != null ? levelDefinition.LevelId : "prototype_level",
                 levelDefinition != null ? levelDefinition.CompletionCoins : 100,
                 levelDefinition != null ? levelDefinition.CompletionScore : 1000,
-                CountRequiredBossKills());
+                CountRequiredBossKills(),
+                levelDefinition != null ? levelDefinition.TwoStarScore : 1800,
+                levelDefinition != null ? levelDefinition.ThreeStarScore : 3000);
             GameManager.Instance.Begin();
         }
 

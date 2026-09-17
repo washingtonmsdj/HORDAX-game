@@ -24,6 +24,7 @@ O projeto já possui:
 - campanha blockout com 5 fases gerada em runtime;
 - front-end blockout com seleção de fase, upgrades permanentes e armory;
 - desbloqueio/equipamento persistente de Rifle, SMG, Shotgun e Minigun;
+- rating de 1 a 3 estrelas e recordes por fase;
 - LevelDefinition com Horde, Elite, Boss, Gate, Upgrade, Weapon e Finish;
 - HUD de blockout;
 - validador de dados;

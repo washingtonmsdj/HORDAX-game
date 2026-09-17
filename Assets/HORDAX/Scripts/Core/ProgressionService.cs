@@ -17,6 +17,17 @@ namespace HORDAX.Core
         }
 
         [Serializable]
+        private sealed class LevelRecord
+        {
+            public string levelId;
+            public int completions;
+            public int bestScore;
+            public int bestKills;
+            public int bestCoins;
+            public int bestStars;
+        }
+
+        [Serializable]
         private sealed class SaveData
         {
             public int walletCoins;
@@ -24,6 +35,7 @@ namespace HORDAX.Core
             public List<UpgradeEntry> upgrades = new List<UpgradeEntry>();
             public List<string> unlockedWeaponIds = new List<string> { "rifle" };
             public string equippedWeaponId = "rifle";
+            public List<LevelRecord> levelRecords = new List<LevelRecord>();
         }
 
         private SaveData data;
@@ -85,13 +97,52 @@ namespace HORDAX.Core
 
         public void CompleteLevel(string levelId, int earnedCoins)
         {
+            CompleteLevel(levelId, earnedCoins, 0, 0, 1);
+        }
+
+        public void CompleteLevel(string levelId, int earnedCoins, int score, int kills, int stars)
+        {
             EnsureData();
             data.walletCoins = Mathf.Max(0, data.walletCoins + Mathf.Max(0, earnedCoins));
 
             if (!string.IsNullOrWhiteSpace(levelId) && !data.completedLevelIds.Contains(levelId))
                 data.completedLevelIds.Add(levelId);
 
+            if (!string.IsNullOrWhiteSpace(levelId))
+            {
+                LevelRecord record = FindLevelRecord(levelId);
+                if (record == null)
+                {
+                    record = new LevelRecord { levelId = levelId };
+                    data.levelRecords.Add(record);
+                }
+
+                record.completions++;
+                record.bestScore = Mathf.Max(record.bestScore, Mathf.Max(0, score));
+                record.bestKills = Mathf.Max(record.bestKills, Mathf.Max(0, kills));
+                record.bestCoins = Mathf.Max(record.bestCoins, Mathf.Max(0, earnedCoins));
+                record.bestStars = Mathf.Max(record.bestStars, Mathf.Clamp(stars, 0, 3));
+            }
+
             Save();
+        }
+
+        public int GetBestScore(string levelId)
+        {
+            LevelRecord record = FindLevelRecord(levelId);
+            return record != null ? record.bestScore : 0;
+        }
+
+        public int GetBestStars(string levelId)
+        {
+            LevelRecord record = FindLevelRecord(levelId);
+            return record != null ? record.bestStars : 0;
+        }
+
+        public int GetCompletionCount(string levelId)
+        {
+            LevelRecord record = FindLevelRecord(levelId);
+            return record != null ? record.completions : 0;
         }
 
         public bool IsWeaponUnlocked(string weaponId)
@@ -190,6 +241,21 @@ namespace HORDAX.Core
             PlayerPrefs.Save();
         }
 
+        private LevelRecord FindLevelRecord(string levelId)
+        {
+            EnsureData();
+            if (string.IsNullOrWhiteSpace(levelId)) return null;
+
+            for (int i = 0; i < data.levelRecords.Count; i++)
+            {
+                LevelRecord record = data.levelRecords[i];
+                if (record != null && record.levelId == levelId)
+                    return record;
+            }
+
+            return null;
+        }
+
         private UpgradeEntry FindUpgrade(string id)
         {
             EnsureData();
@@ -231,6 +297,7 @@ namespace HORDAX.Core
             if (data.completedLevelIds == null) data.completedLevelIds = new List<string>();
             if (data.upgrades == null) data.upgrades = new List<UpgradeEntry>();
             if (data.unlockedWeaponIds == null) data.unlockedWeaponIds = new List<string>();
+            if (data.levelRecords == null) data.levelRecords = new List<LevelRecord>();
             if (!data.unlockedWeaponIds.Contains("rifle")) data.unlockedWeaponIds.Add("rifle");
             if (string.IsNullOrWhiteSpace(data.equippedWeaponId) || !data.unlockedWeaponIds.Contains(data.equippedWeaponId))
                 data.equippedWeaponId = "rifle";

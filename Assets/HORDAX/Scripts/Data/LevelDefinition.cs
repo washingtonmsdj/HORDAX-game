@@ -59,6 +59,10 @@ namespace HORDAX.Data
         [SerializeField, Min(0)] private int completionCoins = 75;
         [SerializeField, Min(0)] private int completionScore = 500;
 
+        [Header("Rating")]
+        [SerializeField, Min(0)] private int twoStarScore = 1400;
+        [SerializeField, Min(0)] private int threeStarScore = 2200;
+
         [Header("Sequence")]
         [SerializeField] private List<LevelStep> steps = new List<LevelStep>();
 
@@ -67,6 +71,8 @@ namespace HORDAX.Data
         public float Length => length;
         public int CompletionCoins => completionCoins;
         public int CompletionScore => completionScore;
+        public int TwoStarScore => twoStarScore;
+        public int ThreeStarScore => threeStarScore;
         public IReadOnlyList<LevelStep> Steps => steps;
 
         public void ConfigureRuntime(
@@ -75,13 +81,17 @@ namespace HORDAX.Data
             float levelLength,
             int coins,
             int score,
-            IEnumerable<LevelStep> sequence)
+            IEnumerable<LevelStep> sequence,
+            int scoreForTwoStars = 0,
+            int scoreForThreeStars = 0)
         {
             levelId = id;
             displayName = label;
             length = Mathf.Max(20f, levelLength);
             completionCoins = Mathf.Max(0, coins);
             completionScore = Mathf.Max(0, score);
+            twoStarScore = Mathf.Max(completionScore, scoreForTwoStars > 0 ? scoreForTwoStars : completionScore * 2);
+            threeStarScore = Mathf.Max(twoStarScore, scoreForThreeStars > 0 ? scoreForThreeStars : completionScore * 3);
             steps = sequence != null ? new List<LevelStep>(sequence) : new List<LevelStep>();
         }
     }
