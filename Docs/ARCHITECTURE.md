@@ -2,11 +2,11 @@
 
 ## Objetivo
 
-O projeto separa **regra**, **spawn**, **input**, **combate** e **visual placeholder** para permitir que o protótipo em blocos vire um jogo 3D completo sem reconstruir o gameplay.
+O projeto separa **regra**, **spawn**, **input**, **combate**, **dados** e **visual placeholder** para permitir que o protótipo em blocos vire um jogo 3D completo sem reconstruir o gameplay.
 
 ## Fluxo principal
 
-`PrototypeBootstrap` monta o blockout da fase e injeta as referências principais. Em uma produção maior, ele deve ser substituído por cenas/prefabs autorados e por dados de fase, mas os componentes abaixo podem permanecer.
+`PrototypeBootstrap` monta o blockout da fase e injeta referências principais. Ele existe para prototipagem rápida; em produção pode ser substituído por cenas/prefabs autorados e `LevelDefinition`, mantendo os componentes runtime.
 
 ### Core
 
@@ -18,54 +18,73 @@ O projeto separa **regra**, **spawn**, **input**, **combate** e **visual placeho
 - `RunnerController`: movimento automático no eixo Z e deslocamento lateral.
 - `PlayerHealth`: vida e derrota.
 
-O visual do player é filho do objeto que contém esses componentes. Assim, trocar a cápsula por personagem, Animator e rig não exige alterar o movimento.
+O visual do player é filho do objeto raiz de gameplay. Mesh, Animator e rig podem mudar sem alterar movimento ou combate.
+
+### Data
+
+- `WeaponArchetype`: arquétipos básicos de arma.
+- `WeaponData`: stats e prefabs de arma.
+- `EnemyData`: stats e prefab visual de inimigo.
+- `LevelDefinition`: sequência autorável de passos da fase.
+
+A camada de dados define **o que** existe; componentes runtime definem **como** se comporta.
 
 ### Combat
 
-- `ShootableTarget`: contrato base para qualquer coisa que possa receber tiro.
-- `WeaponController`: seleção automática de alvo, cadência, dano e pool de projéteis.
-- `Bullet`: projétil homing simples de protótipo.
+- `ShootableTarget`: contrato base para qualquer alvo que recebe tiro.
+- `WeaponController`: targeting, cadência, dano, spread, múltiplos projéteis, troca de arma e pools de projéteis separados por prefab.
+- `Bullet`: projétil homing de protótipo com offset de spread.
+- `CombatFxPool`: pool de efeitos placeholder de impacto/morte/quebra.
+- `CombatFx`: partícula simples reciclável.
 
-Inimigos e portais compartilham o mesmo contrato de alvo. Isso evita colocar regras especiais de portal dentro da arma.
+Inimigos e gates usam o mesmo contrato `ShootableTarget`, mantendo a arma desacoplada de regras específicas de mundo.
 
 ### Enemies
 
-- `EnemyAgent`: HP, perseguição e ataque.
-- `HordeSpawner`: gera ondas. Aceita prefab opcional; sem prefab cria cubos automaticamente.
+- `EnemyAgent`: HP, perseguição, ataque e steering com frequência reduzida quando distante.
+- `HordeSpawner`: ativa hordas em batches ao longo de alguns frames para reduzir pico de CPU.
+- `EnemyPool`: pools separados por prefab, além do pool de cubos do blockout.
 
-Para centenas/milhares de inimigos na versão final, o próximo passo é substituir a criação individual por pool, GPU instancing/ECS ou uma simulação híbrida de horda.
+A arquitetura atual já evita `Instantiate/Destroy` no ciclo normal das hordas. GPU instancing/ECS continua opcional para escalas maiores e deve ser decidido com profiling real em aparelho.
 
 ### World
 
-- `DamageGate`: bloco numerado destruível.
-- `UpgradePickup`: aplica melhoria à arma.
+- `DamageGate`: gate numerado destruível.
+- `UpgradePickup`: melhora a arma atual sem trocar o arquétipo.
+- `WeaponPickup`: troca a arma por `WeaponData` ou por preset de blockout.
 - `FinishZone`: conclui a fase.
 
 ### Camera
 
-- `RunnerCamera`: câmera de seguimento independente do player.
+- `RunnerCamera`: câmera de seguimento e shake independente do player.
 
 ### UI
 
-- `HudController`: HUD criado em runtime para o protótipo. Na arte final, pode ser substituído por Canvas autorado sem alterar o jogo.
+- `HudController`: HUD runtime de protótipo. Pode ser substituído por Canvas final sem alterar as regras.
 
 ### Prototype
 
-- `PrototypeBootstrap`: cria pista, waves, portais, upgrades, câmera e jogador.
+- `PrototypeBootstrap`: cria pista, hordas, gates, upgrades, armas, câmera, jogador e pools.
 - `PrototypeMaterials`: materiais temporários centralizados.
+- `PrototypeWeaponView`: representa visualmente o arquétipo atual e aplica recoil simples.
 
-Nada em `Prototype` deve virar dependência inevitável do conteúdo final. A única dependência temporária fora da pasta é o fallback visual do `WeaponController`/`HordeSpawner`, usado quando não há prefab configurado.
+Nada em `Prototype` deve virar dependência obrigatória da arte final. Dependências de `PrototypeMaterials` existentes em fallbacks runtime são deliberadamente temporárias e só entram quando não há prefab/material final configurado.
 
-## Pontos de extensão recomendados
+### Editor
 
-1. Transformar stats de armas/inimigos em `ScriptableObject`.
-2. Criar `LevelDefinition` para autorar ondas e gates sem editar código.
-3. Adicionar `EnemyPool` e separar simulação de horda do visual.
-4. Trocar input legado por Input System quando os controles finais estiverem definidos.
-5. Criar prefabs de jogador, arma, inimigo, gate, upgrade e VFX.
-6. Adicionar áudio através de um serviço/event bus, evitando chamadas diretas espalhadas.
-7. Adicionar testes de regras puras e smoke test da cena.
+- `PrototypeSceneGenerator`: cria/abre a cena de protótipo sem apagar outras cenas do Build Settings.
+- `ProjectValidator`: valida `WeaponData`, `EnemyData` e `LevelDefinition`, emitindo erros de configuração e alertas de orçamento mobile.
+
+## Próximos pontos de extensão
+
+1. Editor visual dedicado para `LevelDefinition`.
+2. Raridades/modificadores de armas sem duplicar ScriptableObjects.
+3. Inimigos elite e bosses sobre `ShootableTarget`/`EnemyAgent` ou componentes especializados.
+4. Quality tiers com orçamento de horda/FX por aparelho.
+5. Áudio por eventos/serviço em vez de chamadas espalhadas.
+6. Input System quando o esquema final de controles estiver definido.
+7. Smoke test automatizado da cena e testes de regras puras.
 
 ## Regra para a futura arte 3D
 
-Mantenha o objeto raiz como gameplay e coloque modelo/Animator/VFX em filhos. Não coloque lógica de dano, spawn ou progressão dentro de scripts de animação/modelo.
+Mantenha o objeto raiz como gameplay e coloque modelo, Animator, rig e VFX em filhos. Não coloque lógica de dano, spawn, progressão ou save dentro de scripts de visual/animação.
