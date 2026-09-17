@@ -8,6 +8,8 @@ namespace HORDAX.Prototype
         private static Material rail;
         private static Material player;
         private static Material enemy;
+        private static Material elite;
+        private static Material boss;
         private static Material gate;
         private static Material pickup;
         private static Material bullet;
@@ -17,6 +19,8 @@ namespace HORDAX.Prototype
         public static Material Rail => rail ?? (rail = Create("Rail", new Color(0.10f, 0.14f, 0.20f)));
         public static Material Player => player ?? (player = Create("Player", new Color(0.08f, 0.48f, 0.95f)));
         public static Material Enemy => enemy ?? (enemy = Create("Enemy", new Color(0.45f, 0.95f, 0.35f)));
+        public static Material Elite => elite ?? (elite = Create("Elite", new Color(1.00f, 0.48f, 0.12f)));
+        public static Material Boss => boss ?? (boss = Create("Boss", new Color(0.75f, 0.12f, 0.18f)));
         public static Material Gate => gate ?? (gate = Create("Gate", new Color(0.10f, 0.75f, 1.00f)));
         public static Material Pickup => pickup ?? (pickup = Create("Pickup", new Color(1.00f, 0.82f, 0.15f)));
         public static Material Bullet => bullet ?? (bullet = Create("Bullet", new Color(1.00f, 0.95f, 0.55f)));

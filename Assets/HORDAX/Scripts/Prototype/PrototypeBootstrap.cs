@@ -12,7 +12,7 @@ namespace HORDAX.Prototype
 {
     public sealed class PrototypeBootstrap : MonoBehaviour
     {
-        private const float DefaultFinishZ = 235f;
+        private const float DefaultFinishZ = 300f;
         [SerializeField] private LevelDefinition levelDefinition;
 
         private RunnerController player;
@@ -24,6 +24,7 @@ namespace HORDAX.Prototype
 
             finishZ = levelDefinition != null ? Mathf.Max(20f, levelDefinition.Length) : DefaultFinishZ;
             Application.targetFrameRate = 60;
+
             BuildGameManager();
             BuildLighting();
             BuildRoad();
@@ -35,6 +36,10 @@ namespace HORDAX.Prototype
             BuildLevel();
 
             GameManager.Instance.FinishZ = finishZ;
+            GameManager.Instance.ConfigureLevel(
+                levelDefinition != null ? levelDefinition.LevelId : "prototype_level",
+                levelDefinition != null ? levelDefinition.CompletionCoins : 100,
+                levelDefinition != null ? levelDefinition.CompletionScore : 1000);
             GameManager.Instance.Begin();
         }
 
@@ -134,7 +139,7 @@ namespace HORDAX.Prototype
             Camera camera = cameraObject.AddComponent<Camera>();
             camera.fieldOfView = 58f;
             camera.nearClipPlane = 0.15f;
-            camera.farClipPlane = 350f;
+            camera.farClipPlane = 420f;
             RunnerCamera follow = cameraObject.AddComponent<RunnerCamera>();
             follow.SetTarget(player.transform);
         }
@@ -159,17 +164,48 @@ namespace HORDAX.Prototype
                     switch (step.type)
                     {
                         case LevelStepType.Horde:
-                            CreateHorde(step.label, step.z, step.enemyCount, step.columns, step.enemyHealth, step.enemySpeed, step.enemyDamage, step.enemyData);
+                            CreateHorde(
+                                step.label, step.z, step.enemyCount, step.columns,
+                                step.enemyHealth, step.enemySpeed, step.enemyDamage,
+                                step.enemyData, step.enemyRank, step.coinReward, step.scoreReward, step.scaleMultiplier);
                             break;
+
+                        case LevelStepType.Elite:
+                            CreateHorde(
+                                step.label, step.z, Mathf.Clamp(step.enemyCount, 1, 8), Mathf.Clamp(step.columns, 1, 4),
+                                step.enemyData != null ? step.enemyHealth : Mathf.Max(step.enemyHealth, 22f),
+                                step.enemySpeed,
+                                step.enemyData != null ? step.enemyDamage : Mathf.Max(step.enemyDamage, 12f),
+                                step.enemyData, EnemyRank.Elite,
+                                Mathf.Max(step.coinReward, 8),
+                                Mathf.Max(step.scoreReward, 80),
+                                Mathf.Max(step.scaleMultiplier, 1.35f));
+                            break;
+
+                        case LevelStepType.Boss:
+                            CreateHorde(
+                                step.label, step.z, 1, 1,
+                                step.enemyData != null ? step.enemyHealth : Mathf.Max(step.enemyHealth, 350f),
+                                step.enemyData != null ? step.enemySpeed : Mathf.Max(2.2f, step.enemySpeed),
+                                step.enemyData != null ? step.enemyDamage : Mathf.Max(step.enemyDamage, 22f),
+                                step.enemyData, EnemyRank.Boss,
+                                Mathf.Max(step.coinReward, 100),
+                                Mathf.Max(step.scoreReward, 1200),
+                                Mathf.Max(step.scaleMultiplier, 2.25f));
+                            break;
+
                         case LevelStepType.Gate:
                             CreateGate(step.label, step.z, step.gateHitPoints);
                             break;
+
                         case LevelStepType.Upgrade:
                             CreateUpgrade(step.label, step.z, step.damageAdd, step.fireRateMultiplier, step.upgradeLabel);
                             break;
+
                         case LevelStepType.Weapon:
                             CreateWeaponPickup(step.label, step.z, step.weaponData, step.prototypeWeapon, step.weaponLabel);
                             break;
+
                         case LevelStepType.Finish:
                             CreateFinish(step.z);
                             hasFinish = true;
@@ -191,23 +227,39 @@ namespace HORDAX.Prototype
             CreateWeaponPickup("SMG Pickup", 62f, null, WeaponArchetype.SMG, "SMG");
 
             CreateHorde("Wave 02", 88f, 48, 8, 8f, 3.45f, 8f);
-            CreateGate("Gate 120", 115f, 120f);
-            CreateUpgrade("Upgrade 01", 122f, 3f, 1.12f, "+POWER");
+            CreateHorde("Elite Squad", 116f, 4, 4, 26f, 3.8f, 12f, null, EnemyRank.Elite, 8, 90, 1.35f);
+            CreateGate("Gate 120", 134f, 120f);
+            CreateUpgrade("Upgrade 01", 141f, 3f, 1.12f, "+POWER");
 
-            CreateHorde("Wave 03", 148f, 72, 9, 11f, 3.8f, 9f);
-            CreateGate("Gate 230", 178f, 230f);
-            CreateWeaponPickup("Shotgun Pickup", 185f, null, WeaponArchetype.Shotgun, "SHOTGUN");
+            CreateHorde("Wave 03", 166f, 72, 9, 11f, 3.8f, 9f);
+            CreateGate("Gate 230", 196f, 230f);
+            CreateWeaponPickup("Shotgun Pickup", 203f, null, WeaponArchetype.Shotgun, "SHOTGUN");
 
-            CreateHorde("Wave 04", 207f, 90, 10, 14f, 4.0f, 10f);
+            CreateHorde("Wave 04", 228f, 96, 10, 14f, 4.0f, 10f);
+            CreateWeaponPickup("Minigun Pickup", 252f, null, WeaponArchetype.Minigun, "MINIGUN");
+            CreateHorde("BLOCK BOSS", 276f, 1, 1, 450f, 2.6f, 25f, null, EnemyRank.Boss, 125, 1500, 2.5f);
+
             CreateFinish(finishZ);
         }
 
-        private void CreateHorde(string label, float z, int count, int columns, float health, float speed, float damage, EnemyData data = null)
+        private void CreateHorde(
+            string label,
+            float z,
+            int count,
+            int columns,
+            float health,
+            float speed,
+            float damage,
+            EnemyData data = null,
+            EnemyRank rank = EnemyRank.Grunt,
+            int coinReward = 1,
+            int scoreReward = 10,
+            float scaleMultiplier = 1f)
         {
             GameObject spawner = new GameObject(string.IsNullOrWhiteSpace(label) ? "Horde" : label);
             spawner.transform.position = new Vector3(0f, 0f, z);
             HordeSpawner horde = spawner.AddComponent<HordeSpawner>();
-            horde.Configure(player, count, columns, health, speed, damage, data);
+            horde.Configure(player, count, columns, health, speed, damage, data, rank, coinReward, scoreReward, scaleMultiplier);
         }
 
         private void CreateGate(string label, float z, float hitPoints)
@@ -293,6 +345,10 @@ namespace HORDAX.Prototype
             string shownName = !string.IsNullOrWhiteSpace(displayText)
                 ? displayText
                 : data != null && !string.IsNullOrWhiteSpace(data.DisplayName) ? data.DisplayName : fallback.ToString();
+
+            if (data != null && data.Rarity != WeaponRarity.Common)
+                shownName = $"{shownName} [{data.Rarity}]";
+
             CreateWorldLabel(root.transform, shownName, new Vector3(0f, 1.55f, 0f), 60, 0.052f);
 
             WeaponPickup pickup = root.AddComponent<WeaponPickup>();
@@ -338,13 +394,16 @@ namespace HORDAX.Prototype
             if (parent != null) go.transform.SetParent(parent, true);
             go.transform.position = position;
             go.transform.localScale = scale;
+
             Renderer renderer = go.GetComponent<Renderer>();
             if (renderer != null) renderer.sharedMaterial = material;
+
             if (!keepCollider)
             {
                 Collider collider = go.GetComponent<Collider>();
                 if (collider != null) Destroy(collider);
             }
+
             return go;
         }
 

@@ -1,81 +1,107 @@
 # HORDAX — Authoring de conteúdo
 
-O blockout continua funcionando sem nenhum asset de dados. A camada `Assets/HORDAX/Scripts/Data` permite crescer o projeto sem transformar o bootstrap em uma lista rígida de números e sem acoplar gameplay à arte 3D.
+O blockout continua funcionando sem assets externos. A camada de dados existe para manter gameplay, balanceamento e arte 3D separados.
 
 ## LevelDefinition
 
-Crie pelo menu do Project window:
+Crie com:
 
-`Create > HORDAX > Level Definition`
+Create > HORDAX > Level Definition
 
-Um `LevelDefinition` contém id/nome da fase, comprimento da pista e uma lista ordenada de passos. Os passos disponíveis são `Horde`, `Gate`, `Upgrade`, `Weapon` e `Finish`.
+A fase define id, nome, comprimento, recompensa de conclusão e uma sequência de passos.
 
-Para usar uma definição, selecione o objeto `HORDAX Prototype Bootstrap` na cena e arraste o asset para o campo `Level Definition`. Se nenhum asset estiver atribuído, o jogo usa o nível blockout padrão criado por código.
+Tipos atuais:
 
-### Horde
+- Horde: onda comum;
+- Elite: pequeno grupo mais forte;
+- Boss: encontro de chefe;
+- Gate: bloco numerado destrutível;
+- Upgrade: melhora a arma atual;
+- Weapon: troca a arma;
+- Finish: conclui a fase.
 
-Cada passo de horda pode definir contagem, colunas, vida, velocidade e dano diretamente. Opcionalmente pode receber um `EnemyData`.
-
-O `EnemyPool` agora mantém filas separadas por prefab. Isso significa que diferentes arquétipos visuais podem coexistir sem um inimigo reciclado voltar usando o mesh de outro arquétipo.
-
-### Gate
-
-Define a posição e o HP do bloco numerado. O gate recebe feedback visual, camera shake e efeito placeholder quando quebra.
-
-### Upgrade
-
-Aplica bônus incremental à arma atual: dano adicional e multiplicador de cadência. Esse passo não troca o arquétipo da arma.
-
-### Weapon
-
-Troca a arma do jogador. Há duas formas de configurar:
-
-1. atribuir um `WeaponData` completo; ou
-2. deixar o asset vazio e escolher um `Prototype Weapon` (`Rifle`, `SMG`, `Shotgun` ou `Minigun`).
-
-A segunda opção é útil para continuar desenvolvendo o loop sem depender de assets finais.
+Cada encontro pode usar números diretamente ou um EnemyData. Quando EnemyData existe, vida, velocidade, dano, rank, recompensa, escala e prefab vêm dele.
 
 ## EnemyData
 
 Crie com:
 
-`Create > HORDAX > Enemy Data`
+Create > HORDAX > Enemy Data
 
-O asset guarda vida, velocidade, dano de contato e um `Visual Prefab` opcional. Assim, cubos podem ser substituídos por personagens finais mantendo `EnemyAgent`, pooling, targeting e combate.
+Campos principais:
+
+- EnemyRank: Grunt, Elite ou Boss;
+- vida, velocidade e dano;
+- escala visual;
+- recompensa em moedas;
+- recompensa em score;
+- prefab visual opcional.
+
+Sem prefab o protótipo usa blocos. Grunts, elites e bosses recebem materiais provisórios diferentes para leitura imediata.
 
 ## WeaponData
 
 Crie com:
 
-`Create > HORDAX > Weapon Data`
+Create > HORDAX > Weapon Data
 
-O asset guarda:
+Além dos stats básicos, cada arma agora possui WeaponRarity:
 
-- id e nome de exibição;
-- arquétipo;
-- dano;
+Common, Uncommon, Rare, Epic e Legendary.
+
+A raridade aplica um multiplicador provisório de dano no runtime. Esses números ainda são de blockout e precisam de playtest.
+
+WeaponData também aceita uma lista de WeaponModifierData.
+
+## WeaponModifierData
+
+Crie com:
+
+Create > HORDAX > Weapon Modifier
+
+Um modificador pode alterar:
+
+- dano aditivo;
+- multiplicador de dano;
 - cadência;
 - alcance;
-- velocidade do projétil;
-- projéteis por disparo;
-- spread;
-- recoil visual;
-- escala do projétil;
-- prefab visual opcional;
-- prefab de projétil opcional.
+- quantidade de projéteis;
+- spread.
 
-`WeaponController.ApplyDefinition()` aplica o asset completo em runtime. `ApplyPrototype()` fornece presets de blockout para Rifle, SMG, Shotgun e Minigun.
+Isso permite criar variações como "Rapid", "Heavy", "Wide Shot" e outras sem duplicar WeaponController.
+
+## CampaignDefinition
+
+Crie com:
+
+Create > HORDAX > Campaign Definition
+
+CampaignDefinition guarda uma lista ordenada de LevelDefinition. Nesta etapa ele é a base de dados para seleção de fases e progressão futura; a tela de seleção ainda não foi criada.
+
+## Recompensas e save
+
+GameManager contabiliza durante a corrida:
+
+- kills;
+- elite kills;
+- boss kills;
+- moedas;
+- score.
+
+Ao vencer, a recompensa de conclusão da fase é somada e ProgressionService grava as moedas e o id da fase concluída em PlayerPrefs usando JSON.
+
+Esse save é propositalmente simples. Cloud save, migração de versão e anti-cheat ficam para a etapa de produção.
 
 ## Validação
 
 Use:
 
-`HORDAX > Validate Project Data`
+HORDAX > Validate Project Data
 
-O validador procura configurações impossíveis e também alerta sobre números que provavelmente precisam de profiling mobile, como hordas muito grandes e armas emitindo projéteis demais por segundo.
+O validador verifica armas, modificadores, inimigos, fases e campanhas, além de emitir alertas para números que merecem profiling em mobile.
 
 ## Regra de arquitetura
 
-Dados definem **o que** aparece e com quais números. Componentes runtime definem **como** aquilo se comporta. Prefabs/modelos definem **como** aquilo parece.
+Dados definem o conteúdo. Componentes runtime definem comportamento. Prefabs/modelos definem aparência.
 
-Essa separação é intencional: a arte 3D pode ser refeita sem reescrever corrida, combate, progressão ou lógica de horda.
+A meta continua sendo poder substituir todo o 3D sem reescrever corrida, combate, horda, recompensas ou progressão.

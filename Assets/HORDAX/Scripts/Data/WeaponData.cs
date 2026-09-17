@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace HORDAX.Data
@@ -8,6 +9,7 @@ namespace HORDAX.Data
         [SerializeField] private string weaponId = "rifle_basic";
         [SerializeField] private string displayName = "Basic Rifle";
         [SerializeField] private WeaponArchetype archetype = WeaponArchetype.Rifle;
+        [SerializeField] private WeaponRarity rarity = WeaponRarity.Common;
 
         [Header("Combat")]
         [SerializeField, Min(0.1f)] private float damage = 5f;
@@ -19,6 +21,9 @@ namespace HORDAX.Data
         [SerializeField, Min(0f)] private float recoilKick = 0.05f;
         [SerializeField, Min(0.1f)] private float projectileScale = 1f;
 
+        [Header("Modifiers")]
+        [SerializeField] private List<WeaponModifierData> modifiers = new List<WeaponModifierData>();
+
         [Header("Presentation")]
         [SerializeField] private GameObject visualPrefab;
         [SerializeField] private GameObject bulletPrefab;
@@ -26,6 +31,7 @@ namespace HORDAX.Data
         public string WeaponId => weaponId;
         public string DisplayName => displayName;
         public WeaponArchetype Archetype => archetype;
+        public WeaponRarity Rarity => rarity;
         public float Damage => damage;
         public float FireRate => fireRate;
         public float Range => range;
@@ -34,6 +40,7 @@ namespace HORDAX.Data
         public float SpreadDegrees => spreadDegrees;
         public float RecoilKick => recoilKick;
         public float ProjectileScale => projectileScale;
+        public IReadOnlyList<WeaponModifierData> Modifiers => modifiers;
         public GameObject VisualPrefab => visualPrefab;
         public GameObject BulletPrefab => bulletPrefab;
     }

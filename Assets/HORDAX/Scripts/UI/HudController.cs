@@ -42,15 +42,22 @@ namespace HORDAX.UI
             float finish = Mathf.Max(1f, GameManager.Instance.FinishZ);
             progressFill.fillAmount = Mathf.Clamp01(runner.transform.position.z / finish);
 
-            statsText.text = $"HP {Mathf.CeilToInt(health.CurrentHealth)}   {weapon.DisplayName} LV {weapon.UpgradeLevel}   DMG {weapon.Damage:0.#}   ROF {weapon.FireRate:0.#}   x{weapon.ProjectilesPerShot}   KILLS {GameManager.Instance.EnemyKills}";
+            statsText.text =
+                $"HP {Mathf.CeilToInt(health.CurrentHealth)}   {weapon.DisplayName} [{weapon.Rarity}] LV {weapon.UpgradeLevel}   " +
+                $"DMG {weapon.Damage:0.#}   ROF {weapon.FireRate:0.#}   x{weapon.ProjectilesPerShot}   " +
+                $"KILLS {GameManager.Instance.EnemyKills}   COINS {GameManager.Instance.RunCoins}   SCORE {GameManager.Instance.Score}";
 
             switch (state)
             {
                 case GameState.Won:
-                    statusText.text = "HORDAX\nFASE CONCLUÍDA\n\nTOQUE / CLIQUE / R PARA REINICIAR";
+                    statusText.text =
+                        $"HORDAX\nFASE CONCLUÍDA\n+{GameManager.Instance.RunCoins} COINS   SCORE {GameManager.Instance.Score}\n\n" +
+                        "TOQUE / CLIQUE / R PARA REINICIAR";
                     break;
                 case GameState.Lost:
-                    statusText.text = "HORDAX\nDERROTA\n\nTOQUE / CLIQUE / R PARA REINICIAR";
+                    statusText.text =
+                        $"HORDAX\nDERROTA\nKILLS {GameManager.Instance.EnemyKills}   SCORE {GameManager.Instance.Score}\n\n" +
+                        "TOQUE / CLIQUE / R PARA REINICIAR";
                     break;
                 default:
                     statusText.text = string.Empty;
@@ -79,13 +86,13 @@ namespace HORDAX.UI
 
             Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
 
-            statsText = CreateText("Stats", transform, font, 32, TextAnchor.UpperLeft);
+            statsText = CreateText("Stats", transform, font, 29, TextAnchor.UpperLeft);
             RectTransform statsRect = statsText.rectTransform;
             statsRect.anchorMin = new Vector2(0f, 1f);
             statsRect.anchorMax = new Vector2(0f, 1f);
             statsRect.pivot = new Vector2(0f, 1f);
             statsRect.anchoredPosition = new Vector2(40f, -35f);
-            statsRect.sizeDelta = new Vector2(1700f, 60f);
+            statsRect.sizeDelta = new Vector2(1840f, 60f);
 
             statusText = CreateText("Status", transform, font, 62, TextAnchor.MiddleCenter);
             RectTransform statusRect = statusText.rectTransform;

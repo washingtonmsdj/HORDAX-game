@@ -1,6 +1,8 @@
 using UnityEngine;
+using HORDAX.CameraSystem;
 using HORDAX.Combat;
 using HORDAX.Core;
+using HORDAX.Data;
 using HORDAX.Player;
 
 namespace HORDAX.Enemies
@@ -23,6 +25,9 @@ namespace HORDAX.Enemies
         private RunnerController player;
         private PlayerHealth playerHealth;
         private EnemyPool ownerPool;
+        private EnemyRank rank = EnemyRank.Grunt;
+        private int coinReward = 1;
+        private int scoreReward = 10;
         private float health;
         private float attackTimer;
         private Vector3 baseScale;
@@ -31,13 +36,25 @@ namespace HORDAX.Enemies
         private float cachedDistance = float.MaxValue;
         private Vector3 cachedDirection;
 
-        public override Vector3 TargetPoint => transform.position + Vector3.up * 0.55f;
+        public EnemyRank Rank => rank;
+        public override Vector3 TargetPoint => transform.position + Vector3.up * Mathf.Max(0.55f, transform.localScale.y * 0.45f);
 
-        public void Initialize(RunnerController runner, float healthValue, float speedValue, float damageValue, EnemyPool pool)
+        public void Initialize(
+            RunnerController runner,
+            float healthValue,
+            float speedValue,
+            float damageValue,
+            EnemyPool pool,
+            EnemyRank enemyRank = EnemyRank.Grunt,
+            int coins = 1,
+            int score = 10)
         {
             player = runner;
             playerHealth = runner != null ? runner.GetComponent<PlayerHealth>() : null;
             ownerPool = pool;
+            rank = enemyRank;
+            coinReward = Mathf.Max(0, coins);
+            scoreReward = Mathf.Max(0, score);
             maxHealth = Mathf.Max(1f, healthValue);
             moveSpeed = Mathf.Max(0f, speedValue);
             contactDamage = Mathf.Max(0f, damageValue);
@@ -124,8 +141,18 @@ namespace HORDAX.Enemies
             punch = hitPunch;
             if (health > 0f) return;
 
-            if (GameManager.Instance != null) GameManager.Instance.RegisterEnemyKill();
-            CombatFxPool.Instance?.PlayDeath(transform.position + Vector3.up * 0.55f, Mathf.Max(0.45f, baseScale.magnitude * 0.38f));
+            GameManager.Instance?.RegisterEnemyKill(rank, coinReward, scoreReward);
+
+            float rankScale = rank == EnemyRank.Boss ? 2f : rank == EnemyRank.Elite ? 1.35f : 1f;
+            CombatFxPool.Instance?.PlayDeath(
+                transform.position + Vector3.up * Mathf.Max(0.55f, baseScale.y * 0.45f),
+                Mathf.Max(0.45f, baseScale.magnitude * 0.38f) * rankScale);
+
+            if (rank == EnemyRank.Boss)
+                RunnerCamera.Instance?.Shake(0.32f, 0.28f);
+            else if (rank == EnemyRank.Elite)
+                RunnerCamera.Instance?.Shake(0.12f, 0.10f);
+
             Die();
         }
 

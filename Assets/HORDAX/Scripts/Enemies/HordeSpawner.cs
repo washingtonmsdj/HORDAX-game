@@ -13,6 +13,10 @@ namespace HORDAX.Enemies
         [SerializeField] private float enemyHealth = 5f;
         [SerializeField] private float enemySpeed = 3.2f;
         [SerializeField] private float enemyDamage = 8f;
+        [SerializeField] private EnemyRank enemyRank = EnemyRank.Grunt;
+        [SerializeField] private int coinReward = 1;
+        [SerializeField] private int scoreReward = 10;
+        [SerializeField] private float scaleMultiplier = 1f;
         [SerializeField] private float spawnJitter = 0.24f;
         [SerializeField, Min(1)] private int spawnPerFrame = 24;
         [SerializeField] private EnemyData enemyData;
@@ -23,7 +27,18 @@ namespace HORDAX.Enemies
         private bool activated;
         private int spawnedCount;
 
-        public void Configure(RunnerController runner, int enemyCount, int columnCount, float health, float speed, float damage, EnemyData definition = null)
+        public void Configure(
+            RunnerController runner,
+            int enemyCount,
+            int columnCount,
+            float health,
+            float speed,
+            float damage,
+            EnemyData definition = null,
+            EnemyRank fallbackRank = EnemyRank.Grunt,
+            int fallbackCoinReward = 1,
+            int fallbackScoreReward = 10,
+            float fallbackScale = 1f)
         {
             player = runner;
             count = Mathf.Max(1, enemyCount);
@@ -32,6 +47,10 @@ namespace HORDAX.Enemies
             enemySpeed = speed;
             enemyDamage = damage;
             enemyData = definition;
+            enemyRank = fallbackRank;
+            coinReward = Mathf.Max(0, fallbackCoinReward);
+            scoreReward = Mathf.Max(0, fallbackScoreReward);
+            scaleMultiplier = Mathf.Max(0.1f, fallbackScale);
         }
 
         private void Start()
@@ -74,6 +93,10 @@ namespace HORDAX.Enemies
             float health = enemyData != null ? enemyData.Health : enemyHealth;
             float speed = enemyData != null ? enemyData.MoveSpeed : enemySpeed;
             float damage = enemyData != null ? enemyData.ContactDamage : enemyDamage;
+            EnemyRank rank = enemyData != null ? enemyData.Rank : enemyRank;
+            int coins = enemyData != null ? enemyData.CoinReward : coinReward;
+            int score = enemyData != null ? enemyData.ScoreReward : scoreReward;
+            float size = enemyData != null ? enemyData.ScaleMultiplier : scaleMultiplier;
             GameObject requestedPrefab = enemyData != null && enemyData.VisualPrefab != null ? enemyData.VisualPrefab : enemyPrefab;
 
             int col = index % columns;
@@ -86,14 +109,19 @@ namespace HORDAX.Enemies
             GameObject enemy = agent.gameObject;
             enemy.name = $"{name}_Enemy_{index:000}";
             enemy.transform.SetParent(null, true);
-            enemy.transform.position = transform.position + new Vector3(x, 0.6f, z);
+            enemy.transform.position = transform.position + new Vector3(x, 0.6f * size, z);
             enemy.transform.rotation = Quaternion.Euler(0f, 180f + Random.Range(-6f, 6f), 0f);
-            enemy.transform.localScale = new Vector3(0.86f, Random.Range(1.05f, 1.28f), 0.86f);
+            enemy.transform.localScale = new Vector3(0.86f, Random.Range(1.05f, 1.28f), 0.86f) * size;
 
             Renderer renderer = enemy.GetComponentInChildren<Renderer>();
-            if (renderer != null && requestedPrefab == null) renderer.sharedMaterial = PrototypeMaterials.Enemy;
+            if (renderer != null && requestedPrefab == null)
+            {
+                renderer.sharedMaterial = rank == EnemyRank.Boss
+                    ? PrototypeMaterials.Boss
+                    : rank == EnemyRank.Elite ? PrototypeMaterials.Elite : PrototypeMaterials.Enemy;
+            }
 
-            agent.Initialize(player, health, speed, damage, pool);
+            agent.Initialize(player, health, speed, damage, pool, rank, coins, score);
             enemy.SetActive(true);
         }
     }

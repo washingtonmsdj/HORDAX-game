@@ -12,6 +12,7 @@ namespace HORDAX.Combat
         [Header("Weapon")]
         [SerializeField] private WeaponData weaponData;
         [SerializeField] private WeaponArchetype archetype = WeaponArchetype.Rifle;
+        [SerializeField] private WeaponRarity rarity = WeaponRarity.Common;
         [SerializeField] private string displayName = "Rifle";
         [SerializeField] private float damage = 5f;
         [SerializeField] private float fireRate = 12f;
@@ -37,6 +38,7 @@ namespace HORDAX.Combat
 
         public string DisplayName => displayName;
         public WeaponArchetype Archetype => archetype;
+        public WeaponRarity Rarity => rarity;
         public float Damage => damage;
         public float FireRate => fireRate;
         public float Range => range;
@@ -54,8 +56,9 @@ namespace HORDAX.Combat
 
             weaponData = definition;
             archetype = definition.Archetype;
+            rarity = definition.Rarity;
             displayName = string.IsNullOrWhiteSpace(definition.DisplayName) ? definition.Archetype.ToString() : definition.DisplayName;
-            damage = definition.Damage;
+            damage = definition.Damage * GetRarityDamageMultiplier(rarity);
             fireRate = definition.FireRate;
             range = definition.Range;
             bulletSpeed = definition.BulletSpeed;
@@ -64,6 +67,15 @@ namespace HORDAX.Combat
             recoilKick = Mathf.Max(0f, definition.RecoilKick);
             projectileScale = Mathf.Max(0.1f, definition.ProjectileScale);
             bulletPrefab = definition.BulletPrefab;
+
+            ApplyModifiers(definition.Modifiers);
+
+            damage = Mathf.Max(0.1f, damage);
+            fireRate = Mathf.Clamp(fireRate, 0.1f, 32f);
+            range = Mathf.Max(1f, range);
+            projectilesPerShot = Mathf.Clamp(projectilesPerShot, 1, 16);
+            spreadDegrees = Mathf.Max(0f, spreadDegrees);
+
             upgradeLevel = 1;
             shotTimer = 0f;
             WeaponChanged?.Invoke();
@@ -73,6 +85,7 @@ namespace HORDAX.Combat
         {
             weaponData = null;
             archetype = type;
+            rarity = WeaponRarity.Common;
             bulletPrefab = null;
             upgradeLevel = 1;
             shotTimer = 0f;
@@ -134,6 +147,36 @@ namespace HORDAX.Combat
             fireRate = Mathf.Clamp(fireRate * fireRateMultiplier, 1f, 32f);
             upgradeLevel++;
             WeaponChanged?.Invoke();
+        }
+
+        private void ApplyModifiers(IReadOnlyList<WeaponModifierData> modifiers)
+        {
+            if (modifiers == null) return;
+
+            for (int i = 0; i < modifiers.Count; i++)
+            {
+                WeaponModifierData modifier = modifiers[i];
+                if (modifier == null) continue;
+
+                damage += modifier.DamageAdd;
+                damage *= Mathf.Max(0.01f, modifier.DamageMultiplier);
+                fireRate *= Mathf.Max(0.01f, modifier.FireRateMultiplier);
+                range *= Mathf.Max(0.01f, modifier.RangeMultiplier);
+                projectilesPerShot += modifier.BonusProjectiles;
+                spreadDegrees *= Mathf.Max(0.01f, modifier.SpreadMultiplier);
+            }
+        }
+
+        private static float GetRarityDamageMultiplier(WeaponRarity value)
+        {
+            switch (value)
+            {
+                case WeaponRarity.Uncommon: return 1.08f;
+                case WeaponRarity.Rare: return 1.18f;
+                case WeaponRarity.Epic: return 1.32f;
+                case WeaponRarity.Legendary: return 1.50f;
+                default: return 1f;
+            }
         }
 
         private void Start()
