@@ -12,7 +12,7 @@ namespace HORDAX.Prototype
 {
     public sealed class PrototypeBootstrap : MonoBehaviour
     {
-        private const float DefaultFinishZ = 185f;
+        private const float DefaultFinishZ = 235f;
         [SerializeField] private LevelDefinition levelDefinition;
 
         private RunnerController player;
@@ -29,6 +29,7 @@ namespace HORDAX.Prototype
             BuildRoad();
             BuildPlayer();
             BuildEnemyPool();
+            BuildCombatFxPool();
             BuildCamera();
             BuildHud();
             BuildLevel();
@@ -108,12 +109,22 @@ namespace HORDAX.Prototype
             muzzle.transform.SetParent(root.transform, false);
             muzzle.transform.localPosition = new Vector3(0.45f, 0.35f, 1.18f);
             weapon.SetMuzzle(muzzle.transform);
+
+            PrototypeWeaponView weaponView = root.AddComponent<PrototypeWeaponView>();
+            weaponView.Initialize(weapon, weaponVisual.transform);
         }
 
         private void BuildEnemyPool()
         {
-            GameObject poolObject = new GameObject("ENEMY POOL - Replace enemy prefab later");
+            if (FindObjectOfType<EnemyPool>() != null) return;
+            GameObject poolObject = new GameObject("ENEMY POOL - Replace enemy prefabs later");
             poolObject.AddComponent<EnemyPool>();
+        }
+
+        private void BuildCombatFxPool()
+        {
+            if (CombatFxPool.Instance != null) return;
+            new GameObject("COMBAT FX POOL - Placeholder effects").AddComponent<CombatFxPool>();
         }
 
         private void BuildCamera()
@@ -156,6 +167,9 @@ namespace HORDAX.Prototype
                         case LevelStepType.Upgrade:
                             CreateUpgrade(step.label, step.z, step.damageAdd, step.fireRateMultiplier, step.upgradeLabel);
                             break;
+                        case LevelStepType.Weapon:
+                            CreateWeaponPickup(step.label, step.z, step.weaponData, step.prototypeWeapon, step.weaponLabel);
+                            break;
                         case LevelStepType.Finish:
                             CreateFinish(step.z);
                             hasFinish = true;
@@ -174,16 +188,17 @@ namespace HORDAX.Prototype
         {
             CreateHorde("Wave 01", 30f, 30, 6, 5f, 3.1f, 7f);
             CreateGate("Gate 50", 54f, 50f);
-            CreateUpgrade("Upgrade 01", 60f, 3f, 1.12f, "+DMG");
+            CreateWeaponPickup("SMG Pickup", 62f, null, WeaponArchetype.SMG, "SMG");
 
-            CreateHorde("Wave 02", 82f, 48, 8, 8f, 3.45f, 8f);
-            CreateGate("Gate 120", 108f, 120f);
-            CreateUpgrade("Upgrade 02", 114f, 4f, 1.15f, "+FIRE");
+            CreateHorde("Wave 02", 88f, 48, 8, 8f, 3.45f, 8f);
+            CreateGate("Gate 120", 115f, 120f);
+            CreateUpgrade("Upgrade 01", 122f, 3f, 1.12f, "+POWER");
 
-            CreateHorde("Wave 03", 136f, 72, 9, 11f, 3.8f, 9f);
-            CreateGate("Gate 230", 165f, 230f);
-            CreateUpgrade("Upgrade 03", 171f, 5f, 1.15f, "POWER");
+            CreateHorde("Wave 03", 148f, 72, 9, 11f, 3.8f, 9f);
+            CreateGate("Gate 230", 178f, 230f);
+            CreateWeaponPickup("Shotgun Pickup", 185f, null, WeaponArchetype.Shotgun, "SHOTGUN");
 
+            CreateHorde("Wave 04", 207f, 90, 10, 14f, 4.0f, 10f);
             CreateFinish(finishZ);
         }
 
@@ -234,25 +249,54 @@ namespace HORDAX.Prototype
             visual.transform.localScale = new Vector3(0.75f, 0.18f, 0.75f);
             visual.GetComponent<Renderer>().sharedMaterial = PrototypeMaterials.Pickup;
 
-            GameObject top = CreateBlock("Upgrade Icon", Vector3.zero, new Vector3(0.24f, 0.9f, 0.24f), PrototypeMaterials.Bullet, root.transform, false);
+            GameObject top = CreateBlock("Upgrade Icon", root.transform.position, new Vector3(0.24f, 0.9f, 0.24f), PrototypeMaterials.Bullet, root.transform, false);
             top.transform.localPosition = new Vector3(0f, 0.65f, 0f);
             top.transform.localRotation = Quaternion.Euler(0f, 0f, 45f);
 
-            GameObject textObject = new GameObject("Upgrade Label");
-            textObject.transform.SetParent(root.transform, false);
-            textObject.transform.localPosition = new Vector3(0f, 1.45f, 0f);
-            textObject.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
-            TextMesh text = textObject.AddComponent<TextMesh>();
-            text.anchor = TextAnchor.MiddleCenter;
-            text.alignment = TextAlignment.Center;
-            text.fontSize = 64;
-            text.characterSize = 0.055f;
-            text.fontStyle = FontStyle.Bold;
-            text.color = Color.white;
-            text.text = string.IsNullOrWhiteSpace(displayText) ? "+POWER" : displayText;
+            CreateWorldLabel(root.transform, string.IsNullOrWhiteSpace(displayText) ? "+POWER" : displayText, new Vector3(0f, 1.45f, 0f), 64, 0.055f);
 
             UpgradePickup pickup = root.AddComponent<UpgradePickup>();
             pickup.Configure(damage, cadence);
+        }
+
+        private void CreateWeaponPickup(string label, float z, WeaponData data, WeaponArchetype fallback, string displayText)
+        {
+            GameObject root = new GameObject(string.IsNullOrWhiteSpace(label) ? "Weapon Pickup" : label);
+            root.transform.position = new Vector3(0f, 0.95f, z);
+            BoxCollider trigger = root.AddComponent<BoxCollider>();
+            trigger.isTrigger = true;
+            trigger.size = new Vector3(2.6f, 2.5f, 2.6f);
+
+            GameObject pedestal = CreatePrimitiveWithoutCollider(PrimitiveType.Cylinder, "Weapon Pedestal", root.transform);
+            pedestal.transform.localPosition = new Vector3(0f, -0.55f, 0f);
+            pedestal.transform.localScale = new Vector3(0.95f, 0.12f, 0.95f);
+            pedestal.GetComponent<Renderer>().sharedMaterial = PrototypeMaterials.Pickup;
+
+            GameObject visualRoot = new GameObject("Weapon Visual");
+            visualRoot.transform.SetParent(root.transform, false);
+            visualRoot.transform.localPosition = new Vector3(0f, 0.15f, 0f);
+
+            WeaponArchetype type = data != null ? data.Archetype : fallback;
+            Vector3 bodyScale = type == WeaponArchetype.Shotgun
+                ? new Vector3(0.32f, 0.28f, 1.55f)
+                : type == WeaponArchetype.Minigun
+                    ? new Vector3(0.48f, 0.38f, 1.25f)
+                    : type == WeaponArchetype.SMG
+                        ? new Vector3(0.38f, 0.32f, 0.92f)
+                        : new Vector3(0.30f, 0.28f, 1.25f);
+
+            GameObject body = CreateBlock("Weapon Body", root.transform.position, bodyScale, PrototypeMaterials.Rail, visualRoot.transform, false);
+            body.transform.localPosition = Vector3.zero;
+            GameObject barrel = CreateBlock("Weapon Barrel", root.transform.position, new Vector3(0.13f, 0.13f, bodyScale.z * 0.85f), PrototypeMaterials.Bullet, visualRoot.transform, false);
+            barrel.transform.localPosition = new Vector3(0f, 0f, bodyScale.z * 0.75f);
+
+            string shownName = !string.IsNullOrWhiteSpace(displayText)
+                ? displayText
+                : data != null && !string.IsNullOrWhiteSpace(data.DisplayName) ? data.DisplayName : fallback.ToString();
+            CreateWorldLabel(root.transform, shownName, new Vector3(0f, 1.55f, 0f), 60, 0.052f);
+
+            WeaponPickup pickup = root.AddComponent<WeaponPickup>();
+            pickup.Configure(data, fallback, visualRoot.transform);
         }
 
         private void CreateFinish(float z)
@@ -268,6 +312,23 @@ namespace HORDAX.Prototype
             CreateBlock("Finish Left", new Vector3(-5.2f, 1.8f, z), new Vector3(0.55f, 3.6f, 0.55f), PrototypeMaterials.Finish, root.transform, false).transform.localPosition = new Vector3(-5.2f, 1.8f, 0f);
             CreateBlock("Finish Right", new Vector3(5.2f, 1.8f, z), new Vector3(0.55f, 3.6f, 0.55f), PrototypeMaterials.Finish, root.transform, false).transform.localPosition = new Vector3(5.2f, 1.8f, 0f);
             CreateBlock("Finish Top", new Vector3(0f, 3.35f, z), new Vector3(10.9f, 0.55f, 0.55f), PrototypeMaterials.Finish, root.transform, false).transform.localPosition = new Vector3(0f, 3.35f, 0f);
+        }
+
+        private static TextMesh CreateWorldLabel(Transform parent, string value, Vector3 localPosition, int fontSize, float characterSize)
+        {
+            GameObject textObject = new GameObject("World Label");
+            textObject.transform.SetParent(parent, false);
+            textObject.transform.localPosition = localPosition;
+            textObject.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
+            TextMesh text = textObject.AddComponent<TextMesh>();
+            text.anchor = TextAnchor.MiddleCenter;
+            text.alignment = TextAlignment.Center;
+            text.fontSize = fontSize;
+            text.characterSize = characterSize;
+            text.fontStyle = FontStyle.Bold;
+            text.color = Color.white;
+            text.text = value;
+            return text;
         }
 
         private static GameObject CreateBlock(string label, Vector3 position, Vector3 scale, Material material, Transform parent, bool keepCollider)
