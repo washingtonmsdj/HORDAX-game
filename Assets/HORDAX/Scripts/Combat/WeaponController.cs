@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using HORDAX.Core;
@@ -10,10 +11,16 @@ namespace HORDAX.Combat
     {
         [Header("Weapon")]
         [SerializeField] private WeaponData weaponData;
+        [SerializeField] private WeaponArchetype archetype = WeaponArchetype.Rifle;
+        [SerializeField] private string displayName = "Rifle";
         [SerializeField] private float damage = 5f;
         [SerializeField] private float fireRate = 12f;
         [SerializeField] private float range = 34f;
         [SerializeField] private float bulletSpeed = 45f;
+        [SerializeField] private int projectilesPerShot = 1;
+        [SerializeField] private float spreadDegrees = 0.4f;
+        [SerializeField] private float recoilKick = 0.05f;
+        [SerializeField] private float projectileScale = 1f;
         [SerializeField] private Transform muzzle;
         [SerializeField] private GameObject bulletPrefab;
 
@@ -23,8 +30,17 @@ namespace HORDAX.Combat
         private GameObject muzzleFlash;
         private int upgradeLevel = 1;
 
+        public event Action ShotFired;
+        public event Action WeaponChanged;
+
+        public string DisplayName => displayName;
+        public WeaponArchetype Archetype => archetype;
         public float Damage => damage;
         public float FireRate => fireRate;
+        public float Range => range;
+        public int ProjectilesPerShot => projectilesPerShot;
+        public float SpreadDegrees => spreadDegrees;
+        public float RecoilKick => recoilKick;
         public int UpgradeLevel => upgradeLevel;
         public WeaponData Definition => weaponData;
 
@@ -35,19 +51,87 @@ namespace HORDAX.Combat
             if (definition == null) return;
 
             weaponData = definition;
+            archetype = definition.Archetype;
+            displayName = string.IsNullOrWhiteSpace(definition.DisplayName) ? definition.Archetype.ToString() : definition.DisplayName;
             damage = definition.Damage;
             fireRate = definition.FireRate;
             range = definition.Range;
             bulletSpeed = definition.BulletSpeed;
-            if (definition.BulletPrefab != null) bulletPrefab = definition.BulletPrefab;
+            projectilesPerShot = Mathf.Max(1, definition.ProjectilesPerShot);
+            spreadDegrees = Mathf.Max(0f, definition.SpreadDegrees);
+            recoilKick = Mathf.Max(0f, definition.RecoilKick);
+            projectileScale = Mathf.Max(0.1f, definition.ProjectileScale);
+            bulletPrefab = definition.BulletPrefab;
             upgradeLevel = 1;
+            shotTimer = 0f;
+            WeaponChanged?.Invoke();
+        }
+
+        public void ApplyPrototype(WeaponArchetype type)
+        {
+            weaponData = null;
+            archetype = type;
+            bulletPrefab = null;
+            upgradeLevel = 1;
+            shotTimer = 0f;
+
+            switch (type)
+            {
+                case WeaponArchetype.SMG:
+                    displayName = "SMG";
+                    damage = 4f;
+                    fireRate = 18f;
+                    range = 31f;
+                    bulletSpeed = 52f;
+                    projectilesPerShot = 1;
+                    spreadDegrees = 1.2f;
+                    recoilKick = 0.035f;
+                    projectileScale = 0.85f;
+                    break;
+                case WeaponArchetype.Shotgun:
+                    displayName = "SHOTGUN";
+                    damage = 3.5f;
+                    fireRate = 4.2f;
+                    range = 24f;
+                    bulletSpeed = 42f;
+                    projectilesPerShot = 5;
+                    spreadDegrees = 5.5f;
+                    recoilKick = 0.13f;
+                    projectileScale = 1.05f;
+                    break;
+                case WeaponArchetype.Minigun:
+                    displayName = "MINIGUN";
+                    damage = 4.5f;
+                    fireRate = 24f;
+                    range = 38f;
+                    bulletSpeed = 58f;
+                    projectilesPerShot = 1;
+                    spreadDegrees = 1.5f;
+                    recoilKick = 0.045f;
+                    projectileScale = 0.8f;
+                    break;
+                default:
+                    displayName = "RIFLE";
+                    damage = 5f;
+                    fireRate = 12f;
+                    range = 34f;
+                    bulletSpeed = 45f;
+                    projectilesPerShot = 1;
+                    spreadDegrees = 0.4f;
+                    recoilKick = 0.055f;
+                    projectileScale = 1f;
+                    break;
+            }
+
+            WeaponChanged?.Invoke();
         }
 
         public void ApplyUpgrade(float damageAdd, float fireRateMultiplier)
         {
             damage += damageAdd;
-            fireRate = Mathf.Clamp(fireRate * fireRateMultiplier, 1f, 30f);
+            fireRate = Mathf.Clamp(fireRate * fireRateMultiplier, 1f, 32f);
             upgradeLevel++;
+            WeaponChanged?.Invoke();
         }
 
         private void Start()
@@ -103,19 +187,43 @@ namespace HORDAX.Combat
 
         private void Fire(ShootableTarget target)
         {
-            Bullet bullet = AcquireBullet();
             Transform origin = muzzle != null ? muzzle : transform;
-            bullet.transform.position = origin.position;
-            bullet.transform.rotation = origin.rotation;
-            bullet.Initialize(target, damage, bulletSpeed, RecycleBullet);
+            int projectileCount = Mathf.Max(1, projectilesPerShot);
+
+            for (int i = 0; i < projectileCount; i++)
+            {
+                Bullet bullet = AcquireBullet();
+                Vector3 aimOffset = CalculateAimOffset(origin.position, target.TargetPoint, projectileCount);
+                Vector3 direction = target.TargetPoint + aimOffset - origin.position;
+
+                bullet.transform.position = origin.position;
+                if (direction.sqrMagnitude > 0.001f)
+                    bullet.transform.rotation = Quaternion.LookRotation(direction.normalized);
+
+                bullet.Initialize(target, damage, bulletSpeed, aimOffset, projectileScale, RecycleBullet);
+            }
 
             if (muzzleFlash != null)
             {
                 muzzleFlash.SetActive(false);
-                muzzleFlash.transform.localScale = Vector3.one * Random.Range(0.18f, 0.32f);
+                float flashSize = Mathf.Lerp(0.18f, 0.42f, Mathf.Clamp01(recoilKick / 0.14f));
+                muzzleFlash.transform.localScale = Vector3.one * Random.Range(flashSize * 0.8f, flashSize * 1.15f);
                 muzzleFlash.SetActive(true);
                 flashTimer = 0.045f;
             }
+
+            ShotFired?.Invoke();
+        }
+
+        private Vector3 CalculateAimOffset(Vector3 origin, Vector3 targetPoint, int projectileCount)
+        {
+            if (spreadDegrees <= 0f) return Vector3.zero;
+            if (projectileCount == 1 && spreadDegrees < 0.75f) return Vector3.zero;
+
+            float distance = Mathf.Max(1f, Vector3.Distance(origin, targetPoint));
+            float radius = Mathf.Tan(spreadDegrees * Mathf.Deg2Rad) * distance;
+            Vector2 random = UnityEngine.Random.insideUnitCircle * radius;
+            return new Vector3(random.x, random.y * 0.35f, 0f);
         }
 
         private Bullet AcquireBullet()
