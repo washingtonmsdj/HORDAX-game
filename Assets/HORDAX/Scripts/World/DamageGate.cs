@@ -51,6 +51,7 @@ namespace HORDAX.World
             if (health <= 0f)
             {
                 RunnerCamera.Instance?.Shake(0.22f, 0.16f);
+                CombatFxPool.Instance?.PlayGateBreak(transform.position, 1.3f);
                 gameObject.SetActive(false);
             }
         }
