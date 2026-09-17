@@ -6,10 +6,27 @@ namespace HORDAX.World
 {
     public sealed class FinishZone : MonoBehaviour
     {
+        private bool playerReached;
+
         private void OnTriggerEnter(Collider other)
         {
             if (other.GetComponent<RunnerController>() == null) return;
-            if (GameManager.Instance != null) GameManager.Instance.Win();
+            playerReached = true;
+            TryFinish();
+        }
+
+        private void Update()
+        {
+            if (playerReached)
+                TryFinish();
+        }
+
+        private void TryFinish()
+        {
+            if (GameManager.Instance == null || GameManager.Instance.State != GameState.Playing) return;
+            if (!GameManager.Instance.CanFinish) return;
+
+            GameManager.Instance.Win();
         }
     }
 }
