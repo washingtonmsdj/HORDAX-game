@@ -114,9 +114,10 @@ def validate_frame(collection, *, width: float, length: float) -> dict:
 def validate_pillow(collection, part_id: str, *, expected_dimensions) -> dict:
     role = {
         "pillow_back": "back_ivory_pillow",
-        "pillow_sage": "sage_pillow",
-        "pillow_terracotta": "terracotta_pillow",
-        "pillow_lumbar": "sage_lumbar",
+        "pillow_left": "pillow_left",
+        "pillow_right": "pillow_right",
+        "pillow_accent": "pillow_accent",
+        "pillow_lumbar": "pillow_lumbar",
     }[part_id]
     report = validate_collection(
         collection,
