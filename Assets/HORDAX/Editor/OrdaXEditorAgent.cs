@@ -23,6 +23,7 @@ namespace HORDAX.EditorTools
         private const string CaptureHeightKey = "HORDAX_ORDAX_AGENT_CAPTURE_HEIGHT";
         private const string CaptureWarmupKey = "HORDAX_ORDAX_AGENT_CAPTURE_WARMUP";
         private const string CaptureFrameKey = "HORDAX_ORDAX_AGENT_CAPTURE_FRAME";
+        private const string CaptureTimeScaleKey = "HORDAX_ORDAX_AGENT_CAPTURE_TIME_SCALE";
 
         private static double nextPollAt;
 
@@ -43,6 +44,7 @@ namespace HORDAX.EditorTools
             public int width = 1280;
             public int height = 720;
             public int warmupFrames = 120;
+            public float timeScale = 1f;
         }
 
         [Serializable]
@@ -278,6 +280,7 @@ namespace HORDAX.EditorTools
             SessionState.SetInt(CaptureHeightKey, Mathf.Clamp(command.height <= 0 ? 720 : command.height, 180, 2160));
             SessionState.SetInt(CaptureWarmupKey, Mathf.Clamp(command.warmupFrames <= 0 ? 120 : command.warmupFrames, 1, 1200));
             SessionState.SetInt(CaptureFrameKey, 0);
+            SessionState.SetFloat(CaptureTimeScaleKey, Mathf.Clamp(command.timeScale <= 0f ? 1f : command.timeScale, 0.25f, 8f));
             SessionState.SetBool(CaptureExitPendingKey, false);
             SessionState.SetBool(CaptureActiveKey, true);
 
@@ -303,6 +306,8 @@ namespace HORDAX.EditorTools
             if (!EditorApplication.isPlaying)
                 return;
 
+            Time.timeScale = SessionState.GetFloat(CaptureTimeScaleKey, 1f);
+
             int frame = SessionState.GetInt(CaptureFrameKey, 0) + 1;
             SessionState.SetInt(CaptureFrameKey, frame);
 
@@ -317,12 +322,14 @@ namespace HORDAX.EditorTools
                 int height = SessionState.GetInt(CaptureHeightKey, 720);
                 AutomationCapture.CaptureCameraTo(output, width, height);
 
+                Time.timeScale = 1f;
                 SessionState.SetBool(CaptureActiveKey, false);
                 SessionState.SetBool(CaptureExitPendingKey, true);
                 EditorApplication.ExitPlaymode();
             }
             catch (Exception error)
             {
+                Time.timeScale = 1f;
                 SessionState.SetBool(CaptureActiveKey, false);
                 SessionState.SetBool(CaptureExitPendingKey, false);
                 WriteCaptureResponse(false, error.GetType().Name + ": " + error.Message);
