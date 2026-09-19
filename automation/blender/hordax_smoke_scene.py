@@ -2,12 +2,7 @@ import bpy
 import math
 from pathlib import Path
 
-PROJECT_ROOT = Path(bpy.path.abspath("//")).resolve()
-if PROJECT_ROOT.name.lower() == "automation":
-    PROJECT_ROOT = PROJECT_ROOT.parent
-if not (PROJECT_ROOT / "Assets").exists():
-    # Blender launched without a .blend, so cwd is the registered project root.
-    PROJECT_ROOT = Path.cwd().resolve()
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 OUTPUT_DIR = PROJECT_ROOT / "Artifacts" / "Blender"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -33,10 +28,20 @@ def make_material(name, color, metallic=0.0, roughness=0.55):
     mat = bpy.data.materials.new(name)
     mat.diffuse_color = (*color, 1.0)
     mat.use_nodes = True
-    bsdf = mat.node_tree.nodes.get("Principled BSDF")
-    bsdf.inputs["Base Color"].default_value = (*color, 1.0)
-    bsdf.inputs["Metallic"].default_value = metallic
-    bsdf.inputs["Roughness"].default_value = roughness
+    bsdf = next(
+        (node for node in mat.node_tree.nodes if node.type == "BSDF_PRINCIPLED"),
+        None,
+    )
+    if bsdf is not None:
+        base_color = bsdf.inputs.get("Base Color")
+        metallic_input = bsdf.inputs.get("Metallic")
+        roughness_input = bsdf.inputs.get("Roughness")
+        if base_color is not None:
+            base_color.default_value = (*color, 1.0)
+        if metallic_input is not None:
+            metallic_input.default_value = metallic
+        if roughness_input is not None:
+            roughness_input.default_value = roughness
     return mat
 
 
