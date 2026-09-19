@@ -19,85 +19,95 @@
   },
   "allowed_pairs": [
     [
-      "frame:leg",
-      "frame:left_rail",
+      "bed_structure:front_leg",
+      "bed_structure:left_rail",
       "ALLOW_STRUCTURAL_JOIN"
     ],
     [
-      "frame:leg",
-      "frame:right_rail",
+      "bed_structure:front_leg",
+      "bed_structure:right_rail",
       "ALLOW_STRUCTURAL_JOIN"
     ],
     [
-      "frame:leg",
-      "frame:foot_rail",
+      "bed_structure:front_leg",
+      "bed_structure:foot_rail",
       "ALLOW_STRUCTURAL_JOIN"
     ],
     [
-      "frame:support",
-      "frame:left_rail",
+      "bed_structure:rear_post_leg",
+      "bed_structure:left_rail",
       "ALLOW_STRUCTURAL_JOIN"
     ],
     [
-      "frame:support",
-      "frame:right_rail",
+      "bed_structure:rear_post_leg",
+      "bed_structure:right_rail",
+      "ALLOW_STRUCTURAL_JOIN"
+    ],
+    [
+      "bed_structure:support",
+      "bed_structure:left_rail",
+      "ALLOW_STRUCTURAL_JOIN"
+    ],
+    [
+      "bed_structure:support",
+      "bed_structure:right_rail",
       "ALLOW_STRUCTURAL_JOIN"
     ]
   ],
   "assembly_pairs": [
     [
       "mattress:mattress",
-      "frame:support",
+      "bed_structure:support",
       "TOUCH_ONLY"
     ],
     [
       "mattress:mattress",
-      "frame:left_rail",
+      "bed_structure:left_rail",
       "FORBID_INTERSECTION"
     ],
     [
       "mattress:mattress",
-      "frame:right_rail",
+      "bed_structure:right_rail",
       "FORBID_INTERSECTION"
     ],
     [
       "mattress:mattress",
-      "frame:foot_rail",
+      "bed_structure:foot_rail",
       "FORBID_INTERSECTION"
     ],
     [
       "mattress:mattress",
-      "headboard:headboard_channel",
+      "bed_structure:headboard_channel",
       "FORBID_INTERSECTION"
     ],
     [
-      "pillows:*",
-      "pillows:*",
+      "pillow_*:*",
+      "pillow_*:*",
       "FORBID_INTERSECTION"
     ],
     [
-      "pillows:*",
-      "headboard:*",
+      "pillow_*:*",
+      "bed_structure:headboard_channel",
       "FORBID_INTERSECTION"
     ],
     [
-      "pillows:*",
-      "mattress:mattress",
-      "FORBID_INTERSECTION"
-    ],
-    [
-      "bedding:*",
+      "pillow_*:*",
       "mattress:mattress",
       "FORBID_INTERSECTION"
     ],
     [
       "bedding:*",
-      "pillows:*",
+      "mattress:mattress",
       "FORBID_INTERSECTION"
     ],
     [
       "bedding:*",
-      "frame:*",
+      "pillow_*:*",
+      "FORBID_INTERSECTION"
+    ],
+    [
+      "bedding:*",
+      "bed_structure:*",
       "FORBID_INTERSECTION"
     ]
   ]
