@@ -42,6 +42,10 @@ script_path = Path(__file__).resolve()
 ref_b64 = script_path.parent / "references" / "bed_reference_512.jpg.b64"
 ref_jpg = script_path.parent / "references" / "bed_reference_512.jpg"
 
+# Keep generated Blender artifacts outside tracked source files.
+artifacts_dir = script_path.parents[2] / "Artifacts" / "Blender"
+artifacts_dir.mkdir(parents=True, exist_ok=True)
+
 ref_jpg.write_bytes(base64.b64decode(ref_b64.read_text(encoding="utf-8")))
 image = bpy.data.images.get(PREFIX + "IMAGE")
 if image is not None:
