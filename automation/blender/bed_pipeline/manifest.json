@@ -13,8 +13,8 @@
     "mattress_height": 0.3,
     "frame_width": 1.02,
     "frame_length": 2.02,
-    "headboard_height": 1.72,
-    "headboard_channels": 8
+    "headboard_height": 1.56,
+    "headboard_channels": 7
   },
   "tolerances": {
     "dimension_relative": 0.04,
@@ -23,14 +23,13 @@
   },
   "components": [
     {
-      "id": "frame",
-      "artifact": "Artifacts/Blender/bed_parts/frame.blend",
-      "status": "isolated"
-    },
-    {
-      "id": "headboard",
-      "artifact": "Artifacts/Blender/bed_parts/headboard.blend",
-      "status": "isolated"
+      "id": "bed_structure",
+      "artifact": "Artifacts/Blender/bed_parts/bed_structure.blend",
+      "status": "isolated",
+      "rules": {
+        "bed_legs": 4,
+        "headboard_integrated": true
+      }
     },
     {
       "id": "mattress",
@@ -43,13 +42,18 @@
       "status": "isolated"
     },
     {
-      "id": "pillow_sage",
-      "artifact": "Artifacts/Blender/bed_parts/pillow_sage.blend",
+      "id": "pillow_left",
+      "artifact": "Artifacts/Blender/bed_parts/pillow_left.blend",
       "status": "isolated"
     },
     {
-      "id": "pillow_terracotta",
-      "artifact": "Artifacts/Blender/bed_parts/pillow_terracotta.blend",
+      "id": "pillow_right",
+      "artifact": "Artifacts/Blender/bed_parts/pillow_right.blend",
+      "status": "isolated"
+    },
+    {
+      "id": "pillow_accent",
+      "artifact": "Artifacts/Blender/bed_parts/pillow_accent.blend",
       "status": "isolated"
     },
     {
@@ -82,5 +86,9 @@
   ],
   "artifact": "Artifacts/Blender/bed_parts_review.blend",
   "assembly_enabled": false,
-  "assembly_gate": "all isolated parts approved"
+  "assembly_gate": "all isolated parts approved",
+  "reference_notes": {
+    "bed_structure": "frame and headboard are one physical asset; exactly four legs; rear legs continue as headboard posts",
+    "pillows": "thin soft sewn forms; dimensions proportional to 0.88 m mattress and generated reference"
+  }
 }
