@@ -14,6 +14,7 @@ namespace HORDAX.Core
         public int EnemyKills { get; private set; }
         public int EliteKills { get; private set; }
         public int BossKills { get; private set; }
+        public int EnemyBreaches { get; private set; }
         public int RunCoins { get; private set; }
         public int Score { get; private set; }
         public float FinishZ { get; set; } = 165f;
@@ -79,6 +80,7 @@ namespace HORDAX.Core
             EnemyKills = 0;
             EliteKills = 0;
             BossKills = 0;
+            EnemyBreaches = 0;
             RunCoins = 0;
             Score = 0;
             EarnedStars = 0;
@@ -127,6 +129,13 @@ namespace HORDAX.Core
             if (rank == EnemyRank.Elite) EliteKills++;
             if (rank == EnemyRank.Boss) BossKills++;
 
+            Changed?.Invoke();
+        }
+
+        public void RegisterEnemyBreach()
+        {
+            if (State != GameState.Playing) return;
+            EnemyBreaches++;
             Changed?.Invoke();
         }
 
