@@ -9,16 +9,10 @@ using HORDAX.Prototype;
 
 namespace HORDAX.EditorTools
 {
-    [InitializeOnLoad]
     internal static class PrototypeSceneGenerator
     {
         private const string SceneFolder = "Assets/HORDAX/Scenes";
         private const string ScenePath = SceneFolder + "/Prototype.unity";
-
-        static PrototypeSceneGenerator()
-        {
-            EditorApplication.delayCall += EnsurePrototypeScene;
-        }
 
         [MenuItem("HORDAX/Open Prototype Scene")]
         public static void OpenFromMenu()
@@ -29,11 +23,13 @@ namespace HORDAX.EditorTools
                 return;
             }
 
-            if (!File.Exists(ScenePath))
-                GenerateScene(false, false);
+            if (!File.Exists(ScenePath) && !GenerateScene(false))
+                return;
 
             EnsureInBuildSettings();
-            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+
+            if (SceneManager.GetActiveScene().path != ScenePath)
+                EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
         }
 
         [MenuItem("HORDAX/Open Prototype Scene", true)]
@@ -57,8 +53,11 @@ namespace HORDAX.EditorTools
                 "Regenerate",
                 "Cancel");
 
-            if (!confirmed) return;
-            GenerateScene(true, true);
+            if (!confirmed || !GenerateScene(true))
+                return;
+
+            if (SceneManager.GetActiveScene().path != ScenePath)
+                EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
         }
 
         [MenuItem("HORDAX/Regenerate Prototype Scene (Destructive)", true)]
@@ -67,46 +66,75 @@ namespace HORDAX.EditorTools
             return !EditorApplication.isPlayingOrWillChangePlaymode;
         }
 
-        private static void EnsurePrototypeScene()
-        {
-            if (Application.isBatchMode || EditorApplication.isPlayingOrWillChangePlaymode) return;
-
-            if (!File.Exists(ScenePath))
-                GenerateScene(false, false);
-            else
-                EnsureInBuildSettings();
-        }
-
-        private static void GenerateScene(bool overwrite, bool openAfter)
+        private static bool GenerateScene(bool overwrite)
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
             {
                 Debug.LogWarning("HORDAX scene generation is unavailable during Play Mode.");
-                return;
+                return false;
             }
 
-            if (!Directory.Exists(SceneFolder)) Directory.CreateDirectory(SceneFolder);
             if (File.Exists(ScenePath) && !overwrite)
             {
                 EnsureInBuildSettings();
-                return;
+                return true;
             }
 
-            Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
+            if (!CanReplaceCurrentScene())
+                return false;
+
+            if (!Directory.Exists(SceneFolder))
+                Directory.CreateDirectory(SceneFolder);
+
+            Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             GameObject root = new GameObject("HORDAX Prototype Bootstrap");
             SceneManager.MoveGameObjectToScene(root, scene);
             root.AddComponent<PrototypeBootstrap>();
-            EditorSceneManager.SaveScene(scene, ScenePath);
-            EditorSceneManager.CloseScene(scene, true);
+
+            if (!EditorSceneManager.SaveScene(scene, ScenePath))
+            {
+                Debug.LogError("Failed to save HORDAX prototype scene at " + ScenePath);
+                return false;
+            }
 
             EnsureInBuildSettings();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            if (openAfter)
-                EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
-
             Debug.Log("HORDAX prototype scene generated at " + ScenePath);
+            return true;
+        }
+
+        private static bool CanReplaceCurrentScene()
+        {
+            Scene active = SceneManager.GetActiveScene();
+            if (!active.IsValid())
+                return true;
+
+            if (string.IsNullOrEmpty(active.path) && IsDefaultUntitledScene(active))
+                return true;
+
+            return EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
+        }
+
+        private static bool IsDefaultUntitledScene(Scene scene)
+        {
+            GameObject[] roots = scene.GetRootGameObjects();
+            if (roots.Length != 2)
+                return false;
+
+            bool hasMainCamera = false;
+            bool hasDirectionalLight = false;
+
+            for (int i = 0; i < roots.Length; i++)
+            {
+                if (roots[i].name == "Main Camera")
+                    hasMainCamera = true;
+                else if (roots[i].name == "Directional Light")
+                    hasDirectionalLight = true;
+            }
+
+            return hasMainCamera && hasDirectionalLight;
         }
 
         private static void EnsureInBuildSettings()
