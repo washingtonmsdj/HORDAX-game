@@ -21,7 +21,7 @@ namespace HORDAX.Prototype
 
         private void Awake()
         {
-            if (FindFirstObjectByType<RunnerController>() != null) return;
+            if (FindAnyObjectByType<RunnerController>() != null) return;
 
             if (GameSession.SelectedLevel != null)
                 levelDefinition = GameSession.SelectedLevel;
@@ -289,7 +289,7 @@ namespace HORDAX.Prototype
 
         private void BuildEnemyPool()
         {
-            if (FindFirstObjectByType<EnemyPool>() != null) return;
+            if (FindAnyObjectByType<EnemyPool>() != null) return;
             GameObject poolObject = new GameObject("ENEMY POOL - Replace enemy prefabs later");
             poolObject.AddComponent<EnemyPool>();
         }
