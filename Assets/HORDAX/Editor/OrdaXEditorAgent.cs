@@ -5,6 +5,8 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using HORDAX.Core;
+using HORDAX.Enemies;
 
 namespace HORDAX.EditorTools
 {
@@ -26,6 +28,8 @@ namespace HORDAX.EditorTools
         private const string CaptureStartGameTimeKey = "HORDAX_ORDAX_AGENT_CAPTURE_START_GAME_TIME";
         private const string CaptureFrameKey = "HORDAX_ORDAX_AGENT_CAPTURE_FRAME";
         private const string CaptureTimeScaleKey = "HORDAX_ORDAX_AGENT_CAPTURE_TIME_SCALE";
+        private const string CaptureOnTerminalKey = "HORDAX_ORDAX_AGENT_CAPTURE_ON_TERMINAL";
+        private const string CaptureOnBossKey = "HORDAX_ORDAX_AGENT_CAPTURE_ON_BOSS";
 
         private static double nextPollAt;
 
@@ -48,6 +52,8 @@ namespace HORDAX.EditorTools
             public int warmupFrames = 120;
             public float warmupSeconds = 0f;
             public float timeScale = 1f;
+            public bool captureOnTerminal = true;
+            public bool captureOnBoss = false;
         }
 
         [Serializable]
@@ -286,6 +292,8 @@ namespace HORDAX.EditorTools
             SessionState.SetFloat(CaptureStartGameTimeKey, -1f);
             SessionState.SetInt(CaptureFrameKey, 0);
             SessionState.SetFloat(CaptureTimeScaleKey, Mathf.Clamp(command.timeScale <= 0f ? 1f : command.timeScale, 0.25f, 8f));
+            SessionState.SetBool(CaptureOnTerminalKey, command.captureOnTerminal);
+            SessionState.SetBool(CaptureOnBossKey, command.captureOnBoss);
             SessionState.SetBool(CaptureExitPendingKey, false);
             SessionState.SetBool(CaptureActiveKey, true);
 
@@ -320,21 +328,46 @@ namespace HORDAX.EditorTools
                 SessionState.SetFloat(CaptureStartGameTimeKey, startGameTime);
             }
 
+            float elapsedGameTime = Time.time - startGameTime;
+            bool captureOnTerminal = SessionState.GetBool(CaptureOnTerminalKey, true);
+            bool captureOnBoss = SessionState.GetBool(CaptureOnBossKey, false);
+
+            bool terminalState =
+                GameManager.Instance != null &&
+                (GameManager.Instance.State == GameState.Won ||
+                 GameManager.Instance.State == GameState.Lost);
+
+            bool bossEncounter =
+                captureOnBoss &&
+                EnemyAgent.ActiveBoss != null &&
+                GameManager.Instance != null &&
+                GameManager.Instance.TryGetActiveBossBarrier(out _);
+
+            bool warmupReached;
             float warmupSeconds = SessionState.GetFloat(CaptureWarmupSecondsKey, 0f);
             if (warmupSeconds > 0f)
             {
-                if (Time.time - startGameTime < warmupSeconds)
-                    return;
+                warmupReached = elapsedGameTime >= warmupSeconds;
             }
             else
             {
                 int frame = SessionState.GetInt(CaptureFrameKey, 0) + 1;
                 SessionState.SetInt(CaptureFrameKey, frame);
-
                 int warmup = SessionState.GetInt(CaptureWarmupKey, 120);
-                if (frame < warmup)
-                    return;
+                warmupReached = frame >= warmup;
             }
+
+            bool earlyTerminalCapture =
+                captureOnTerminal &&
+                terminalState &&
+                elapsedGameTime >= 1f;
+
+            bool earlyBossCapture =
+                bossEncounter &&
+                elapsedGameTime >= 1f;
+
+            if (!warmupReached && !earlyTerminalCapture && !earlyBossCapture)
+                return;
 
             try
             {
