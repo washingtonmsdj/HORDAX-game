@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using HORDAX.Data;
 using HORDAX.Prototype;
+using HORDAX.World;
 
 namespace HORDAX.EditorTools
 {
@@ -37,6 +38,7 @@ namespace HORDAX.EditorTools
 
             ValidateWeapons(errors, warnings);
             ValidatePrototypeArmory(errors, warnings);
+            ValidateTrackLayout(errors);
             ValidateEnemies(errors, warnings);
             ValidateLevels(errors, warnings);
             ValidateCampaigns(errors, warnings);
@@ -124,6 +126,27 @@ namespace HORDAX.EditorTools
                 if (entry.WeaponData.Damage <= 0f || entry.WeaponData.FireRate <= 0f || entry.WeaponData.Range <= 0f)
                     errors.Add($"Prototype armory weapon '{entry.DisplayName}' has invalid runtime combat stats.");
             }
+        }
+
+        private static void ValidateTrackLayout(List<string> errors)
+        {
+            if (TrackLayout.ArsenalCenterX >= -TrackLayout.DividerHalfWidth)
+                errors.Add("Two-lane layout invalid: arsenal lane must stay left of the center divider.");
+
+            if (TrackLayout.HordeCenterX <= TrackLayout.DividerHalfWidth)
+                errors.Add("Two-lane layout invalid: horde lane must stay right of the center divider.");
+
+            if (TrackLayout.ArsenalMaxX >= -TrackLayout.DividerHalfWidth)
+                errors.Add("Two-lane layout invalid: arsenal lane overlaps the center divider.");
+
+            if (TrackLayout.HordeMinX <= TrackLayout.DividerHalfWidth)
+                errors.Add("Two-lane layout invalid: horde lane overlaps the center divider.");
+
+            if (TrackLayout.ArsenalMinX <= -TrackLayout.TrackHalfWidth)
+                errors.Add("Two-lane layout invalid: arsenal lane extends outside the track.");
+
+            if (TrackLayout.HordeMaxX >= TrackLayout.TrackHalfWidth)
+                errors.Add("Two-lane layout invalid: horde lane extends outside the track.");
         }
 
         private static void ValidateEnemies(List<string> errors, List<string> warnings)
