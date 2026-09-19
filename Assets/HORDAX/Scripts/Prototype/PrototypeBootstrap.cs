@@ -197,7 +197,8 @@ namespace HORDAX.Prototype
 
             player = root.AddComponent<RunnerController>();
             player.ConfigureLane(TrackLayout.ArsenalCenterX, TrackLayout.LaneHalfWidth - 0.35f);
-            root.AddComponent<PlayerHealth>();
+            PlayerHealth playerHealth = root.AddComponent<PlayerHealth>();
+            playerHealth.ConfigureBaseHealth(200f);
             playerWeapon = root.AddComponent<WeaponController>();
 
             GameObject visualRoot = new GameObject("Player Visual");
