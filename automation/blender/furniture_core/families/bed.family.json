@@ -1,0 +1,73 @@
+{
+  "family": "bed",
+  "version": 1,
+  "units": "METERS",
+  "primary_reference": "mattress",
+  "primary_dimensions": [
+    "mattress_width",
+    "mattress_length",
+    "mattress_height"
+  ],
+  "rules": {
+    "assembly_after_part_approval_only": true,
+    "default_contact_policy": "FORBID_INTERSECTION",
+    "bed_structure_is_single_rigid_asset": true,
+    "mattress_is_separate": true,
+    "soft_goods_are_separate": true
+  },
+  "variants": {
+    "upholstered_platform": {
+      "structure_parts": [
+        "bed_structure"
+      ],
+      "soft_parts": [
+        "pillow_back",
+        "pillow_left",
+        "pillow_right",
+        "pillow_accent",
+        "pillow_lumbar",
+        "fitted_sheet",
+        "top_sheet",
+        "duvet"
+      ],
+      "relationships": {
+        "frame_inner_width": "mattress_width + clearance_2x",
+        "frame_inner_length": "mattress_length + clearance_2x",
+        "headboard_width": "mattress_width * 1.18..1.28",
+        "headboard_total_height": "reference-derived; never inherited from another bed",
+        "bed_leg_count": 4
+      }
+    },
+    "house_bed": {
+      "structure_parts": [
+        "bed_structure"
+      ],
+      "soft_parts": [
+        "mattress",
+        "fitted_sheet",
+        "optional_bedding"
+      ],
+      "relationships": {
+        "frame_inner_width": "mattress_width + clearance_2x",
+        "frame_inner_length": "mattress_length + clearance_2x",
+        "roof_ridge_height": "reference-derived",
+        "guard_rail_height": "reference-derived",
+        "vertical_posts": "derived from structural topology; do not copy upholstered-bed posts",
+        "bed_leg_count": "reference-derived"
+      },
+      "required_validation": [
+        "mattress_clearance",
+        "roof_symmetry_if_reference_is_symmetric",
+        "post_floor_contact",
+        "guard_rail_clearance",
+        "pairwise_no_intersection"
+      ]
+    }
+  },
+  "never_assume": [
+    "headboard height from previous bed",
+    "leg count from another variant",
+    "pillow dimensions from another reference",
+    "camera perspective as physical dimensions"
+  ]
+}
