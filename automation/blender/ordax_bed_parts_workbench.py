@@ -17,15 +17,14 @@ for p in (str(PIPELINE),str(PARTS)):
         sys.path.insert(0,p)
 
 for name in (
-    "frame_part","headboard_part","mattress_part","pillow_part",
+    "bed_structure_part","mattress_part","pillow_part",
     "fitted_sheet_part","cloth_part",
     "part_validation","part_io","common"
 ):
     sys.modules.pop(name,None)
 importlib.invalidate_caches()
 
-import frame_part
-import headboard_part
+import bed_structure_part
 import mattress_part
 import pillow_part
 import fitted_sheet_part
@@ -35,16 +34,16 @@ REVIEW_SCENE="ORDAX_BED_PARTS_REVIEW"
 STAGE_COLLECTION="ORDAX_BED_PARTS_STAGE"
 
 PART_OFFSETS={
-    "frame":(-3.2,0.9,0.0),
-    "headboard":(-1.45,0.9,0.0),
-    "mattress":(0.15,0.9,0.0),
-    "pillow_back":(1.45,0.9,0.55),
-    "pillow_sage":(2.25,0.9,0.48),
-    "pillow_terracotta":(3.00,0.9,0.45),
-    "pillow_lumbar":(3.75,0.9,0.38),
-    "fitted_sheet":(-1.8,-1.55,0.0),
-    "top_sheet":(0.1,-1.55,0.0),
-    "duvet":(2.15,-1.55,0.0),
+    "bed_structure":(-2.8,1.15,0.0),
+    "mattress":(-0.75,1.15,0.0),
+    "pillow_back":(0.55,1.15,0.72),
+    "pillow_left":(1.40,1.15,0.58),
+    "pillow_right":(2.15,1.15,0.56),
+    "pillow_accent":(2.90,1.15,0.56),
+    "pillow_lumbar":(3.70,1.15,0.48),
+    "fitted_sheet":(-1.80,-1.45,0.0),
+    "top_sheet":(0.15,-1.45,0.0),
+    "duvet":(2.25,-1.45,0.0),
 }
 
 
@@ -52,11 +51,10 @@ def build_parts():
     reports={}
     collections={}
 
-    collections["frame"],reports["frame"]=frame_part.build(export=True)
-    collections["headboard"],reports["headboard"]=headboard_part.build(export=True)
+    collections["bed_structure"],reports["bed_structure"]=bed_structure_part.build(export=True)
     collections["mattress"],reports["mattress"]=mattress_part.build(export=True)
 
-    for pid in ("pillow_back","pillow_sage","pillow_terracotta","pillow_lumbar"):
+    for pid in ("pillow_back","pillow_left","pillow_right","pillow_accent","pillow_lumbar"):
         collections[pid],reports[pid]=pillow_part.build(pid,export=True)
 
     collections["fitted_sheet"],reports["fitted_sheet"]=fitted_sheet_part.build(export=True)
@@ -167,6 +165,18 @@ def build_review_scene(collections):
     return scene
 
 
+# Remove obsolete pre-correction artifacts before producing the new review.
+from part_io import PARTS_ROOT, REPORTS_ROOT
+for stale in (
+    "frame.blend","headboard.blend","pillow_sage.blend","pillow_terracotta.blend",
+):
+    path=PARTS_ROOT/stale
+    if path.is_file():
+        path.unlink()
+    report=REPORTS_ROOT/(Path(stale).stem+".json")
+    if report.is_file():
+        report.unlink()
+
 collections,reports=build_parts()
 build_review_scene(collections)
 
@@ -174,7 +184,6 @@ bad={k:v for k,v in reports.items() if not v.get("ok")}
 if bad:
     raise RuntimeError("Part workbench validation failed: "+str(bad))
 
-from part_io import PARTS_ROOT, REPORTS_ROOT
 expected=[f"{part_id}.blend" for part_id in reports]
 missing=[name for name in expected if not (PARTS_ROOT/name).is_file()]
 if missing:
