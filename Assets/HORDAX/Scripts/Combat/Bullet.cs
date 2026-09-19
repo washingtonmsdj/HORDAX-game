@@ -11,12 +11,12 @@ namespace HORDAX.Combat
         private float age;
         private float impactScale;
         private Vector3 aimOffset;
-        private Action<Bullet> recycle;
+        private Action<Bullet, ShootableTarget, float> recycle;
         private Vector3 baseScale;
         private bool hasBaseScale;
         private TrailRenderer trail;
 
-        public void Initialize(ShootableTarget newTarget, float newDamage, float newSpeed, Vector3 newAimOffset, float scaleMultiplier, Action<Bullet> recycleAction)
+        public void Initialize(ShootableTarget newTarget, float newDamage, float newSpeed, Vector3 newAimOffset, float scaleMultiplier, Action<Bullet, ShootableTarget, float> recycleAction)
         {
             target = newTarget;
             damage = newDamage;
@@ -69,9 +69,12 @@ namespace HORDAX.Combat
 
         private void Recycle()
         {
+            ShootableTarget assignedTarget = target;
+            float assignedDamage = damage;
+
             target = null;
             aimOffset = Vector3.zero;
-            recycle?.Invoke(this);
+            recycle?.Invoke(this, assignedTarget, assignedDamage);
         }
     }
 }
