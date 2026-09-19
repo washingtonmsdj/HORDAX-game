@@ -108,3 +108,22 @@ def validate_frame(collection, *, width: float, length: float) -> dict:
     report["metrics"]["nominal_length"] = length
     report["ok"] = not report["errors"]
     return report
+
+
+def validate_pillow(collection, part_id: str, *, expected_dimensions) -> dict:
+    role = {
+        "pillow_back": "back_ivory_pillow",
+        "pillow_sage": "sage_pillow",
+        "pillow_terracotta": "terracotta_pillow",
+        "pillow_lumbar": "sage_lumbar",
+    }[part_id]
+    report = validate_collection(
+        collection,
+        part_id,
+        required_roles=(role,),
+        expected_bounds=expected_dimensions,
+        tolerance=0.045,
+    )
+    report["metrics"]["contact_envelope"] = list(expected_dimensions)
+    report["ok"] = not report["errors"]
+    return report
