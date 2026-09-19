@@ -11,6 +11,7 @@ namespace HORDAX.EditorTools
     [InitializeOnLoad]
     public static class OrdaXEditorAgent
     {
+        private const string ProtocolVersion = "1";
         private const string PrototypeScenePath = "Assets/HORDAX/Scenes/Prototype.unity";
         private const string CaptureActiveKey = "HORDAX_ORDAX_AGENT_CAPTURE_ACTIVE";
         private const string CaptureExitPendingKey = "HORDAX_ORDAX_AGENT_CAPTURE_EXIT_PENDING";
@@ -81,7 +82,7 @@ namespace HORDAX.EditorTools
                 {
                     id = "presence",
                     ok = true,
-                    summary = "HORDAX Unity Editor companion ready",
+                    summary = "HORDAX Unity Editor companion v" + ProtocolVersion + " ready",
                     unityVersion = Application.unityVersion,
                     compiling = EditorApplication.isCompiling,
                     playing = EditorApplication.isPlaying
