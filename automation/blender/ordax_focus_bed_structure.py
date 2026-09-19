@@ -28,9 +28,10 @@ for obj in list(scene.objects):
 for child in list(scene.collection.children):
     scene.collection.children.unlink(child)
 
-col,report=bed_structure_part.build(export=True)
-if not report.get("ok"):
-    raise RuntimeError("bed_structure validation failed: "+str(report))
+col,report=bed_structure_part.build(export=False)
+# Focus mode must remain visible even when validation fails; the report is
+# exposed on the scene so the invalid rule can be fixed without a blank Blender.
+
 
 # If the generator linked the collection elsewhere, link it to this scene too.
 if col.name not in scene.collection.children:
