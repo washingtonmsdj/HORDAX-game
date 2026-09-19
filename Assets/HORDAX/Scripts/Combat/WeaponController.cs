@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using HORDAX.Core;
 using HORDAX.Data;
+using HORDAX.Enemies;
 using HORDAX.Prototype;
+using HORDAX.World;
 
 namespace HORDAX.Combat
 {
@@ -28,6 +30,7 @@ namespace HORDAX.Combat
         private readonly Stack<Bullet> prototypeBulletPool = new Stack<Bullet>();
         private readonly Dictionary<GameObject, Stack<Bullet>> prefabBulletPools = new Dictionary<GameObject, Stack<Bullet>>();
         private readonly Dictionary<Bullet, GameObject> sourcePrefabByBullet = new Dictionary<Bullet, GameObject>();
+        private readonly Dictionary<ShootableTarget, float> reservedDamageByTarget = new Dictionary<ShootableTarget, float>();
         private float shotTimer;
         private float flashTimer;
         private GameObject muzzleFlash;
@@ -279,6 +282,14 @@ namespace HORDAX.Combat
                 if (offset.z < -0.5f || offset.z > range) continue;
                 if (Mathf.Abs(offset.x) > 8f) continue;
 
+                float estimatedHealth = GetEstimatedHealth(candidate);
+                if (!float.IsPositiveInfinity(estimatedHealth))
+                {
+                    float reserved = GetReservedDamage(candidate);
+                    if (reserved >= estimatedHealth - 0.001f)
+                        continue;
+                }
+
                 // HORDAX uses adjacent arsenal/horde lanes, so lateral distance must not
                 // overpower breach urgency. Forward distance remains the main threat score.
                 float score = offset.z * offset.z + offset.x * offset.x * 0.35f;
@@ -306,6 +317,7 @@ namespace HORDAX.Combat
                 if (direction.sqrMagnitude > 0.001f)
                     bullet.transform.rotation = Quaternion.LookRotation(direction.normalized);
 
+                ReserveDamage(target, damage);
                 bullet.Initialize(target, damage, bulletSpeed, aimOffset, projectileScale, RecycleBullet);
             }
 
@@ -382,8 +394,54 @@ namespace HORDAX.Combat
             return pool;
         }
 
-        private void RecycleBullet(Bullet bullet)
+        private float GetEstimatedHealth(ShootableTarget target)
         {
+            EnemyAgent enemy = target as EnemyAgent;
+            if (enemy != null)
+                return enemy.CurrentHealth;
+
+            DamageGate gate = target as DamageGate;
+            if (gate != null)
+                return gate.CurrentHealth;
+
+            return float.PositiveInfinity;
+        }
+
+        private float GetReservedDamage(ShootableTarget target)
+        {
+            if (ReferenceEquals(target, null))
+                return 0f;
+
+            return reservedDamageByTarget.TryGetValue(target, out float value)
+                ? Mathf.Max(0f, value)
+                : 0f;
+        }
+
+        private void ReserveDamage(ShootableTarget target, float amount)
+        {
+            if (ReferenceEquals(target, null) || amount <= 0f)
+                return;
+
+            float current = GetReservedDamage(target);
+            reservedDamageByTarget[target] = current + amount;
+        }
+
+        private void ReleaseReservedDamage(ShootableTarget target, float amount)
+        {
+            if (ReferenceEquals(target, null) ||
+                !reservedDamageByTarget.TryGetValue(target, out float current))
+                return;
+
+            float remaining = Mathf.Max(0f, current - Mathf.Max(0f, amount));
+            if (remaining <= 0.001f)
+                reservedDamageByTarget.Remove(target);
+            else
+                reservedDamageByTarget[target] = remaining;
+        }
+
+        private void RecycleBullet(Bullet bullet, ShootableTarget assignedTarget, float assignedDamage)
+        {
+            ReleaseReservedDamage(assignedTarget, assignedDamage);
             if (bullet == null) return;
 
             GameObject sourcePrefab;
