@@ -1,34 +1,10 @@
-"""Compatibility entrypoint for the modular OrdaX bed generation pipeline.
+"""Current OrdaX bed workflow: isolated parts review only.
 
-Every Blender Live invocation reloads the pipeline modules from disk. Blender is
-a persistent Python process, so normal imports would otherwise retain stale
-module code after git.sync and make a new generation silently use old logic.
+The final bed is intentionally NOT assembled until every part is approved.
 """
 
 from pathlib import Path
-import importlib
-import sys
+import runpy
 
-PIPELINE = Path(__file__).resolve().parent / "bed_pipeline"
-if str(PIPELINE) not in sys.path:
-    sys.path.insert(0, str(PIPELINE))
-
-# Reverse dependency order. Removing modules makes the next imports load the
-# exact source currently on disk after git.sync.
-for module_name in (
-    "assemble",
-    "validate",
-    "bedding",
-    "pillows",
-    "mattress",
-    "frame",
-    "common",
-):
-    sys.modules.pop(module_name, None)
-
-importlib.invalidate_caches()
-
-import assemble
-
-if __name__ == "__main__":
-    assemble.build()
+SCRIPT=Path(__file__).resolve().parent/"ordax_bed_parts_workbench.py"
+runpy.run_path(str(SCRIPT),run_name="__main__")
