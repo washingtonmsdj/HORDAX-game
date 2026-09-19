@@ -369,7 +369,7 @@ def _look_at(obj, target=(0, 0, 0.08)):
 
 def _setup_camera_and_light(col):
     scene = bpy.context.scene
-    scene.render.engine = "BLENDER_EEVEE_NEXT"
+    scene.render.engine = "BLENDER_EEVEE"
     scene.render.resolution_x = 900
     scene.render.resolution_y = 600
     scene.render.resolution_percentage = 100
