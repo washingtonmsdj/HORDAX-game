@@ -26,6 +26,7 @@ namespace HORDAX.UI
         private Button nextButton;
         private GameState lastState = GameState.Booting;
         private float restartAllowedAt;
+        private float damageFlashTimer;
 
         public void Initialize(RunnerController player)
         {
@@ -33,6 +34,20 @@ namespace HORDAX.UI
             health = player.GetComponent<PlayerHealth>();
             weapon = player.GetComponent<WeaponController>();
             BuildUi();
+
+            if (health != null)
+                health.Damaged += OnPlayerDamaged;
+        }
+
+        private void OnDestroy()
+        {
+            if (health != null)
+                health.Damaged -= OnPlayerDamaged;
+        }
+
+        private void OnPlayerDamaged(float amount)
+        {
+            damageFlashTimer = Mathf.Max(damageFlashTimer, 0.18f);
         }
 
         private void Update()
@@ -47,7 +62,13 @@ namespace HORDAX.UI
                     restartAllowedAt = Time.unscaledTime + 0.45f;
             }
 
+            if (damageFlashTimer > 0f)
+                damageFlashTimer = Mathf.Max(0f, damageFlashTimer - Time.unscaledDeltaTime);
+
             healthFill.fillAmount = health.Normalized;
+            healthFill.color = damageFlashTimer > 0f
+                ? new Color(1f, 0.20f, 0.16f, 1f)
+                : new Color(0.24f, 0.92f, 0.46f, 1f);
             float finish = Mathf.Max(1f, GameManager.Instance.FinishZ);
             progressFill.fillAmount = Mathf.Clamp01(runner.transform.position.z / finish);
 
