@@ -28,7 +28,10 @@ def export_collection(collection, part_id: str, report: dict, *, metadata: dict 
     """
     ensure_output_dirs()
     if not report.get("ok"):
-        errors = report.get("errors") or []\n        raise RuntimeError(\n            f"Refusing to export invalid part: {part_id}; errors={json.dumps(errors, ensure_ascii=False)}"\n        )
+        errors = report.get("errors") or []
+        raise RuntimeError(
+            f"Refusing to export invalid part: {part_id}; errors={json.dumps(errors, ensure_ascii=False)}"
+        )
 
     filepath = PARTS_ROOT / f"{part_id}.blend"
     datablocks = {collection, *collection.objects}
