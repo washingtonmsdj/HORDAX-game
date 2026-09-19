@@ -21,8 +21,8 @@ namespace HORDAX.Enemies
         [SerializeField] private float laneCenterX;
         [SerializeField] private float laneHalfWidth = 2.75f;
         [SerializeField] private bool constrainToLane;
-        [SerializeField, Min(1)] private int spawnPerBatch = 6;
-        [SerializeField, Min(0.01f)] private float spawnInterval = 0.045f;
+        [SerializeField, Min(1)] private int spawnPerBatch = 5;
+        [SerializeField, Min(0.01f)] private float spawnInterval = 0.07f;
         [SerializeField] private EnemyData enemyData;
         [SerializeField] private GameObject enemyPrefab;
 
@@ -31,6 +31,7 @@ namespace HORDAX.Enemies
         private bool activated;
         private int spawnedCount;
         private float spawnTimer;
+        private bool forceConfiguredRank;
 
         public void Configure(
             RunnerController runner,
@@ -43,7 +44,8 @@ namespace HORDAX.Enemies
             EnemyRank fallbackRank = EnemyRank.Grunt,
             int fallbackCoinReward = 1,
             int fallbackScoreReward = 10,
-            float fallbackScale = 1f)
+            float fallbackScale = 1f,
+            bool forceRank = false)
         {
             player = runner;
             count = Mathf.Max(1, enemyCount);
@@ -56,6 +58,7 @@ namespace HORDAX.Enemies
             coinReward = Mathf.Max(0, fallbackCoinReward);
             scoreReward = Mathf.Max(0, fallbackScoreReward);
             scaleMultiplier = Mathf.Max(0.1f, fallbackScale);
+            forceConfiguredRank = forceRank;
         }
 
         public void ConfigureLane(float centerX, float halfWidth)
@@ -110,7 +113,9 @@ namespace HORDAX.Enemies
             float health = enemyData != null ? enemyData.Health : enemyHealth;
             float speed = enemyData != null ? enemyData.MoveSpeed : enemySpeed;
             float damage = enemyData != null ? enemyData.ContactDamage : enemyDamage;
-            EnemyRank rank = enemyData != null ? enemyData.Rank : enemyRank;
+            EnemyRank rank = forceConfiguredRank
+                ? enemyRank
+                : enemyData != null ? enemyData.Rank : enemyRank;
             int coins = enemyData != null ? enemyData.CoinReward : coinReward;
             int score = enemyData != null ? enemyData.ScoreReward : scoreReward;
             float size = enemyData != null ? enemyData.ScaleMultiplier : scaleMultiplier;
