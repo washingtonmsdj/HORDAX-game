@@ -271,14 +271,7 @@ namespace HORDAX.EditorTools
             }
 
             WriteResponse(command, true, "Play Mode start requested.");
-            EditorApplication.delayCall += () =>
-            {
-                if (!EditorApplication.isPlayingOrWillChangePlaymode &&
-                    !EditorApplication.isPlaying)
-                {
-                    EditorApplication.EnterPlaymode();
-                }
-            };
+            EditorApplication.EnterPlaymode();
         }
 
         private static void StopPlay(AgentCommand command)
@@ -291,15 +284,8 @@ namespace HORDAX.EditorTools
             }
 
             WriteResponse(command, true, "Play Mode stop requested.");
-            EditorApplication.delayCall += () =>
-            {
-                if (EditorApplication.isPlaying ||
-                    EditorApplication.isPlayingOrWillChangePlaymode)
-                {
-                    Time.timeScale = 1f;
-                    EditorApplication.ExitPlaymode();
-                }
-            };
+            Time.timeScale = 1f;
+            EditorApplication.ExitPlaymode();
         }
 
         private static void BeginCapture(AgentCommand command)
