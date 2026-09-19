@@ -66,3 +66,48 @@ The bed pipeline in `automation/blender/bed_pipeline/` is the reference implemen
 ## Persistent-session correctness
 
 Blender Live is a persistent Python process. Every generation entrypoint must invalidate import caches and reload its pipeline modules from the synchronized source tree. A generation must never silently execute stale module code after a Git update.
+
+## OrdaX perception and contact gates
+
+Future asset generators must use the OrdaX Blender live perception layer as part of
+the normal generation loop. Visual plausibility alone is not an acceptance gate.
+
+Before assembly:
+
+1. Run a rich scene snapshot and record world-space bounds, dimensions, parent
+   relationships, collections, modifiers, constraints, materials and mesh counts.
+2. Inspect any suspicious component individually by stable object name.
+3. Run BVH contact audits for every pair declared `forbid_intersection` in the
+   asset manifest/contact rules.
+4. Fix structural/contact failures before materials or final lighting.
+5. Capture a viewport image only after structural validation passes.
+6. Save the final artifact only after both machine validation and visual
+   comparison pass.
+
+The live MCP actions are:
+
+- `blender.live_scene_snapshot`
+- `blender.live_object_inspect`
+- `blender.live_contact_audit`
+- `blender.live_capture`
+
+The generator manifest remains the source of truth for which pairs may touch,
+which pairs must remain separated, and what dimensional tolerances apply.
+
+### Object addressability
+
+Every meaningful generated object must remain independently addressable. Use
+stable `ordax_object_id` values rather than relying on Blender's automatically
+suffixed names. Assemblies are built from validated components; they are not a
+reason to lose component identity.
+
+### No-intersection rule
+
+AABB checks are only broad-phase diagnostics. Final critical contact checks use
+evaluated mesh BVHs, because two rotated or soft objects can have overlapping
+bounding boxes without their surfaces intersecting, or can visually intersect
+while a simple transform-only inspection misses it.
+
+For deformables, collision simulation remains the primary generation mechanism;
+BVH auditing is the acceptance check after evaluation/bake.
+
