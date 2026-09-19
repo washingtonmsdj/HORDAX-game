@@ -40,7 +40,10 @@ namespace HORDAX.Enemies
         private float laneTargetX;
         private bool breachedPlayerLine;
 
+        public static EnemyAgent ActiveBoss { get; private set; }
+
         public EnemyRank Rank => rank;
+        public float HealthNormalized => maxHealth <= 0f ? 0f : Mathf.Clamp01(health / maxHealth);
         public override Vector3 TargetPoint => transform.position + Vector3.up * Mathf.Max(0.55f, transform.localScale.y * 0.45f);
 
         public void Initialize(
@@ -80,6 +83,7 @@ namespace HORDAX.Enemies
 
             if (rank == EnemyRank.Boss && GameManager.Instance != null)
             {
+                ActiveBoss = this;
                 bossBarrierOwnerId = GetInstanceID();
                 float barrierOffset = Mathf.Max(6f, transform.localScale.z * 2.5f);
                 GameManager.Instance.RegisterBossBarrier(bossBarrierOwnerId, transform.position.z - barrierOffset);
@@ -94,6 +98,9 @@ namespace HORDAX.Enemies
 
         protected override void OnDisable()
         {
+            if (ActiveBoss == this)
+                ActiveBoss = null;
+
             ReleaseBossBarrier();
             base.OnDisable();
         }
@@ -181,7 +188,7 @@ namespace HORDAX.Enemies
                 Mathf.Max(0.35f, baseScale.magnitude * 0.24f),
                 rank);
 
-            Die(false);
+            Die();
         }
 
         private void RefreshSteering()
@@ -240,10 +247,10 @@ namespace HORDAX.Enemies
             else if (rank == EnemyRank.Elite)
                 RunnerCamera.Instance?.Shake(0.12f, 0.10f);
 
-            Die(true);
+            Die();
         }
 
-        private void Die(bool killedByPlayer)
+        private void Die()
         {
             ReleaseBossBarrier();
             transform.localScale = baseScale;
