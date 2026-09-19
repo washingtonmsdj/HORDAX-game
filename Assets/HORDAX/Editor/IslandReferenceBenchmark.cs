@@ -52,8 +52,6 @@ namespace HORDAX.EditorTools
             CreateMaterials();
 
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            scene.name = "IslandReferenceBenchmark";
-
             GameObject root = new GameObject("Island Reference Benchmark");
 
             CreateWater(root.transform);
