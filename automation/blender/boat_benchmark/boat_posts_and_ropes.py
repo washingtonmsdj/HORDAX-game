@@ -124,29 +124,41 @@ def _rope_curve(col, name, points, rope, depth=0.016, cyclic=False):
 
 
 def _helix_points(x: float, *, turns: float, phase: float, z0: float, z1: float, radius: float):
-    count = max(36, int(turns * 20))
+    count = max(48, int(turns * 28))
     pts = []
     for i in range(count + 1):
         t = i / count
         angle = phase + turns * math.tau * t
-        r = radius * (1.0 + 0.045 * math.sin(angle * 1.7))
-        # X is the boat axis; coils wrap around the post in the Y/Z plane.
-        px = x + 0.009 * math.sin(angle * 0.65)
+        r = radius * (1.0 + 0.025 * math.sin(angle * 1.7))
+        # The post is vertical (Z), so a true wrap must orbit in the X/Y plane.
+        # The former implementation varied mostly Y and therefore crossed the
+        # post instead of circling it.
+        px = x + r * math.sin(angle)
         py = r * math.cos(angle)
-        pz = z0 + (z1 - z0) * t + r * 0.20 * math.sin(angle)
+        pz = (
+            z0
+            + (z1 - z0) * t
+            + 0.004 * math.sin(angle * 1.35)
+        )
         pts.append((px, py, pz))
     return pts
 
 
 def _loop_points(x: float, phase: float, z_center: float, radius_y: float, radius_z: float):
     pts = []
-    samples = 44
+    samples = 64
+    radius_x = radius_y * 0.90
     for i in range(samples):
         a = phase + math.tau * i / samples
-        # Slightly slanted securing loop.
-        px = x + 0.038 * math.sin(a)
+        # A securing loop also orbits the vertical post in X/Y, with a small
+        # vertical wave to create the crossed hand-tied appearance.
+        px = x + radius_x * math.sin(a)
         py = radius_y * math.cos(a)
-        pz = z_center + radius_z * math.sin(a) + 0.025 * math.cos(a)
+        pz = (
+            z_center
+            + radius_z * 0.30 * math.sin(a + 0.55)
+            + 0.008 * math.cos(2.0 * a)
+        )
         pts.append((px, py, pz))
     return pts
 
@@ -170,16 +182,16 @@ def _make_rope_set(col, label: str, x: float, side_sign: int, rope):
     coil_a = _rope_curve(
         col,
         f"ORDAX_BOAT_DETAIL_Rope_{label}_CoilA",
-        _helix_points(x, turns=4.2, phase=0.0, z0=0.58, z1=0.73, radius=0.108),
+        _helix_points(x, turns=4.2, phase=0.0, z0=0.58, z1=0.73, radius=0.124),
         rope,
-        depth=0.017,
+        depth=0.015,
     )
     coil_b = _rope_curve(
         col,
         f"ORDAX_BOAT_DETAIL_Rope_{label}_CoilB",
-        _helix_points(x, turns=3.6, phase=math.pi, z0=0.61, z1=0.76, radius=0.116),
+        _helix_points(x, turns=3.6, phase=math.pi, z0=0.61, z1=0.76, radius=0.132),
         rope,
-        depth=0.015,
+        depth=0.014,
     )
 
     for idx, phase in enumerate((0.25, 1.35), start=1):
