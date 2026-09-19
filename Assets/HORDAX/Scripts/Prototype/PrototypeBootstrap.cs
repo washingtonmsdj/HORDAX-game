@@ -481,6 +481,32 @@ namespace HORDAX.Prototype
             HordeSpawner horde = spawner.AddComponent<HordeSpawner>();
             horde.Configure(player, count, columns, health, speed, damage, data, rank, coinReward, scoreReward, scaleMultiplier);
             horde.ConfigureLane(TrackLayout.HordeCenterX, TrackLayout.LaneHalfWidth - 0.25f);
+
+            Material encounterMaterial = rank == EnemyRank.Boss
+                ? PrototypeMaterials.Boss
+                : rank == EnemyRank.Elite ? PrototypeMaterials.Elite : PrototypeMaterials.HordeLane;
+
+            GameObject encounterLine = CreateBlock(
+                "Encounter Marker",
+                spawner.transform.position + new Vector3(0f, 0.035f, 0f),
+                new Vector3(TrackLayout.LaneHalfWidth * 2f - 0.25f, 0.07f, rank == EnemyRank.Boss ? 0.55f : 0.22f),
+                encounterMaterial,
+                spawner.transform,
+                false);
+            encounterLine.transform.localPosition = new Vector3(0f, 0.035f, 0f);
+
+            string encounterLabel = rank == EnemyRank.Boss
+                ? "BOSS"
+                : rank == EnemyRank.Elite
+                    ? $"ELITE x{count}"
+                    : $"HORDA x{count}";
+
+            CreateWorldLabel(
+                spawner.transform,
+                encounterLabel,
+                new Vector3(0f, rank == EnemyRank.Boss ? 2.8f : 2.0f, 0f),
+                rank == EnemyRank.Boss ? 72 : 48,
+                rank == EnemyRank.Boss ? 0.065f : 0.05f);
         }
 
         private void CreateGate(string label, float z, float hitPoints)
