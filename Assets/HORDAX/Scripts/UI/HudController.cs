@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using HORDAX.Combat;
 using HORDAX.Core;
 using HORDAX.Data;
+using HORDAX.Enemies;
 using HORDAX.Player;
 
 namespace HORDAX.UI
@@ -22,6 +23,8 @@ namespace HORDAX.UI
         private Text revisionText;
         private Image healthFill;
         private Image progressFill;
+        private Image bossHealthFill;
+        private GameObject bossHealthRoot;
         private GameObject resultControls;
         private Button nextButton;
         private GameState lastState = GameState.Booting;
@@ -82,6 +85,13 @@ namespace HORDAX.UI
             bool bossEncounter = GameManager.Instance.TryGetActiveBossBarrier(out _);
             encounterText.text = bossEncounter ? "BOSS FIGHT  -  DEFEAT THE BOSS TO ADVANCE" : string.Empty;
             encounterText.gameObject.SetActive(bossEncounter);
+
+            EnemyAgent boss = EnemyAgent.ActiveBoss;
+            bool showBossHealth = bossEncounter && boss != null;
+            if (bossHealthRoot != null && bossHealthRoot.activeSelf != showBossHealth)
+                bossHealthRoot.SetActive(showBossHealth);
+            if (showBossHealth && bossHealthFill != null)
+                bossHealthFill.fillAmount = boss.HealthNormalized;
 
             bool ended = state == GameState.Won || state == GameState.Lost;
             if (resultControls != null && resultControls.activeSelf != ended)
@@ -213,6 +223,48 @@ namespace HORDAX.UI
             encounterRect.sizeDelta = new Vector2(1100f, 52f);
             encounterText.color = new Color(1f, 0.45f, 0.18f, 1f);
             encounterText.gameObject.SetActive(false);
+
+            bossHealthRoot = new GameObject("Boss Health", typeof(RectTransform));
+            bossHealthRoot.transform.SetParent(transform, false);
+            RectTransform bossRootRect = bossHealthRoot.GetComponent<RectTransform>();
+            bossRootRect.anchorMin = new Vector2(0.5f, 1f);
+            bossRootRect.anchorMax = new Vector2(0.5f, 1f);
+            bossRootRect.pivot = new Vector2(0.5f, 1f);
+            bossRootRect.anchoredPosition = new Vector2(0f, -220f);
+            bossRootRect.sizeDelta = new Vector2(760f, 52f);
+
+            Text bossLabel = CreateText("Boss Label", bossHealthRoot.transform, font, 24, TextAnchor.MiddleCenter);
+            bossLabel.text = "BOSS HP";
+            bossLabel.rectTransform.anchorMin = new Vector2(0f, 1f);
+            bossLabel.rectTransform.anchorMax = new Vector2(1f, 1f);
+            bossLabel.rectTransform.pivot = new Vector2(0.5f, 1f);
+            bossLabel.rectTransform.anchoredPosition = new Vector2(0f, 0f);
+            bossLabel.rectTransform.sizeDelta = new Vector2(0f, 28f);
+
+            GameObject bossBarBg = new GameObject("Boss Bar Background", typeof(RectTransform), typeof(Image));
+            bossBarBg.transform.SetParent(bossHealthRoot.transform, false);
+            RectTransform bossBarBgRect = bossBarBg.GetComponent<RectTransform>();
+            bossBarBgRect.anchorMin = new Vector2(0f, 0f);
+            bossBarBgRect.anchorMax = new Vector2(1f, 0f);
+            bossBarBgRect.pivot = new Vector2(0.5f, 0f);
+            bossBarBgRect.anchoredPosition = Vector2.zero;
+            bossBarBgRect.sizeDelta = new Vector2(0f, 18f);
+            bossBarBg.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0.65f);
+
+            GameObject bossFillObject = new GameObject("Boss Bar Fill", typeof(RectTransform), typeof(Image));
+            bossFillObject.transform.SetParent(bossBarBg.transform, false);
+            bossHealthFill = bossFillObject.GetComponent<Image>();
+            bossHealthFill.color = new Color(0.95f, 0.18f, 0.16f, 1f);
+            bossHealthFill.type = Image.Type.Filled;
+            bossHealthFill.fillMethod = Image.FillMethod.Horizontal;
+            bossHealthFill.fillOrigin = 0;
+            bossHealthFill.fillAmount = 1f;
+            RectTransform bossFillRect = bossFillObject.GetComponent<RectTransform>();
+            bossFillRect.anchorMin = Vector2.zero;
+            bossFillRect.anchorMax = Vector2.one;
+            bossFillRect.offsetMin = new Vector2(3f, 3f);
+            bossFillRect.offsetMax = new Vector2(-3f, -3f);
+            bossHealthRoot.SetActive(false);
 
             statusText = CreateText("Status", transform, font, 62, TextAnchor.MiddleCenter);
             RectTransform statusRect = statusText.rectTransform;
