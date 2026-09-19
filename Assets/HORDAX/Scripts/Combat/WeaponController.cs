@@ -236,10 +236,32 @@ namespace HORDAX.Combat
             currentTarget = SelectTarget();
 
             shotTimer -= Time.deltaTime;
-            if (shotTimer > 0f || currentTarget == null) return;
+            if (currentTarget == null)
+            {
+                // Cooldown may recover while no target is available, but never build
+                // an artificial backlog that would burst-fire when a target appears.
+                shotTimer = Mathf.Max(0f, shotTimer);
+                return;
+            }
 
-            Fire(currentTarget);
-            shotTimer = 1f / Mathf.Max(0.01f, fireRate);
+            if (shotTimer > 0f) return;
+
+            float interval = 1f / Mathf.Max(0.01f, fireRate);
+            int shotsThisFrame = 0;
+            const int maxCatchUpShotsPerFrame = 4;
+
+            // Preserve timer overshoot so low frame rates and accelerated automation
+            // still deliver the configured rounds-per-second instead of silently
+            // reducing weapon DPS.
+            while (shotTimer <= 0f && shotsThisFrame < maxCatchUpShotsPerFrame)
+            {
+                Fire(currentTarget);
+                shotTimer += interval;
+                shotsThisFrame++;
+            }
+
+            if (shotsThisFrame == maxCatchUpShotsPerFrame && shotTimer < -interval)
+                shotTimer = 0f;
         }
 
         private ShootableTarget SelectTarget()
