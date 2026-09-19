@@ -141,6 +141,7 @@ add_label("REFERENCIA", (-1.62, -9.82, 1.93))
 add_label("BLENDER", (0.25, -9.76, 2.23))
 
 scene = bpy.context.scene
+scene.render.engine = "BLENDER_EEVEE_NEXT"
 scene.render.resolution_x = 1440
 scene.render.resolution_y = 810
 scene.render.resolution_percentage = 100
@@ -153,12 +154,11 @@ if screen:
             continue
         space = area.spaces.active
         try:
-            space.shading.type = "MATERIAL"
-            space.shading.light = "STUDIO"
+            space.shading.type = "RENDERED"
             space.shading.show_shadows = True
             space.shading.show_cavity = True
-            space.shading.use_scene_world = False
-            space.shading.use_scene_lights = False
+            space.shading.use_scene_world = True
+            space.shading.use_scene_lights = True
         except Exception:
             pass
         region = next((r for r in area.regions if r.type == "WINDOW"), None)
