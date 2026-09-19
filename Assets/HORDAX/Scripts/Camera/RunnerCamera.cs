@@ -1,4 +1,6 @@
 using UnityEngine;
+using HORDAX.Core;
+using HORDAX.World;
 
 namespace HORDAX.CameraSystem
 {
@@ -10,6 +12,8 @@ namespace HORDAX.CameraSystem
         [SerializeField] private float maxShake = 0.45f;
         [SerializeField] private bool frameTrackCenter;
         [SerializeField] private float trackCenterX;
+        [SerializeField] private float bossZoomOut = 2.2f;
+        [SerializeField] private float bossLookAheadBonus = 3.0f;
 
         private Transform target;
         private Vector3 velocity;
@@ -61,7 +65,21 @@ namespace HORDAX.CameraSystem
             if (target == null) return;
 
             Vector3 focus = GetFocusPoint();
-            Vector3 desired = focus + offset;
+            bool bossEncounter = GameManager.Instance != null &&
+                GameManager.Instance.TryGetActiveBossBarrier(out _);
+
+            Vector3 dynamicOffset = offset;
+            float dynamicLookAhead = lookAhead;
+
+            if (bossEncounter)
+            {
+                dynamicOffset.y += bossZoomOut * 0.55f;
+                dynamicOffset.z -= bossZoomOut;
+                dynamicLookAhead += bossLookAheadBonus;
+                focus.x = Mathf.Lerp(focus.x, TrackLayout.HordeCenterX, 0.22f);
+            }
+
+            Vector3 desired = focus + dynamicOffset;
             Vector3 smoothed = Vector3.SmoothDamp(transform.position, desired, ref velocity, smoothTime);
 
             if (shakeRemaining > 0f)
@@ -77,7 +95,7 @@ namespace HORDAX.CameraSystem
             }
 
             transform.position = smoothed;
-            transform.LookAt(focus + Vector3.forward * lookAhead + Vector3.up * 0.5f);
+            transform.LookAt(focus + Vector3.forward * dynamicLookAhead + Vector3.up * 0.5f);
         }
 
         private Vector3 GetFocusPoint()
