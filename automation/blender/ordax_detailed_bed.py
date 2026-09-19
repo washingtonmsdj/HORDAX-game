@@ -52,6 +52,8 @@ def _set_socket(node, name, value):
 def ensure_collection():
     old = bpy.data.collections.get(COLLECTION_NAME)
     if old:
+        # Remove only objects owned by this generated test collection.
+        # Their datablocks are then eligible for the safe orphan pass below.
         for obj in list(old.objects):
             bpy.data.objects.remove(obj, do_unlink=True)
         _cleanup_unused_geometry()
@@ -59,10 +61,17 @@ def ensure_collection():
 
     collection = bpy.data.collections.new(COLLECTION_NAME)
     bpy.context.scene.collection.children.link(collection)
+    _cleanup_unused_geometry()
     return collection
 
 
 def _cleanup_unused_geometry():
+    """Drop geometry datablocks with no users and no fake-user protection.
+
+    This prevents repeated live generations from accumulating old Cube/Cylinder
+    mesh datablocks while preserving every datablock still referenced anywhere
+    in the HORDAX scene.
+    """
     datablocks = (
         bpy.data.meshes,
         bpy.data.curves,
@@ -71,7 +80,7 @@ def _cleanup_unused_geometry():
     )
     for blocks in datablocks:
         for block in list(blocks):
-            if block.name.startswith(PREFIX) and block.users == 0:
+            if block.users == 0 and not getattr(block, "use_fake_user", False):
                 blocks.remove(block)
 
 
