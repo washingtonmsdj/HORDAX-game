@@ -13,7 +13,7 @@
     "mattress_height": 0.3,
     "frame_width": 1.02,
     "frame_length": 2.02,
-    "headboard_height": 2.1,
+    "headboard_height": 1.72,
     "headboard_channels": 8
   },
   "tolerances": {
@@ -24,31 +24,63 @@
   "components": [
     {
       "id": "frame",
-      "collection": "ORDAX_BED_FRAME",
-      "module": "frame.py"
+      "artifact": "Artifacts/Blender/bed_parts/frame.blend",
+      "status": "isolated"
+    },
+    {
+      "id": "headboard",
+      "artifact": "Artifacts/Blender/bed_parts/headboard.blend",
+      "status": "isolated"
     },
     {
       "id": "mattress",
-      "collection": "ORDAX_BED_MATTRESS",
-      "module": "mattress.py"
+      "artifact": "Artifacts/Blender/bed_parts/mattress.blend",
+      "status": "isolated"
     },
     {
-      "id": "pillows",
-      "collection": "ORDAX_BED_PILLOWS",
-      "module": "pillows.py"
+      "id": "pillow_back",
+      "artifact": "Artifacts/Blender/bed_parts/pillow_back.blend",
+      "status": "isolated"
     },
     {
-      "id": "bedding",
-      "collection": "ORDAX_BED_BEDDING",
-      "module": "bedding.py"
+      "id": "pillow_sage",
+      "artifact": "Artifacts/Blender/bed_parts/pillow_sage.blend",
+      "status": "isolated"
+    },
+    {
+      "id": "pillow_terracotta",
+      "artifact": "Artifacts/Blender/bed_parts/pillow_terracotta.blend",
+      "status": "isolated"
+    },
+    {
+      "id": "pillow_lumbar",
+      "artifact": "Artifacts/Blender/bed_parts/pillow_lumbar.blend",
+      "status": "isolated"
+    },
+    {
+      "id": "fitted_sheet",
+      "artifact": "Artifacts/Blender/bed_parts/fitted_sheet.blend",
+      "status": "isolated"
+    },
+    {
+      "id": "top_sheet",
+      "artifact": "Artifacts/Blender/bed_parts/top_sheet.blend",
+      "status": "isolated"
+    },
+    {
+      "id": "duvet",
+      "artifact": "Artifacts/Blender/bed_parts/duvet.blend",
+      "status": "isolated"
     }
   ],
   "build_order": [
-    "frame",
-    "mattress",
-    "pillows",
-    "bedding",
-    "validate"
+    "isolated_parts",
+    "individual_validation",
+    "human_visual_review",
+    "master_assembly_later",
+    "pairwise_contact_validation"
   ],
-  "artifact": "Artifacts/Blender/ordax_bed_pipeline.blend"
+  "artifact": "Artifacts/Blender/bed_parts_review.blend",
+  "assembly_enabled": false,
+  "assembly_gate": "all isolated parts approved"
 }
