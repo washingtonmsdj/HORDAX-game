@@ -14,6 +14,7 @@ namespace HORDAX.Combat
         private Action<Bullet> recycle;
         private Vector3 baseScale;
         private bool hasBaseScale;
+        private TrailRenderer trail;
 
         public void Initialize(ShootableTarget newTarget, float newDamage, float newSpeed, Vector3 newAimOffset, float scaleMultiplier, Action<Bullet> recycleAction)
         {
@@ -29,6 +30,9 @@ namespace HORDAX.Combat
                 baseScale = transform.localScale;
                 hasBaseScale = true;
             }
+
+            if (trail == null) trail = GetComponent<TrailRenderer>();
+            trail?.Clear();
 
             float safeScale = Mathf.Max(0.1f, scaleMultiplier);
             transform.localScale = baseScale * safeScale;
