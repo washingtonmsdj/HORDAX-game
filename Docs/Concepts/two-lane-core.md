@@ -37,3 +37,17 @@ Não perder a separação visual entre **arsenal** e **horda**.
 Ver `two-lane-core.svg`.
 
 Esta referência deve orientar gameplay, level design, câmera, HUD e futuras artes do projeto.
+
+
+## Loop de combate aprovado
+
+A interação entre as duas faixas é intencionalmente assimétrica:
+
+- o jogador corre e coleta progressão apenas na faixa de arsenal;
+- a horda ocupa apenas a faixa inimiga e avança em sentido contrário;
+- a arma mira transversalmente da faixa de arsenal para a faixa da horda;
+- inimigos comuns e elites que alcançam a linha do jogador contam como **breach/leak**, causam dano e saem do campo;
+- bosses param o avanço e viram um encontro obrigatório, com barra de HP própria;
+- a câmera deve manter as duas faixas legíveis ao mesmo tempo e abrir o enquadramento durante bosses.
+
+Isso evita transformar HORDAX em um shooter de arena ou em um runner de três pistas tradicional. A identidade central é a leitura simultânea de **progressão de arsenal de um lado** e **pressão crescente da horda do outro**.
