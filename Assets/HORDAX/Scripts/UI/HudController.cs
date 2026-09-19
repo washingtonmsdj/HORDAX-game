@@ -180,7 +180,7 @@ namespace HORDAX.UI
 
         private static void EnsureEventSystem()
         {
-            if (FindObjectOfType<EventSystem>() != null) return;
+            if (FindFirstObjectByType<EventSystem>() != null) return;
 
             GameObject eventSystem = new GameObject("EventSystem");
             eventSystem.AddComponent<EventSystem>();
