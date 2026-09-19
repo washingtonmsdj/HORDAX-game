@@ -65,6 +65,14 @@ namespace HORDAX.Enemies
             scoreReward = Mathf.Max(0, fallbackScoreReward);
             scaleMultiplier = Mathf.Max(0.1f, fallbackScale);
             forceConfiguredRank = forceRank;
+
+            EnemyRank configuredRank = forceRank
+                ? fallbackRank
+                : definition != null ? definition.Rank : fallbackRank;
+
+            activationDistance = configuredRank == EnemyRank.Boss
+                ? 28f
+                : configuredRank == EnemyRank.Elite ? 40f : 46f;
         }
 
         public void ConfigureLane(float centerX, float halfWidth)
