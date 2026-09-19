@@ -34,7 +34,7 @@ SPECS={
         "name":"PART_Top_Sheet",
         "width":1.24,"length":2.02,"center_y":-0.02,"z":0.37,
         "cols":30,"rows":44,"frames":38,
-        "thickness":0.004,"solidify":0.003,
+        "thickness":0.008,"solidify":0.003,
         "color":(0.807,0.738,0.680),
         "roughness":0.91,"weave":235.0,"bump":0.08,
     },
@@ -44,7 +44,7 @@ SPECS={
         "name":"PART_Duvet",
         "width":1.52,"length":2.14,"center_y":-0.10,"z":0.42,
         "cols":36,"rows":52,"frames":46,
-        "thickness":0.005,"solidify":0.012,
+        "thickness":0.010,"solidify":0.012,
         "color":(0.098,0.087,0.051),
         "roughness":0.94,"weave":190.0,"bump":0.15,
     }
