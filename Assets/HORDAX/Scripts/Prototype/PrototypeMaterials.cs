@@ -5,6 +5,9 @@ namespace HORDAX.Prototype
     public static class PrototypeMaterials
     {
         private static Material road;
+        private static Material arsenalLane;
+        private static Material hordeLane;
+        private static Material divider;
         private static Material rail;
         private static Material player;
         private static Material enemy;
@@ -19,6 +22,9 @@ namespace HORDAX.Prototype
         private static Material hazard;
 
         public static Material Road => road ?? (road = Create("Road", new Color(0.24f, 0.27f, 0.32f)));
+        public static Material ArsenalLane => arsenalLane ?? (arsenalLane = Create("Arsenal Lane", new Color(0.10f, 0.27f, 0.42f)));
+        public static Material HordeLane => hordeLane ?? (hordeLane = Create("Horde Lane", new Color(0.30f, 0.13f, 0.15f)));
+        public static Material Divider => divider ?? (divider = Create("Divider", new Color(0.36f, 0.82f, 1.00f)));
         public static Material Rail => rail ?? (rail = Create("Rail", new Color(0.10f, 0.14f, 0.20f)));
         public static Material Player => player ?? (player = Create("Player", new Color(0.08f, 0.48f, 0.95f)));
         public static Material Enemy => enemy ?? (enemy = Create("Enemy", new Color(0.45f, 0.95f, 0.35f)));
