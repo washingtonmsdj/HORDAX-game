@@ -62,9 +62,10 @@ namespace HORDAX.Enemies
             attackTimer = Random.Range(0f, attackInterval * 0.5f);
             punch = 0f;
             baseScale = transform.localScale;
-            logicTimer = Random.Range(0f, nearLogicInterval);
+            logicTimer = 0f;
             cachedDistance = float.MaxValue;
-            cachedDirection = Vector3.back;
+            cachedDirection = Vector3.zero;
+            RefreshSteering();
         }
 
         protected override void OnEnable()
@@ -75,7 +76,7 @@ namespace HORDAX.Enemies
 
         private void Start()
         {
-            if (player == null) player = FindObjectOfType<RunnerController>();
+            if (player == null) player = FindFirstObjectByType<RunnerController>();
             if (player != null && playerHealth == null) playerHealth = player.GetComponent<PlayerHealth>();
             if (health <= 0f) health = maxHealth;
             if (baseScale == Vector3.zero) baseScale = transform.localScale;
