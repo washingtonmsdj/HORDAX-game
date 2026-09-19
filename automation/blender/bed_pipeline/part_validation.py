@@ -161,3 +161,46 @@ def validate_cloth_part(collection, part_id: str, cloth_role: str, proxy) -> dic
         report["metrics"]["min_z"] = round(lo.z,5)
     report["ok"] = not report["errors"]
     return report
+
+
+def validate_bed_structure(collection, *, width: float, length: float, height: float, channels: int) -> dict:
+    report = validate_collection(
+        collection,
+        "bed_structure",
+        required_roles=("left_rail","right_rail","foot_rail","support","headboard_channel"),
+    )
+    objs=list(collection.objects)
+    legs=[o for o in objs if bool(o.get("ordax_is_bed_leg"))]
+    rear=[o for o in legs if o.get("ordax_role")=="rear_post_leg"]
+    front=[o for o in legs if o.get("ordax_role")=="front_leg"]
+    channel_objs=[o for o in objs if o.get("ordax_role")=="headboard_channel"]
+
+    report["metrics"].update({
+        "bed_legs":len(legs),
+        "front_legs":len(front),
+        "rear_post_legs":len(rear),
+        "headboard_channels":len(channel_objs),
+        "nominal_width":width,
+        "nominal_length":length,
+        "nominal_height":height,
+    })
+    if len(legs)!=4:
+        report["errors"].append({"code":"bed_leg_count","detail":f"expected 4, got {len(legs)}"})
+    if len(front)!=2 or len(rear)!=2:
+        report["errors"].append({"code":"integrated_rear_legs","detail":f"front={len(front)}, rear_post={len(rear)}"})
+    if len(channel_objs)!=channels:
+        report["errors"].append({"code":"channel_count","detail":f"expected {channels}, got {len(channel_objs)}"})
+
+    if objs:
+        lows,highs=zip(*(world_bounds(o) for o in objs))
+        lo=Vector((min(v.x for v in lows),min(v.y for v in lows),min(v.z for v in lows)))
+        hi=Vector((max(v.x for v in highs),max(v.y for v in highs),max(v.z for v in highs)))
+        actual=(hi.x-lo.x,hi.y-lo.y,hi.z-lo.z)
+        report["metrics"]["bounds"]=[round(v,5) for v in actual]
+        if abs(actual[0]-width)>0.045:
+            report["errors"].append({"code":"structure_width","detail":f"expected {width:.3f}, got {actual[0]:.3f}"})
+        if abs(actual[2]-height)>0.045:
+            report["errors"].append({"code":"structure_height","detail":f"expected {height:.3f}, got {actual[2]:.3f}"})
+
+    report["ok"]=not report["errors"]
+    return report
