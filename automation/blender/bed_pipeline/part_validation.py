@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from mathutils import Vector
+from mathutils.bvhtree import BVHTree
 
 
 def world_bounds(obj):
@@ -125,5 +126,38 @@ def validate_pillow(collection, part_id: str, *, expected_dimensions) -> dict:
         tolerance=0.045,
     )
     report["metrics"]["contact_envelope"] = list(expected_dimensions)
+    report["ok"] = not report["errors"]
+    return report
+
+
+def mesh_overlap_pairs(obj_a, obj_b) -> int:
+    if obj_a.type != "MESH" or obj_b.type != "MESH":
+        return 0
+    depsgraph = obj_a.evaluated_get.__self__.id_data if False else None
+    import bpy
+    dg = bpy.context.evaluated_depsgraph_get()
+    tree_a = BVHTree.FromObject(obj_a, dg, deform=True, cage=False, epsilon=0.0)
+    tree_b = BVHTree.FromObject(obj_b, dg, deform=True, cage=False, epsilon=0.0)
+    if tree_a is None or tree_b is None:
+        return 0
+    return len(tree_a.overlap(tree_b))
+
+
+def validate_cloth_part(collection, part_id: str, cloth_role: str, proxy) -> dict:
+    report = validate_collection(collection, part_id, required_roles=(cloth_role,))
+    cloth = next((o for o in collection.objects if o.get("ordax_role") == cloth_role), None)
+    if cloth is not None and proxy is not None:
+        overlaps = mesh_overlap_pairs(cloth, proxy)
+        report["metrics"]["proxy_triangle_overlaps"] = overlaps
+        if overlaps:
+            report["errors"].append({
+                "code":"cloth_proxy_intersection",
+                "detail":f"{overlaps} evaluated triangle overlaps",
+            })
+        lo, hi = world_bounds(cloth)
+        report["metrics"]["bounds"] = [
+            round(hi.x-lo.x,5),round(hi.y-lo.y,5),round(hi.z-lo.z,5)
+        ]
+        report["metrics"]["min_z"] = round(lo.z,5)
     report["ok"] = not report["errors"]
     return report
