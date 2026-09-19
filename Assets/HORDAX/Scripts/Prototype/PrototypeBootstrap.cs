@@ -367,7 +367,8 @@ namespace HORDAX.Prototype
                                 step.enemyData, EnemyRank.Elite,
                                 Mathf.Max(step.coinReward, 8),
                                 Mathf.Max(step.scoreReward, 80),
-                                Mathf.Max(step.scaleMultiplier, 1.35f));
+                                Mathf.Max(step.scaleMultiplier, 1.35f),
+                                true);
                             break;
 
                         case LevelStepType.Boss:
@@ -379,7 +380,8 @@ namespace HORDAX.Prototype
                                 step.enemyData, EnemyRank.Boss,
                                 Mathf.Max(step.coinReward, 100),
                                 Mathf.Max(step.scoreReward, 1200),
-                                Mathf.Max(step.scaleMultiplier, 2.25f));
+                                Mathf.Max(step.scaleMultiplier, 2.25f),
+                                true);
                             break;
 
                         case LevelStepType.Gate:
@@ -456,7 +458,7 @@ namespace HORDAX.Prototype
                 "SMG");
 
             CreateHorde("Wave 02", 88f, 48, 8, 8f, 3.45f, 8f);
-            CreateHorde("Elite Squad", 116f, 4, 4, 26f, 3.8f, 12f, null, EnemyRank.Elite, 8, 90, 1.35f);
+            CreateHorde("Elite Squad", 116f, 4, 4, 26f, 3.8f, 12f, null, EnemyRank.Elite, 8, 90, 1.35f, true);
             CreateGate("Gate 120", 134f, 120f);
             CreateUpgrade("Upgrade 01", 141f, 3f, 1.12f, "+POWER");
 
@@ -476,7 +478,7 @@ namespace HORDAX.Prototype
                 PrototypeArmoryCatalog.GetById("minigun")?.WeaponData,
                 WeaponArchetype.Minigun,
                 "MINIGUN");
-            CreateHorde("BLOCK BOSS", 276f, 1, 1, 450f, 2.6f, 25f, null, EnemyRank.Boss, 125, 1500, 2.5f);
+            CreateHorde("BLOCK BOSS", 276f, 1, 1, 450f, 2.6f, 25f, null, EnemyRank.Boss, 125, 1500, 2.5f, true);
 
             CreateFinish(finishZ);
         }
@@ -493,12 +495,13 @@ namespace HORDAX.Prototype
             EnemyRank rank = EnemyRank.Grunt,
             int coinReward = 1,
             int scoreReward = 10,
-            float scaleMultiplier = 1f)
+            float scaleMultiplier = 1f,
+            bool forceRank = false)
         {
             GameObject spawner = new GameObject(string.IsNullOrWhiteSpace(label) ? "Horde" : label);
             spawner.transform.position = new Vector3(TrackLayout.HordeCenterX, 0f, z);
             HordeSpawner horde = spawner.AddComponent<HordeSpawner>();
-            horde.Configure(player, count, columns, health, speed, damage, data, rank, coinReward, scoreReward, scaleMultiplier);
+            horde.Configure(player, count, columns, health, speed, damage, data, rank, coinReward, scoreReward, scaleMultiplier, forceRank);
             horde.ConfigureLane(TrackLayout.HordeCenterX, TrackLayout.LaneHalfWidth - 0.25f);
 
             Material encounterMaterial = rank == EnemyRank.Boss
