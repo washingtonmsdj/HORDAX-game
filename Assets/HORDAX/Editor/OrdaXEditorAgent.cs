@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering;
 using HORDAX.Core;
 using HORDAX.Enemies;
 
@@ -72,6 +73,22 @@ namespace HORDAX.EditorTools
             public string[] validationWarnings;
             public string artifact;
             public string snapshotPath;
+
+            // Typed scene/project inspection used by the OrdaX MCP.
+            public string activeScene;
+            public string renderPipeline;
+            public int gameObjectCount;
+            public int activeGameObjectCount;
+            public int rigidbodyCount;
+            public int colliderCount;
+            public int meshColliderCount;
+            public int rendererCount;
+            public int cameraCount;
+            public int lightCount;
+            public int canvasCount;
+            public int rigidbodyWithoutColliderCount;
+            public int dynamicNonConvexMeshColliderCount;
+            public string[] auditWarnings;
         }
 
         private static string ProjectRoot =>
@@ -172,6 +189,14 @@ namespace HORDAX.EditorTools
                         Validate(command);
                         break;
 
+                    case "scene_summary":
+                        SceneSummary(command, false);
+                        break;
+
+                    case "physics_audit":
+                        SceneSummary(command, true);
+                        break;
+
                     case "capture":
                         BeginCapture(command);
                         break;
@@ -226,6 +251,79 @@ namespace HORDAX.EditorTools
             response.warningCount = report.WarningCount;
             response.validationErrors = new List<string>(report.Errors).ToArray();
             response.validationWarnings = new List<string>(report.Warnings).ToArray();
+            SaveResponse(response);
+        }
+
+        private static void SceneSummary(AgentCommand command, bool physicsAudit)
+        {
+            if (EditorApplication.isCompiling || EditorApplication.isUpdating)
+            {
+                WriteResponse(command, false, "Unity Editor is compiling or importing.");
+                return;
+            }
+
+            GameObject[] objects = Resources.FindObjectsOfTypeAll<GameObject>();
+            List<GameObject> sceneObjects = new List<GameObject>();
+            foreach (GameObject gameObject in objects)
+            {
+                if (gameObject == null || !gameObject.scene.IsValid() || !gameObject.scene.isLoaded)
+                    continue;
+                sceneObjects.Add(gameObject);
+            }
+
+            Rigidbody[] rigidbodies = Resources.FindObjectsOfTypeAll<Rigidbody>();
+            Collider[] colliders = Resources.FindObjectsOfTypeAll<Collider>();
+            MeshCollider[] meshColliders = Resources.FindObjectsOfTypeAll<MeshCollider>();
+
+            int rigidbodyWithoutCollider = 0;
+            int dynamicNonConvexMeshCollider = 0;
+            List<string> warnings = new List<string>();
+
+            foreach (Rigidbody body in rigidbodies)
+            {
+                if (body == null || !body.gameObject.scene.IsValid() || !body.gameObject.scene.isLoaded)
+                    continue;
+
+                Collider[] attached = body.GetComponentsInChildren<Collider>(true);
+                if (attached.Length == 0)
+                {
+                    rigidbodyWithoutCollider++;
+                    warnings.Add("Rigidbody without Collider: " + body.gameObject.name);
+                }
+
+                if (!body.isKinematic)
+                {
+                    foreach (MeshCollider meshCollider in attached.OfType<MeshCollider>())
+                    {
+                        if (!meshCollider.convex)
+                        {
+                            dynamicNonConvexMeshCollider++;
+                            warnings.Add("Dynamic Rigidbody uses non-convex MeshCollider: " + body.gameObject.name);
+                        }
+                    }
+                }
+            }
+
+            RenderPipelineAsset pipeline = GraphicsSettings.currentRenderPipeline;
+            AgentResponse response = BaseResponse(command);
+            response.ok = !physicsAudit || (rigidbodyWithoutCollider == 0 && dynamicNonConvexMeshCollider == 0);
+            response.summary = physicsAudit
+                ? (response.ok ? "Physics audit passed." : "Physics audit found issues.")
+                : "Unity scene summary ready.";
+            response.activeScene = SceneManager.GetActiveScene().path;
+            response.renderPipeline = pipeline != null ? pipeline.GetType().Name : "Built-in";
+            response.gameObjectCount = sceneObjects.Count;
+            response.activeGameObjectCount = sceneObjects.Count(go => go.activeInHierarchy);
+            response.rigidbodyCount = rigidbodies.Count(rb => rb != null && rb.gameObject.scene.IsValid() && rb.gameObject.scene.isLoaded);
+            response.colliderCount = colliders.Count(col => col != null && col.gameObject.scene.IsValid() && col.gameObject.scene.isLoaded);
+            response.meshColliderCount = meshColliders.Count(col => col != null && col.gameObject.scene.IsValid() && col.gameObject.scene.isLoaded);
+            response.rendererCount = Resources.FindObjectsOfTypeAll<Renderer>().Count(r => r != null && r.gameObject.scene.IsValid() && r.gameObject.scene.isLoaded);
+            response.cameraCount = Resources.FindObjectsOfTypeAll<Camera>().Count(cam => cam != null && cam.gameObject.scene.IsValid() && cam.gameObject.scene.isLoaded);
+            response.lightCount = Resources.FindObjectsOfTypeAll<Light>().Count(light => light != null && light.gameObject.scene.IsValid() && light.gameObject.scene.isLoaded);
+            response.canvasCount = Resources.FindObjectsOfTypeAll<Canvas>().Count(canvas => canvas != null && canvas.gameObject.scene.IsValid() && canvas.gameObject.scene.isLoaded);
+            response.rigidbodyWithoutColliderCount = rigidbodyWithoutCollider;
+            response.dynamicNonConvexMeshColliderCount = dynamicNonConvexMeshCollider;
+            response.auditWarnings = warnings.Take(200).ToArray();
             SaveResponse(response);
         }
 
