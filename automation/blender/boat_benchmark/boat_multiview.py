@@ -19,11 +19,36 @@ MANIFEST = OUT / "boat_multiview.json"
 
 
 VIEWS = {
-    "three_quarter": ((4.35, -4.55, 2.55), (0.10, 0.0, 0.06), 58),
-    "side": ((0.0, -5.2, 0.45), (0.0, 0.0, 0.05), 70),
-    "top": ((0.0, 0.0, 6.0), (0.0, 0.0, 0.0), 70),
-    "front": ((4.8, 0.0, 0.42), (0.0, 0.0, 0.05), 70),
-    "rear": ((-4.8, 0.0, 0.42), (0.0, 0.0, 0.05), 70),
+    "three_quarter": {
+        "location": (3.65, -3.85, 1.95),
+        "target": (0.06, 0.0, 0.04),
+        "type": "PERSP",
+        "lens": 58,
+    },
+    "side": {
+        "location": (0.0, -5.2, 0.28),
+        "target": (0.0, 0.0, 0.08),
+        "type": "ORTHO",
+        "ortho_scale": 2.25,
+    },
+    "top": {
+        "location": (0.0, 0.0, 6.0),
+        "target": (0.0, 0.0, 0.0),
+        "type": "ORTHO",
+        "ortho_scale": 2.25,
+    },
+    "front": {
+        "location": (4.8, 0.0, 0.32),
+        "target": (0.0, 0.0, 0.08),
+        "type": "ORTHO",
+        "ortho_scale": 1.35,
+    },
+    "rear": {
+        "location": (-4.8, 0.0, 0.32),
+        "target": (0.0, 0.0, 0.08),
+        "type": "ORTHO",
+        "ortho_scale": 1.35,
+    },
 }
 
 
@@ -60,9 +85,15 @@ def main():
     cam = _camera()
 
     rendered = {}
-    for name, (location, target, lens) in VIEWS.items():
+    for name, spec in VIEWS.items():
+        location = spec["location"]
+        target = spec["target"]
         cam.location = location
-        cam.data.lens = lens
+        cam.data.type = spec["type"]
+        if spec["type"] == "PERSP":
+            cam.data.lens = spec["lens"]
+        else:
+            cam.data.ortho_scale = spec["ortho_scale"]
         _look_at(cam, target)
         path = OUT / f"{name}.png"
         scene.render.filepath = str(path)
@@ -73,7 +104,9 @@ def main():
             "path": str(path),
             "size_bytes": path.stat().st_size,
             "camera_location": list(location),
-            "lens_mm": lens,
+            "camera_type": spec["type"],
+            "lens_mm": spec.get("lens"),
+            "ortho_scale": spec.get("ortho_scale"),
         }
 
     manifest = {
