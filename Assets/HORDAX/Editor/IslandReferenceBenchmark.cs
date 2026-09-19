@@ -405,7 +405,7 @@ namespace HORDAX.EditorTools
                 rock.name = "Coastal Rock";
                 rock.transform.SetParent(rocks.transform, false);
                 rock.transform.localPosition = new Vector3(localX, y + 0.08f, localZ);
-                rock.transform.localRotation = UnityEngine.Random.rotation;
+                rock.transform.localRotation = Quaternion.Euler(\n                    Mathf.Lerp(-22f, 22f, (float)rng.NextDouble()),\n                    Mathf.Lerp(0f, 360f, (float)rng.NextDouble()),\n                    Mathf.Lerp(-22f, 22f, (float)rng.NextDouble()));
                 float s = Mathf.Lerp(0.18f, 0.52f, (float)rng.NextDouble());
                 rock.transform.localScale = new Vector3(s * 1.5f, s * 0.75f, s);
                 rock.GetComponent<MeshRenderer>().sharedMaterial = rockMat;
