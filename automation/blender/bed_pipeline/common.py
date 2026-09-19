@@ -67,6 +67,8 @@ def tag(obj, component: str, role: str, **extra) -> None:
     obj["ordax_asset"] = ASSET_ID
     obj["ordax_component"] = component
     obj["ordax_role"] = role
+    obj["ordax_object_id"] = f"{ASSET_ID}:{component}:{obj.name}"
+    obj["ordax_standard_version"] = 1
     for key, value in extra.items():
         obj[f"ordax_{key}"] = value
 
