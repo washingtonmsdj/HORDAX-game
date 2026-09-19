@@ -18,63 +18,63 @@
   "nominal_dimensions_m": {
     "overall_length": 3.2,
     "maximum_beam": 0.95,
-    "hull_height": 0.62,
+    "hull_height": 0.6,
     "hull_thickness": 0.032
   },
   "stations": [
     {
       "x": -1.6,
       "half_width": 0.055,
-      "sheer_z": 0.64,
-      "keel_z": -0.02
+      "sheer_z": 0.56,
+      "keel_z": 0.02
     },
     {
       "x": -1.38,
       "half_width": 0.155,
-      "sheer_z": 0.565,
-      "keel_z": -0.18
+      "sheer_z": 0.49,
+      "keel_z": -0.06
     },
     {
       "x": -1.05,
       "half_width": 0.285,
-      "sheer_z": 0.505,
-      "keel_z": -0.31
+      "sheer_z": 0.41,
+      "keel_z": -0.14
     },
     {
       "x": -0.62,
       "half_width": 0.405,
-      "sheer_z": 0.465,
-      "keel_z": -0.39
+      "sheer_z": 0.34,
+      "keel_z": -0.22
     },
     {
       "x": 0,
       "half_width": 0.475,
-      "sheer_z": 0.445,
-      "keel_z": -0.43
+      "sheer_z": 0.31,
+      "keel_z": -0.27
     },
     {
       "x": 0.62,
       "half_width": 0.405,
-      "sheer_z": 0.465,
-      "keel_z": -0.39
+      "sheer_z": 0.34,
+      "keel_z": -0.22
     },
     {
       "x": 1.05,
       "half_width": 0.285,
-      "sheer_z": 0.505,
-      "keel_z": -0.31
+      "sheer_z": 0.41,
+      "keel_z": -0.14
     },
     {
       "x": 1.38,
       "half_width": 0.155,
-      "sheer_z": 0.565,
-      "keel_z": -0.18
+      "sheer_z": 0.49,
+      "keel_z": -0.06
     },
     {
       "x": 1.6,
       "half_width": 0.055,
-      "sheer_z": 0.64,
-      "keel_z": -0.02
+      "sheer_z": 0.56,
+      "keel_z": 0.02
     }
   ],
   "required_validation_views": [
