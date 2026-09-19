@@ -141,7 +141,7 @@ add_label("REFERENCIA", (-1.62, -9.82, 1.93))
 add_label("BLENDER", (0.25, -9.76, 2.23))
 
 scene = bpy.context.scene
-scene.render.engine = "BLENDER_EEVEE_NEXT"
+scene.render.engine = "BLENDER_EEVEE"
 scene.render.resolution_x = 1440
 scene.render.resolution_y = 810
 scene.render.resolution_percentage = 100
