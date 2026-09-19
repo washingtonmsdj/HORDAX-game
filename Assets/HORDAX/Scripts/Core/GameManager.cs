@@ -17,9 +17,11 @@ namespace HORDAX.Core
         public int RunCoins { get; private set; }
         public int Score { get; private set; }
         public float FinishZ { get; set; } = 165f;
+        public float BossBarrierZ { get; set; } = -1f;
         public string CurrentLevelId { get; private set; } = "prototype_level";
         public int RequiredBossKills { get; private set; }
         public bool CanFinish => BossKills >= RequiredBossKills;
+        public bool BossBarrierActive => !CanFinish && BossBarrierZ > 0f;
         public int EarnedStars { get; private set; }
         public int ObjectiveCompletedCount { get; private set; }
         public int ObjectiveBonusCoins { get; private set; }
