@@ -347,10 +347,10 @@ def add_cloth_grid(collection, name: str, role: str, *, width: float, length: fl
     return obj
 
 
-def simulate_cloth(obj, *, end_frame: int, thickness=0.004, self_collision=True):
+def simulate_cloth(\n    obj, *, end_frame: int, thickness=0.004, self_collision=True,\n    quality=6, collision_quality=5,\n):
     mod = obj.modifiers.new("OrdaX Cloth", "CLOTH")
     settings = mod.settings
-    settings.quality = 6
+    settings.quality = int(quality)
     settings.mass = 0.22
     settings.tension_stiffness = 18.0
     settings.compression_stiffness = 18.0
@@ -365,7 +365,7 @@ def simulate_cloth(obj, *, end_frame: int, thickness=0.004, self_collision=True)
     collision = mod.collision_settings
     collision.use_collision = True
     collision.distance_min = thickness
-    collision.collision_quality = 5
+    collision.collision_quality = int(collision_quality)
     collision.friction = 8.0
     if self_collision:
         collision.use_self_collision = True
