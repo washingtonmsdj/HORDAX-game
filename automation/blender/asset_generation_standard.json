@@ -6,7 +6,9 @@
   "required_object_properties": [
     "ordax_asset",
     "ordax_component",
-    "ordax_role"
+    "ordax_role",
+    "ordax_object_id",
+    "ordax_standard_version"
   ],
   "phases": [
     "reference_contract",
@@ -31,6 +33,7 @@
     "separate_component_collections": true,
     "cloth_requires_collision": true,
     "unrelated_scene_deletion": false,
-    "validation_report_scene_property": "ordax_validation_report"
+    "validation_report_scene_property": "ordax_validation_report",
+    "fresh_module_reload_on_generation": true
   }
 }
