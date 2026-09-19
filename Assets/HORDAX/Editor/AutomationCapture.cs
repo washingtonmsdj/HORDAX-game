@@ -111,16 +111,20 @@ namespace HORDAX.EditorTools
 
         private static void CaptureCamera()
         {
+            string output = SessionState.GetString(OutputKey, string.Empty);
+            int width = SessionState.GetInt(WidthKey, 1280);
+            int height = SessionState.GetInt(HeightKey, 720);
+            CaptureCameraTo(output, width, height);
+        }
+
+        internal static void CaptureCameraTo(string output, int width, int height)
+        {
             Camera camera = Camera.main;
             if (camera == null)
                 camera = UnityEngine.Object.FindAnyObjectByType<Camera>();
 
             if (camera == null)
                 throw new InvalidOperationException("No camera was available for HORDAX automation capture.");
-
-            string output = SessionState.GetString(OutputKey, string.Empty);
-            int width = SessionState.GetInt(WidthKey, 1280);
-            int height = SessionState.GetInt(HeightKey, 720);
 
             RenderTexture previousTarget = camera.targetTexture;
             RenderTexture previousActive = RenderTexture.active;
@@ -150,7 +154,7 @@ namespace HORDAX.EditorTools
             }
         }
 
-        private static void WriteSnapshot(string screenshotPath, Camera camera)
+        internal static void WriteSnapshot(string screenshotPath, Camera camera)
         {
             RunnerController player = UnityEngine.Object.FindAnyObjectByType<RunnerController>();
             PlayerHealth health = player != null ? player.GetComponent<PlayerHealth>() : null;
