@@ -10,6 +10,7 @@ namespace HORDAX.Player
         [SerializeField] private float maxForwardSpeed = 10.5f;
         [SerializeField] private float keyboardLateralSpeed = 9f;
         [SerializeField] private float dragSensitivity = 14f;
+        [SerializeField] private float laneCenterX;
         [SerializeField] private float laneHalfWidth = 5.2f;
 
         private float desiredX;
@@ -18,7 +19,19 @@ namespace HORDAX.Player
         private float currentForwardSpeed;
 
         public float ForwardSpeed => currentForwardSpeed;
+        public float LaneCenterX => laneCenterX;
         public float LaneHalfWidth => laneHalfWidth;
+
+        public void ConfigureLane(float centerX, float halfWidth)
+        {
+            laneCenterX = centerX;
+            laneHalfWidth = Mathf.Max(0.5f, halfWidth);
+            desiredX = Mathf.Clamp(transform.position.x, laneCenterX - laneHalfWidth, laneCenterX + laneHalfWidth);
+
+            Vector3 position = transform.position;
+            position.x = desiredX;
+            transform.position = position;
+        }
 
         private void Start()
         {
@@ -37,7 +50,7 @@ namespace HORDAX.Player
             float progress = Mathf.Clamp01(transform.position.z / finishZ);
             currentForwardSpeed = Mathf.Lerp(forwardSpeed, maxForwardSpeed, progress);
 
-            desiredX = Mathf.Clamp(desiredX, -laneHalfWidth, laneHalfWidth);
+            desiredX = Mathf.Clamp(desiredX, laneCenterX - laneHalfWidth, laneCenterX + laneHalfWidth);
             Vector3 position = transform.position;
             position.x = Mathf.MoveTowards(position.x, desiredX, dragSensitivity * Time.deltaTime);
             position.z += currentForwardSpeed * Time.deltaTime;
