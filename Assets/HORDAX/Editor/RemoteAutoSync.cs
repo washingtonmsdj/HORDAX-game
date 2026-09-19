@@ -19,7 +19,7 @@ namespace HORDAX.EditorTools
         private const double PollIntervalSeconds = 20d;
 
         private static double nextPollAt;
-        private static bool syncRunning;
+        private static Task<SyncResult> syncTask;
         private static string status = "waiting";
 
         public static string Status => status;
@@ -69,52 +69,57 @@ namespace HORDAX.EditorTools
         {
             if (Application.isBatchMode ||
                 !EditorPrefs.GetBool(EnabledKey, true) ||
-                syncRunning ||
                 EditorApplication.isPlayingOrWillChangePlaymode ||
                 EditorApplication.isCompiling ||
                 EditorApplication.isUpdating)
                 return;
+
+            if (syncTask != null)
+            {
+                if (!syncTask.IsCompleted)
+                    return;
+
+                Task<SyncResult> completed = syncTask;
+                syncTask = null;
+
+                if (completed.IsFaulted)
+                {
+                    Exception error = completed.Exception?.GetBaseException();
+                    status = "error: " + (error?.Message ?? "unknown");
+                    Debug.LogWarning($"[HORDAX Auto Sync] {status}");
+                    return;
+                }
+
+                SyncResult result = completed.Result;
+                status = result.Message;
+
+                if (result.Changed)
+                {
+                    Debug.Log($"[HORDAX Auto Sync] {result.Message}");
+                    AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+                }
+
+                return;
+            }
 
             double now = EditorApplication.timeSinceStartup;
             if (now < nextPollAt)
                 return;
 
             nextPollAt = now + PollIntervalSeconds;
-            syncRunning = true;
             status = "checking remote";
 
-            Task.Run(SyncOnce)
-                .ContinueWith(task =>
-                {
-                    EditorApplication.delayCall += () =>
-                    {
-                        syncRunning = false;
-
-                        if (task.IsFaulted)
-                        {
-                            Exception error = task.Exception?.GetBaseException();
-                            status = "error: " + (error?.Message ?? "unknown");
-                            Debug.LogWarning($"[HORDAX Auto Sync] {status}");
-                            return;
-                        }
-
-                        SyncResult result = task.Result;
-                        status = result.Message;
-
-                        if (!result.Changed)
-                            return;
-
-                        Debug.Log($"[HORDAX Auto Sync] {result.Message}");
-                        AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
-                    };
-                });
+            string projectRoot = Directory.GetParent(Application.dataPath)?.FullName;
+            syncTask = Task.Run(() => SyncOnce(projectRoot));
         }
 
-        private static SyncResult SyncOnce()
+        private static SyncResult SyncOnce(string projectRoot)
         {
-            string projectRoot = Directory.GetParent(Application.dataPath)?.FullName;
-            if (string.IsNullOrWhiteSpace(projectRoot) || !Directory.Exists(Path.Combine(projectRoot, ".git")))
+            if (string.IsNullOrWhiteSpace(projectRoot) ||
+                !Directory.Exists(Path.Combine(projectRoot, ".git")))
+            {
                 return new SyncResult(false, "paused: project is not a Git checkout");
+            }
 
             GitResult trackedStatus = Git(projectRoot, "status --porcelain --untracked-files=no");
             if (!trackedStatus.Ok)
@@ -225,6 +230,7 @@ namespace HORDAX.EditorTools
         {
             if (string.IsNullOrWhiteSpace(sha))
                 return "unknown";
+
             return sha.Length <= 7 ? sha : sha.Substring(0, 7);
         }
 
