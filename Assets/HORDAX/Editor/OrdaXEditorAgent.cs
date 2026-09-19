@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -67,6 +68,8 @@ namespace HORDAX.EditorTools
             public bool playing;
             public int errorCount;
             public int warningCount;
+            public string[] validationErrors;
+            public string[] validationWarnings;
             public string artifact;
             public string snapshotPath;
         }
@@ -221,6 +224,8 @@ namespace HORDAX.EditorTools
                 : $"Validation failed with {report.ErrorCount} error(s).";
             response.errorCount = report.ErrorCount;
             response.warningCount = report.WarningCount;
+            response.validationErrors = new List<string>(report.Errors).ToArray();
+            response.validationWarnings = new List<string>(report.Warnings).ToArray();
             SaveResponse(response);
         }
 
