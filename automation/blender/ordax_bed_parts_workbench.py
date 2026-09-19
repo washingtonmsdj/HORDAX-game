@@ -18,6 +18,7 @@ for p in (str(PIPELINE),str(PARTS)):
 
 for name in (
     "frame_part","headboard_part","mattress_part","pillow_part",
+    "fitted_sheet_part","cloth_part",
     "part_validation","part_io","common"
 ):
     sys.modules.pop(name,None)
@@ -27,18 +28,23 @@ import frame_part
 import headboard_part
 import mattress_part
 import pillow_part
+import fitted_sheet_part
+import cloth_part
 
 REVIEW_SCENE="ORDAX_BED_PARTS_REVIEW"
 STAGE_COLLECTION="ORDAX_BED_PARTS_STAGE"
 
 PART_OFFSETS={
-    "frame":(-3.3,0.0,0.0),
-    "headboard":(-1.6,0.0,0.0),
-    "mattress":(0.0,0.0,0.0),
-    "pillow_back":(1.35,0.0,0.55),
-    "pillow_sage":(2.15,0.0,0.48),
-    "pillow_terracotta":(2.90,0.0,0.45),
-    "pillow_lumbar":(3.65,0.0,0.38),
+    "frame":(-3.2,0.9,0.0),
+    "headboard":(-1.45,0.9,0.0),
+    "mattress":(0.15,0.9,0.0),
+    "pillow_back":(1.45,0.9,0.55),
+    "pillow_sage":(2.25,0.9,0.48),
+    "pillow_terracotta":(3.00,0.9,0.45),
+    "pillow_lumbar":(3.75,0.9,0.38),
+    "fitted_sheet":(-1.8,-1.55,0.0),
+    "top_sheet":(0.1,-1.55,0.0),
+    "duvet":(2.15,-1.55,0.0),
 }
 
 
@@ -52,6 +58,10 @@ def build_parts():
 
     for pid in ("pillow_back","pillow_sage","pillow_terracotta","pillow_lumbar"):
         collections[pid],reports[pid]=pillow_part.build(pid,export=True)
+
+    collections["fitted_sheet"],reports["fitted_sheet"]=fitted_sheet_part.build(export=True)
+    collections["top_sheet"],reports["top_sheet"]=cloth_part.build("top_sheet",export=True)
+    collections["duvet"],reports["duvet"]=cloth_part.build("duvet",export=True)
 
     return collections,reports
 
@@ -112,10 +122,10 @@ def build_review_scene(collections):
     if cam is None:
         cam=bpy.data.objects.new("ORDAX_STAGE_CAMERA",cam_data)
     stage.objects.link(cam)
-    cam.location=(7.8,-9.2,4.4)
+    cam.location=(8.6,-10.8,5.4)
     cam.data.lens=58
     from mathutils import Vector
-    cam.rotation_euler=(Vector((0.2,0,0.8))-cam.location).to_track_quat("-Z","Y").to_euler()
+    cam.rotation_euler=(Vector((0.2,-0.25,0.75))-cam.location).to_track_quat("-Z","Y").to_euler()
     scene.camera=cam
 
     # Simple review lighting.
@@ -130,7 +140,7 @@ def build_review_scene(collections):
 
     scene.render.engine="BLENDER_EEVEE"
     scene.render.resolution_x=1600
-    scene.render.resolution_y=800
+    scene.render.resolution_y=1000
     scene.render.resolution_percentage=100
 
     window=bpy.context.window
@@ -164,5 +174,14 @@ bad={k:v for k,v in reports.items() if not v.get("ok")}
 if bad:
     raise RuntimeError("Part workbench validation failed: "+str(bad))
 
+from part_io import PARTS_ROOT, REPORTS_ROOT
+expected=[f"{part_id}.blend" for part_id in reports]
+missing=[name for name in expected if not (PARTS_ROOT/name).is_file()]
+if missing:
+    raise RuntimeError("Missing exported part artifacts: "+str(missing))
+
 bpy.context.scene["ordax_parts_review_reports"]=str(reports)
+bpy.context.scene["ordax_part_artifacts_verified"]=True
+bpy.context.scene["ordax_part_artifacts"]=str(sorted(expected))
+bpy.context.scene["ordax_part_reports_root"]=str(REPORTS_ROOT)
 print("OrdaX parts exported and review scene ready:", sorted(reports))
