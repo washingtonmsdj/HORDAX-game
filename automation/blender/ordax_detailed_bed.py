@@ -1,8 +1,18 @@
-"""Detailed idempotent bed generation test for OrdaX Blender Live.
+"""Premium single-bed generation test for OrdaX Blender Live.
 
-Touches only the ORDAX_DETAILED_BED_TEST collection. Safe to run repeatedly
-without deleting HORDAX preview/game objects.
+Rebuilds only ORDAX_DETAILED_BED_TEST. The HORDAX scene and every object
+outside that collection are left untouched.
+
+Design target:
+- Brazilian single mattress proportions: 0.88 x 1.88 m
+- warm walnut frame with visible procedural grain
+- upholstered channel headboard
+- ivory fitted/top sheets
+- sage duvet with soft folds
+- layered pillows and terracotta accent cushion
+- procedural woven-fabric micro texture (no external assets/licenses)
 """
+
 from __future__ import annotations
 
 import math
@@ -15,16 +25,54 @@ COLLECTION_NAME = "ORDAX_DETAILED_BED_TEST"
 PREFIX = "ORDAX_BED_"
 BED_Y = -10.0
 
+MATTRESS_W = 0.88
+MATTRESS_L = 1.88
+FRAME_W = 0.99
+FRAME_L = 2.02
+
+
+def _clamp_color(color):
+    return tuple(max(0.0, min(1.0, float(c))) for c in color)
+
+
+def _color_mul(color, factor):
+    return _clamp_color(tuple(c * factor for c in color))
+
+
+def _socket(node, name):
+    return node.inputs.get(name)
+
+
+def _set_socket(node, name, value):
+    socket = _socket(node, name)
+    if socket is not None:
+        socket.default_value = value
+
 
 def ensure_collection():
     old = bpy.data.collections.get(COLLECTION_NAME)
     if old:
         for obj in list(old.objects):
             bpy.data.objects.remove(obj, do_unlink=True)
+        _cleanup_unused_geometry()
         return old
+
     collection = bpy.data.collections.new(COLLECTION_NAME)
     bpy.context.scene.collection.children.link(collection)
     return collection
+
+
+def _cleanup_unused_geometry():
+    datablocks = (
+        bpy.data.meshes,
+        bpy.data.curves,
+        bpy.data.cameras,
+        bpy.data.lights,
+    )
+    for blocks in datablocks:
+        for block in list(blocks):
+            if block.name.startswith(PREFIX) and block.users == 0:
+                blocks.remove(block)
 
 
 def move_to_collection(obj, collection):
@@ -33,28 +81,183 @@ def move_to_collection(obj, collection):
     collection.objects.link(obj)
 
 
-def material(name, color, *, metallic=0.0, roughness=0.5):
-    full_name = PREFIX + name
-    mat = bpy.data.materials.get(full_name) or bpy.data.materials.new(full_name)
-    mat.diffuse_color = (*color, 1.0)
-    mat.metallic = metallic
-    mat.roughness = roughness
+def _prepare_material(name):
+    mat = bpy.data.materials.get(name) or bpy.data.materials.new(name)
+    mat.use_nodes = True
+    tree = mat.node_tree
+    tree.nodes.clear()
+
+    output = tree.nodes.new("ShaderNodeOutputMaterial")
+    output.location = (720, 0)
+
+    bsdf = tree.nodes.new("ShaderNodeBsdfPrincipled")
+    bsdf.location = (430, 0)
+    tree.links.new(bsdf.outputs["BSDF"], output.inputs["Surface"])
+    return mat, tree, bsdf
+
+
+def fabric_material(name, color, *, roughness=0.82, weave_scale=210.0, bump_strength=0.12):
+    """Procedural woven fabric, intentionally license-free and portable."""
+    mat, tree, bsdf = _prepare_material(name)
+    color = _clamp_color(color)
+
+    texcoord = tree.nodes.new("ShaderNodeTexCoord")
+    texcoord.location = (-1000, 20)
+
+    noise = tree.nodes.new("ShaderNodeTexNoise")
+    noise.location = (-780, 130)
+    _set_socket(noise, "Scale", 18.0)
+    _set_socket(noise, "Detail", 7.0)
+    _set_socket(noise, "Roughness", 0.72)
+
+    weave_x = tree.nodes.new("ShaderNodeTexWave")
+    weave_x.location = (-780, -100)
+    weave_x.wave_type = "BANDS"
+    weave_x.bands_direction = "X"
+    _set_socket(weave_x, "Scale", weave_scale)
+    _set_socket(weave_x, "Distortion", 2.1)
+    _set_socket(weave_x, "Detail", 2.0)
+
+    weave_y = tree.nodes.new("ShaderNodeTexWave")
+    weave_y.location = (-780, -310)
+    weave_y.wave_type = "BANDS"
+    weave_y.bands_direction = "Y"
+    _set_socket(weave_y, "Scale", weave_scale * 0.92)
+    _set_socket(weave_y, "Distortion", 2.0)
+    _set_socket(weave_y, "Detail", 2.0)
+
+    mix_weave = tree.nodes.new("ShaderNodeMixRGB")
+    mix_weave.location = (-510, -190)
+    mix_weave.blend_type = "MULTIPLY"
+    mix_weave.inputs["Fac"].default_value = 1.0
+
+    ramp = tree.nodes.new("ShaderNodeValToRGB")
+    ramp.location = (-230, 120)
+    ramp.color_ramp.elements[0].position = 0.28
+    ramp.color_ramp.elements[0].color = (*_color_mul(color, 0.72), 1.0)
+    ramp.color_ramp.elements[1].position = 0.77
+    ramp.color_ramp.elements[1].color = (*_color_mul(color, 1.13), 1.0)
+
+    bump_mix = tree.nodes.new("ShaderNodeMixRGB")
+    bump_mix.location = (-235, -160)
+    bump_mix.blend_type = "MULTIPLY"
+    bump_mix.inputs["Fac"].default_value = 0.72
+
+    bump = tree.nodes.new("ShaderNodeBump")
+    bump.location = (170, -170)
+    _set_socket(bump, "Strength", bump_strength)
+    _set_socket(bump, "Distance", 0.035)
+
+    tree.links.new(texcoord.outputs["Generated"], noise.inputs["Vector"])
+    tree.links.new(texcoord.outputs["Generated"], weave_x.inputs["Vector"])
+    tree.links.new(texcoord.outputs["Generated"], weave_y.inputs["Vector"])
+    tree.links.new(weave_x.outputs["Color"], mix_weave.inputs[1])
+    tree.links.new(weave_y.outputs["Color"], mix_weave.inputs[2])
+    tree.links.new(noise.outputs["Fac"], ramp.inputs["Fac"])
+    tree.links.new(mix_weave.outputs["Color"], bump_mix.inputs[1])
+    tree.links.new(noise.outputs["Fac"], bump_mix.inputs[2])
+    tree.links.new(ramp.outputs["Color"], bsdf.inputs["Base Color"])
+    tree.links.new(bump_mix.outputs["Color"], bump.inputs["Height"])
+    tree.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+
+    _set_socket(bsdf, "Roughness", roughness)
+    _set_socket(bsdf, "Sheen Weight", 0.22)
     return mat
 
 
-def add_cube(collection, name, location, dimensions, mat, bevel=0.06, segments=3):
+def wood_material(name, base_color):
+    """Procedural walnut with elongated grain and low-relief pores."""
+    mat, tree, bsdf = _prepare_material(name)
+    base_color = _clamp_color(base_color)
+
+    texcoord = tree.nodes.new("ShaderNodeTexCoord")
+    texcoord.location = (-1000, 0)
+
+    mapping = tree.nodes.new("ShaderNodeMapping")
+    mapping.location = (-820, 0)
+    mapping.inputs["Scale"].default_value = (4.0, 15.0, 3.0)
+
+    noise = tree.nodes.new("ShaderNodeTexNoise")
+    noise.location = (-610, 90)
+    _set_socket(noise, "Scale", 3.8)
+    _set_socket(noise, "Detail", 6.5)
+    _set_socket(noise, "Roughness", 0.66)
+
+    grain = tree.nodes.new("ShaderNodeTexWave")
+    grain.location = (-610, -160)
+    grain.wave_type = "BANDS"
+    grain.bands_direction = "Y"
+    _set_socket(grain, "Scale", 8.5)
+    _set_socket(grain, "Distortion", 7.0)
+    _set_socket(grain, "Detail", 5.0)
+    _set_socket(grain, "Detail Scale", 2.2)
+
+    mix = tree.nodes.new("ShaderNodeMixRGB")
+    mix.location = (-370, 10)
+    mix.blend_type = "MULTIPLY"
+    mix.inputs["Fac"].default_value = 0.58
+
+    ramp = tree.nodes.new("ShaderNodeValToRGB")
+    ramp.location = (-125, 70)
+    ramp.color_ramp.elements[0].position = 0.20
+    ramp.color_ramp.elements[0].color = (*_color_mul(base_color, 0.38), 1.0)
+    ramp.color_ramp.elements[1].position = 0.82
+    ramp.color_ramp.elements[1].color = (*_color_mul(base_color, 1.28), 1.0)
+
+    bump = tree.nodes.new("ShaderNodeBump")
+    bump.location = (170, -150)
+    _set_socket(bump, "Strength", 0.16)
+    _set_socket(bump, "Distance", 0.025)
+
+    tree.links.new(texcoord.outputs["Generated"], mapping.inputs["Vector"])
+    tree.links.new(mapping.outputs["Vector"], noise.inputs["Vector"])
+    tree.links.new(mapping.outputs["Vector"], grain.inputs["Vector"])
+    tree.links.new(noise.outputs["Fac"], mix.inputs[1])
+    tree.links.new(grain.outputs["Color"], mix.inputs[2])
+    tree.links.new(mix.outputs["Color"], ramp.inputs["Fac"])
+    tree.links.new(ramp.outputs["Color"], bsdf.inputs["Base Color"])
+    tree.links.new(mix.outputs["Color"], bump.inputs["Height"])
+    tree.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+
+    _set_socket(bsdf, "Roughness", 0.40)
+    _set_socket(bsdf, "Coat Weight", 0.12)
+    _set_socket(bsdf, "Coat Roughness", 0.28)
+    return mat
+
+
+def metal_material(name, color, *, metallic=0.88, roughness=0.26):
+    mat, _tree, bsdf = _prepare_material(name)
+    color = _clamp_color(color)
+    bsdf.inputs["Base Color"].default_value = (*color, 1.0)
+    _set_socket(bsdf, "Metallic", metallic)
+    _set_socket(bsdf, "Roughness", roughness)
+    return mat
+
+
+def simple_material(name, color, *, roughness=0.6):
+    mat, _tree, bsdf = _prepare_material(name)
+    color = _clamp_color(color)
+    bsdf.inputs["Base Color"].default_value = (*color, 1.0)
+    _set_socket(bsdf, "Roughness", roughness)
+    return mat
+
+
+def add_cube(collection, name, location, dimensions, mat, bevel=0.03, segments=4):
     bpy.ops.mesh.primitive_cube_add(location=location)
     obj = bpy.context.object
     obj.name = PREFIX + name
     obj.dimensions = dimensions
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
     move_to_collection(obj, collection)
-    if mat:
+
+    if mat is not None:
         obj.data.materials.append(mat)
+
     if bevel > 0:
-        mod = obj.modifiers.new("Edge softness", "BEVEL")
-        mod.width = bevel
-        mod.segments = segments
+        modifier = obj.modifiers.new("Soft edges", "BEVEL")
+        modifier.width = bevel
+        modifier.segments = segments
+
     return obj
 
 
@@ -68,7 +271,7 @@ def add_cylinder(
     *,
     rotation=(0.0, 0.0, 0.0),
     vertices=48,
-    bevel=0.02,
+    bevel=0.01,
 ):
     bpy.ops.mesh.primitive_cylinder_add(
         vertices=vertices,
@@ -80,18 +283,21 @@ def add_cylinder(
     obj = bpy.context.object
     obj.name = PREFIX + name
     move_to_collection(obj, collection)
-    if mat:
+
+    if mat is not None:
         obj.data.materials.append(mat)
+
     if bevel > 0:
-        mod = obj.modifiers.new("Edge softness", "BEVEL")
-        mod.width = bevel
-        mod.segments = 3
+        modifier = obj.modifiers.new("Soft edges", "BEVEL")
+        modifier.width = bevel
+        modifier.segments = 3
+
     return obj
 
 
-def add_sphere(collection, name, location, scale, mat):
+def add_uv_sphere(collection, name, location, scale, mat):
     bpy.ops.mesh.primitive_uv_sphere_add(
-        segments=48,
+        segments=40,
         ring_count=24,
         location=location,
     )
@@ -100,59 +306,79 @@ def add_sphere(collection, name, location, scale, mat):
     obj.scale = scale
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
     move_to_collection(obj, collection)
-    if mat:
-        obj.data.materials.append(mat)
-    for poly in obj.data.polygons:
-        poly.use_smooth = True
+    obj.data.materials.append(mat)
+    for polygon in obj.data.polygons:
+        polygon.use_smooth = True
     return obj
 
 
-def add_rect_piping(collection, name, center, width, length, z, mat, thickness=0.025):
+def add_rect_piping(collection, name, center, width, length, z, mat, thickness=0.006):
     curve = bpy.data.curves.new(PREFIX + name + "_Curve", "CURVE")
     curve.dimensions = "3D"
     curve.bevel_depth = thickness
     curve.bevel_resolution = 3
+
     spline = curve.splines.new("POLY")
     spline.points.add(3)
+
     x0 = center[0] - width / 2
     x1 = center[0] + width / 2
     y0 = center[1] - length / 2
     y1 = center[1] + length / 2
-    coords = ((x0, y0, z), (x1, y0, z), (x1, y1, z), (x0, y1, z))
-    for point, xyz in zip(spline.points, coords):
+
+    for point, xyz in zip(
+        spline.points,
+        ((x0, y0, z), (x1, y0, z), (x1, y1, z), (x0, y1, z)),
+    ):
         point.co = (*xyz, 1.0)
+
     spline.use_cyclic_u = True
+
     obj = bpy.data.objects.new(PREFIX + name, curve)
     collection.objects.link(obj)
     curve.materials.append(mat)
     return obj
 
 
-def add_blanket(collection, mat):
-    cols = 18
-    rows = 22
-    width = 3.18
-    y0 = BED_Y - 2.08
-    y1 = BED_Y + 0.95
+def add_fabric_plane(
+    collection,
+    name,
+    *,
+    width,
+    length,
+    y_center,
+    base_z,
+    mat,
+    cols=24,
+    rows=34,
+    side_drop=0.06,
+    foot_drop=0.05,
+    ripple=0.018,
+):
+    """Create a soft bedding surface with deterministic natural folds."""
     vertices = []
     faces = []
+
+    y0 = y_center - length / 2
+    y1 = y_center + length / 2
 
     for row in range(rows):
         fy = row / (rows - 1)
         y = y0 + (y1 - y0) * fy
+
         for col in range(cols):
             fx = col / (cols - 1)
             x = -width / 2 + width * fx
 
-            # Layered soft folds: long ripples plus smaller fabric variation.
-            z = 1.47
-            z += 0.055 * math.sin((fx * 5.0 + fy * 0.8) * math.pi)
-            z += 0.025 * math.sin((fy * 7.0 - fx * 1.5) * math.pi)
+            z = base_z
+            z += ripple * math.sin((fx * 5.5 + fy * 0.7) * math.pi)
+            z += ripple * 0.55 * math.sin((fy * 8.2 - fx * 1.7) * math.pi)
 
-            # Slight natural sag toward sides and foot.
-            side = abs(x) / (width / 2)
-            z -= 0.13 * max(0.0, side - 0.78) ** 1.4
-            z -= 0.10 * max(0.0, 0.18 - fy) / 0.18
+            edge = abs(x) / (width / 2)
+            z -= side_drop * max(0.0, edge - 0.78) ** 1.45
+
+            foot_factor = max(0.0, 0.13 - fy) / 0.13
+            z -= foot_drop * foot_factor
 
             vertices.append((x, y, z))
 
@@ -164,287 +390,527 @@ def add_blanket(collection, mat):
             d = a + cols
             faces.append((a, b, c, d))
 
-    mesh = bpy.data.meshes.new(PREFIX + "BlanketMesh")
+    mesh = bpy.data.meshes.new(PREFIX + name + "_Mesh")
     mesh.from_pydata(vertices, [], faces)
     mesh.update()
 
-    obj = bpy.data.objects.new(PREFIX + "Quilted_Blanket", mesh)
+    obj = bpy.data.objects.new(PREFIX + name, mesh)
     collection.objects.link(obj)
     obj.data.materials.append(mat)
 
     solid = obj.modifiers.new("Fabric thickness", "SOLIDIFY")
-    solid.thickness = 0.045
+    solid.thickness = 0.018
     solid.offset = 0.0
 
-    bevel = obj.modifiers.new("Soft blanket edges", "BEVEL")
-    bevel.width = 0.025
-    bevel.segments = 2
-
-    subdiv = obj.modifiers.new("Soft fabric surface", "SUBSURF")
+    subdiv = obj.modifiers.new("Fabric smoothing", "SUBSURF")
     subdiv.subdivision_type = "CATMULL_CLARK"
     subdiv.levels = 1
     subdiv.render_levels = 1
 
-    for poly in obj.data.polygons:
-        poly.use_smooth = True
+    for polygon in obj.data.polygons:
+        polygon.use_smooth = True
+
     return obj
 
 
-def add_pillow(collection, name, x, y, z, angle, fabric, piping):
+def add_pillow(collection, name, location, dimensions, rotation_z, fabric, piping):
     pillow = add_cube(
         collection,
         name,
-        (x, y, z),
-        (1.32, 0.64, 0.30),
+        location,
+        dimensions,
         fabric,
-        bevel=0.20,
-        segments=6,
+        bevel=min(dimensions) * 0.32,
+        segments=8,
     )
-    pillow.rotation_euler[2] = math.radians(angle)
+    pillow.rotation_euler[2] = math.radians(rotation_z)
 
-    # Central depression gives a more cushioned silhouette.
-    dimple = add_sphere(
-        collection,
-        name + "_Dimple",
-        (x, y - 0.015, z + 0.14),
-        (0.16, 0.09, 0.025),
-        piping,
-    )
-    dimple.rotation_euler[2] = math.radians(angle)
+    # Four tiny corner pulls create a more upholstered silhouette.
+    x, y, z = location
+    sx = dimensions[0] * 0.40
+    sy = dimensions[1] * 0.37
+    for index, (dx, dy) in enumerate(((-sx, -sy), (sx, -sy), (-sx, sy), (sx, sy))):
+        add_uv_sphere(
+            collection,
+            f"{name}_CornerPull_{index}",
+            (x + dx, y + dy, z + dimensions[2] * 0.02),
+            (0.025, 0.018, 0.012),
+            piping,
+        )
+
     return pillow
 
 
-def point_camera(camera, point):
-    direction = Vector(point) - camera.location
-    camera.rotation_euler = direction.to_track_quat("-Z", "Y").to_euler()
+def point_at(obj, point):
+    direction = Vector(point) - obj.location
+    obj.rotation_euler = direction.to_track_quat("-Z", "Y").to_euler()
+
+
+def add_area_light(collection, name, location, energy, size, color, target):
+    data = bpy.data.lights.new(PREFIX + name + "_Data", "AREA")
+    data.energy = energy
+    data.shape = "DISK"
+    data.size = size
+    data.color = color
+
+    light = bpy.data.objects.new(PREFIX + name, data)
+    light.location = location
+    collection.objects.link(light)
+    point_at(light, target)
+    return light
 
 
 collection = ensure_collection()
 
-wood = material("Walnut", (0.16, 0.075, 0.035), roughness=0.34)
-wood_dark = material("Walnut_Dark", (0.07, 0.025, 0.012), roughness=0.30)
-linen = material("Warm_Linen", (0.78, 0.72, 0.62), roughness=0.72)
-linen_light = material("Ivory_Linen", (0.93, 0.90, 0.82), roughness=0.76)
-mattress = material("Mattress", (0.91, 0.90, 0.86), roughness=0.62)
-piping = material("Piping", (0.35, 0.31, 0.27), roughness=0.55)
-blanket_mat = material("Blanket_Blue", (0.16, 0.27, 0.36), roughness=0.82)
-metal = material("Brushed_Brass", (0.46, 0.29, 0.09), metallic=0.72, roughness=0.30)
-button_mat = material("Tuft_Button", (0.27, 0.22, 0.17), metallic=0.08, roughness=0.48)
-rug_mat = material("Rug", (0.30, 0.22, 0.18), roughness=0.92)
+# ---------------------------------------------------------------------------
+# Premium palette and procedural PBR materials
+# ---------------------------------------------------------------------------
 
-# ---- context rug / presentation base ----
+walnut = wood_material(PREFIX + "Walnut", (0.30, 0.105, 0.035))
+walnut_dark = wood_material(PREFIX + "Walnut_Dark", (0.16, 0.045, 0.018))
+headboard_fabric = fabric_material(
+    PREFIX + "Headboard_Taupe",
+    (0.47, 0.38, 0.30),
+    roughness=0.86,
+    weave_scale=170.0,
+    bump_strength=0.16,
+)
+ivory = fabric_material(
+    PREFIX + "Ivory_Linen",
+    (0.86, 0.81, 0.72),
+    roughness=0.88,
+    weave_scale=235.0,
+    bump_strength=0.11,
+)
+ivory_light = fabric_material(
+    PREFIX + "Warm_White_Linen",
+    (0.96, 0.92, 0.84),
+    roughness=0.86,
+    weave_scale=240.0,
+    bump_strength=0.09,
+)
+sage = fabric_material(
+    PREFIX + "Sage_Duvet",
+    (0.19, 0.32, 0.24),
+    roughness=0.91,
+    weave_scale=190.0,
+    bump_strength=0.17,
+)
+terracotta = fabric_material(
+    PREFIX + "Terracotta_Accent",
+    (0.55, 0.18, 0.075),
+    roughness=0.86,
+    weave_scale=205.0,
+    bump_strength=0.13,
+)
+oatmeal = fabric_material(
+    PREFIX + "Oatmeal_Rug",
+    (0.48, 0.37, 0.26),
+    roughness=0.96,
+    weave_scale=155.0,
+    bump_strength=0.20,
+)
+mattress_mat = fabric_material(
+    PREFIX + "Mattress_Knit",
+    (0.82, 0.83, 0.79),
+    roughness=0.82,
+    weave_scale=285.0,
+    bump_strength=0.10,
+)
+piping_mat = simple_material(PREFIX + "Piping", (0.17, 0.13, 0.10), roughness=0.55)
+brass = metal_material(PREFIX + "Brushed_Brass", (0.44, 0.24, 0.065), metallic=0.90, roughness=0.27)
+floor_mat = wood_material(PREFIX + "Floor_Wood", (0.24, 0.12, 0.06))
+
+
+# ---------------------------------------------------------------------------
+# Presentation floor and rug
+# ---------------------------------------------------------------------------
+
+add_cube(
+    collection,
+    "Presentation_Floor",
+    (0.0, BED_Y - 0.10, -0.035),
+    (3.4, 3.65, 0.07),
+    floor_mat,
+    bevel=0.01,
+    segments=2,
+)
+
 add_cube(
     collection,
     "Rug",
-    (0.0, BED_Y - 0.12, 0.045),
-    (4.65, 6.05, 0.09),
-    rug_mat,
-    bevel=0.08,
+    (0.0, BED_Y - 0.18, 0.015),
+    (1.72, 2.52, 0.035),
+    oatmeal,
+    bevel=0.025,
     segments=4,
 )
 
-# ---- structural bed frame ----
-add_cube(collection, "Frame_Base", (0, BED_Y, 0.58), (3.58, 4.64, 0.34), wood, 0.10, 4)
-add_cube(collection, "Left_Side_Rail", (-1.73, BED_Y, 0.80), (0.14, 4.54, 0.44), wood_dark, 0.045, 3)
-add_cube(collection, "Right_Side_Rail", (1.73, BED_Y, 0.80), (0.14, 4.54, 0.44), wood_dark, 0.045, 3)
-add_cube(collection, "Foot_Rail", (0, BED_Y - 2.22, 0.81), (3.60, 0.18, 0.48), wood_dark, 0.05, 3)
 
-# Visible support slats.
-for i, y in enumerate((-1.60, -1.05, -0.50, 0.05, 0.60, 1.15)):
+# ---------------------------------------------------------------------------
+# Single-bed frame: 0.88 x 1.88 m mattress
+# ---------------------------------------------------------------------------
+
+add_cube(
+    collection,
+    "Frame_Base",
+    (0.0, BED_Y, 0.30),
+    (FRAME_W, FRAME_L, 0.18),
+    walnut,
+    bevel=0.035,
+    segments=5,
+)
+
+add_cube(
+    collection,
+    "Left_Rail",
+    (-FRAME_W / 2 + 0.035, BED_Y, 0.42),
+    (0.07, FRAME_L - 0.06, 0.21),
+    walnut_dark,
+    bevel=0.018,
+    segments=4,
+)
+add_cube(
+    collection,
+    "Right_Rail",
+    (FRAME_W / 2 - 0.035, BED_Y, 0.42),
+    (0.07, FRAME_L - 0.06, 0.21),
+    walnut_dark,
+    bevel=0.018,
+    segments=4,
+)
+add_cube(
+    collection,
+    "Foot_Rail",
+    (0.0, BED_Y - FRAME_L / 2 + 0.035, 0.42),
+    (FRAME_W, 0.07, 0.22),
+    walnut_dark,
+    bevel=0.018,
+    segments=4,
+)
+
+# Slats are visible at the foot/edges where bedding does not completely cover.
+for index in range(8):
+    offset = -0.78 + index * 0.225
     add_cube(
         collection,
-        f"Slat_{i:02d}",
-        (0, BED_Y + y, 0.83),
-        (3.20, 0.09, 0.10),
-        wood,
-        0.02,
-        2,
+        f"Slat_{index:02d}",
+        (0.0, BED_Y + offset, 0.44),
+        (0.82, 0.035, 0.035),
+        walnut,
+        bevel=0.006,
+        segments=2,
     )
 
-# Four tapered-looking legs: brass foot + walnut column.
-for ix, x in enumerate((-1.58, 1.58)):
-    for iy, yoff in enumerate((-2.05, 2.02)):
+# Walnut legs with small brass shoes.
+for xi, x in enumerate((-0.435, 0.435)):
+    for yi, yoff in enumerate((-0.88, 0.88)):
         add_cylinder(
             collection,
-            f"Leg_Brass_{ix}_{iy}",
-            (x, BED_Y + yoff, 0.18),
-            0.12,
-            0.22,
-            metal,
-            vertices=40,
-            bevel=0.015,
+            f"Leg_Wood_{xi}_{yi}",
+            (x, BED_Y + yoff, 0.16),
+            0.045,
+            0.27,
+            walnut_dark,
+            vertices=36,
+            bevel=0.008,
         )
         add_cylinder(
             collection,
-            f"Leg_Wood_{ix}_{iy}",
-            (x, BED_Y + yoff, 0.39),
-            0.105,
-            0.36,
-            wood_dark,
-            vertices=40,
-            bevel=0.018,
+            f"Leg_Brass_{xi}_{yi}",
+            (x, BED_Y + yoff, 0.045),
+            0.051,
+            0.06,
+            brass,
+            vertices=36,
+            bevel=0.006,
         )
 
-# ---- mattress system ----
+
+# ---------------------------------------------------------------------------
+# Mattress stack, fitted sheet and stitched edges
+# ---------------------------------------------------------------------------
+
 add_cube(
     collection,
-    "Mattress_Lower",
-    (0, BED_Y - 0.01, 1.05),
-    (3.36, 4.34, 0.44),
-    mattress,
-    0.16,
-    6,
+    "Mattress",
+    (0.0, BED_Y - 0.01, 0.59),
+    (MATTRESS_W, MATTRESS_L, 0.28),
+    mattress_mat,
+    bevel=0.07,
+    segments=7,
+)
+
+add_rect_piping(
+    collection,
+    "Mattress_Upper_Piping",
+    (0.0, BED_Y - 0.01),
+    MATTRESS_W - 0.035,
+    MATTRESS_L - 0.035,
+    0.725,
+    piping_mat,
+    thickness=0.005,
+)
+add_rect_piping(
+    collection,
+    "Mattress_Lower_Piping",
+    (0.0, BED_Y - 0.01),
+    MATTRESS_W - 0.025,
+    MATTRESS_L - 0.025,
+    0.465,
+    piping_mat,
+    thickness=0.004,
+)
+
+# Fitted sheet wraps the mattress and gives the bedding a distinct ivory layer.
+add_cube(
+    collection,
+    "Fitted_Sheet",
+    (0.0, BED_Y - 0.01, 0.745),
+    (MATTRESS_W - 0.018, MATTRESS_L - 0.018, 0.055),
+    ivory_light,
+    bevel=0.026,
+    segments=5,
+)
+
+
+# ---------------------------------------------------------------------------
+# Upholstered headboard with vertical channels
+# ---------------------------------------------------------------------------
+
+head_y = BED_Y + FRAME_L / 2 + 0.055
+
+add_cube(
+    collection,
+    "Headboard_Wood_Back",
+    (0.0, head_y, 1.20),
+    (1.13, 0.11, 1.62),
+    walnut_dark,
+    bevel=0.045,
+    segments=5,
 )
 add_cube(
     collection,
-    "Mattress_Topper",
-    (0, BED_Y - 0.04, 1.31),
-    (3.30, 4.26, 0.20),
-    linen_light,
-    0.10,
-    5,
+    "Headboard_Upholstery_Base",
+    (0.0, head_y - 0.075, 1.22),
+    (1.01, 0.095, 1.43),
+    headboard_fabric,
+    bevel=0.055,
+    segments=7,
 )
-add_rect_piping(collection, "Mattress_Lower_Piping", (0, BED_Y - 0.01), 3.28, 4.26, 1.25, piping, 0.023)
-add_rect_piping(collection, "Mattress_Top_Piping", (0, BED_Y - 0.04), 3.20, 4.16, 1.42, piping, 0.020)
 
-# Subtle mattress side stitching bands.
-for z in (0.97, 1.12):
-    add_rect_piping(collection, f"Mattress_Stitch_{int(z*100)}", (0, BED_Y - 0.01), 3.33, 4.31, z, piping, 0.010)
+# Five slim upholstered vertical channels.
+panel_width = 0.176
+for index in range(5):
+    x = -0.352 + index * 0.176
+    add_cube(
+        collection,
+        f"Headboard_Channel_{index}",
+        (x, head_y - 0.132, 1.23),
+        (panel_width - 0.014, 0.075, 1.28),
+        headboard_fabric,
+        bevel=0.045,
+        segments=6,
+    )
 
-# ---- upholstered headboard with wood frame ----
-head_y = BED_Y + 2.34
-add_cube(collection, "Headboard_Back", (0, head_y, 2.18), (3.86, 0.28, 2.65), wood_dark, 0.10, 4)
-add_cube(collection, "Headboard_Inset", (0, head_y - 0.18, 2.20), (3.48, 0.22, 2.23), linen, 0.12, 5)
-
-# Wood posts and cap.
-add_cube(collection, "Headboard_Left_Post", (-1.86, head_y, 1.92), (0.18, 0.40, 3.00), wood, 0.05, 3)
-add_cube(collection, "Headboard_Right_Post", (1.86, head_y, 1.92), (0.18, 0.40, 3.00), wood, 0.05, 3)
-add_cube(collection, "Headboard_Top_Cap", (0, head_y, 3.53), (3.90, 0.42, 0.16), wood, 0.05, 3)
-
-# Padded tuft panels.
-cols = 4
-rows = 3
-panel_w = 0.78
-panel_h = 0.62
-for row in range(rows):
-    z = 1.54 + row * 0.66
-    for col in range(cols):
-        x = -1.20 + col * 0.80
-        add_cube(
-            collection,
-            f"Headboard_Panel_{row}_{col}",
-            (x, head_y - 0.34, z),
-            (panel_w, 0.16, panel_h),
-            linen,
-            0.10,
-            5,
-        )
-
-# Tuft buttons at panel intersections.
-for row in range(2):
-    z = 1.87 + row * 0.66
-    for col in range(3):
-        x = -0.80 + col * 0.80
-        button = add_sphere(
-            collection,
-            f"Tuft_Button_{row}_{col}",
-            (x, head_y - 0.445, z),
-            (0.070, 0.035, 0.070),
-            button_mat,
-        )
-        button.rotation_euler[0] = math.radians(90)
-
-# ---- pillows and layered bedding ----
-add_pillow(collection, "Pillow_Back_Left", -0.82, BED_Y + 1.48, 1.68, -7, linen, piping)
-add_pillow(collection, "Pillow_Back_Right", 0.82, BED_Y + 1.48, 1.68, 7, linen, piping)
-add_pillow(collection, "Pillow_Front_Left", -0.62, BED_Y + 1.02, 1.70, 5, linen_light, piping)
-add_pillow(collection, "Pillow_Front_Right", 0.62, BED_Y + 1.02, 1.70, -5, linen_light, piping)
-
-# Decorative lumbar cushion.
+# Walnut cap and side posts make the headboard read as furniture, not a block.
 add_cube(
     collection,
-    "Lumbar_Cushion",
-    (0, BED_Y + 0.76, 1.76),
-    (1.38, 0.38, 0.34),
-    blanket_mat,
-    bevel=0.16,
-    segments=6,
+    "Headboard_Top_Cap",
+    (0.0, head_y, 1.98),
+    (1.16, 0.14, 0.095),
+    walnut,
+    bevel=0.026,
+    segments=5,
 )
-add_rect_piping(collection, "Lumbar_Piping", (0, BED_Y + 0.76), 1.28, 0.30, 1.90, metal, 0.014)
+for index, x in enumerate((-0.54, 0.54)):
+    add_cube(
+        collection,
+        f"Headboard_Post_{index}",
+        (x, head_y, 1.09),
+        (0.075, 0.13, 1.72),
+        walnut,
+        bevel=0.022,
+        segments=4,
+    )
 
-# Folded top sheet under the quilt.
+
+# ---------------------------------------------------------------------------
+# Layered pillows and cushions
+# ---------------------------------------------------------------------------
+
+add_pillow(
+    collection,
+    "Sleeping_Pillow_Back",
+    (-0.18, BED_Y + 0.64, 0.91),
+    (0.47, 0.40, 0.16),
+    -7.0,
+    ivory,
+    piping_mat,
+)
+add_pillow(
+    collection,
+    "Sleeping_Pillow_Front",
+    (0.18, BED_Y + 0.60, 0.93),
+    (0.47, 0.40, 0.16),
+    8.0,
+    ivory_light,
+    piping_mat,
+)
+
+# Decorative square cushion.
+accent = add_cube(
+    collection,
+    "Terracotta_Cushion",
+    (0.0, BED_Y + 0.39, 0.96),
+    (0.30, 0.21, 0.27),
+    terracotta,
+    bevel=0.075,
+    segments=8,
+)
+accent.rotation_euler[2] = math.radians(-3.0)
+
+# Slim lumbar cushion in sage for layered hotel-style styling.
+lumbar = add_cube(
+    collection,
+    "Sage_Lumbar_Cushion",
+    (0.0, BED_Y + 0.24, 0.89),
+    (0.50, 0.17, 0.15),
+    sage,
+    bevel=0.052,
+    segments=7,
+)
+lumbar.rotation_euler[2] = math.radians(2.0)
+
+
+# ---------------------------------------------------------------------------
+# Top sheet, duvet and foot throw
+# ---------------------------------------------------------------------------
+
+# Visible folded top sheet under the duvet.
 add_cube(
     collection,
     "Top_Sheet_Fold",
-    (0, BED_Y + 0.35, 1.47),
-    (3.22, 0.48, 0.10),
-    linen_light,
-    bevel=0.07,
+    (0.0, BED_Y + 0.25, 0.81),
+    (0.83, 0.22, 0.052),
+    ivory_light,
+    bevel=0.024,
     segments=5,
 )
-for x in (-1.45, -0.90, -0.30, 0.30, 0.90, 1.45):
-    add_cylinder(
-        collection,
-        f"Sheet_Fold_Ridge_{x:+.2f}",
-        (x, BED_Y + 0.12, 1.525),
-        0.018,
-        0.40,
-        piping,
-        rotation=(math.radians(90), 0, 0),
-        vertices=20,
-        bevel=0.006,
-    )
-
-add_blanket(collection, blanket_mat)
-
-# Blanket edge piping at foot for a crafted finish.
-add_cylinder(
+add_rect_piping(
     collection,
-    "Blanket_Foot_Edge",
-    (0, BED_Y - 2.07, 1.39),
-    0.025,
-    3.12,
-    metal,
-    rotation=(0, math.radians(90), 0),
-    vertices=32,
-    bevel=0.006,
+    "Top_Sheet_Stitch",
+    (0.0, BED_Y + 0.25),
+    0.80,
+    0.19,
+    0.838,
+    ivory,
+    thickness=0.003,
 )
 
-# ---- dedicated camera and lighting ----
+# Main sage duvet stops below the pillows, exposing the folded ivory sheet.
+add_fabric_plane(
+    collection,
+    "Sage_Duvet",
+    width=0.94,
+    length=1.42,
+    y_center=BED_Y - 0.18,
+    base_z=0.825,
+    mat=sage,
+    cols=28,
+    rows=40,
+    side_drop=0.085,
+    foot_drop=0.075,
+    ripple=0.023,
+)
+
+# Foot throw adds a second textile layer and color contrast.
+add_fabric_plane(
+    collection,
+    "Terracotta_Foot_Throw",
+    width=0.99,
+    length=0.42,
+    y_center=BED_Y - 0.72,
+    base_z=0.875,
+    mat=terracotta,
+    cols=24,
+    rows=16,
+    side_drop=0.055,
+    foot_drop=0.035,
+    ripple=0.017,
+)
+
+# Thin brass-toned decorative edge line on the throw.
+add_cylinder(
+    collection,
+    "Foot_Throw_Edge",
+    (0.0, BED_Y - 0.925, 0.875),
+    0.005,
+    0.91,
+    brass,
+    rotation=(0.0, math.radians(90.0), 0.0),
+    vertices=24,
+    bevel=0.0015,
+)
+
+
+# ---------------------------------------------------------------------------
+# Camera, lighting and visible viewport presentation
+# ---------------------------------------------------------------------------
+
 camera_data = bpy.data.cameras.get(PREFIX + "CAMERA") or bpy.data.cameras.new(PREFIX + "CAMERA")
 camera = bpy.data.objects.get(PREFIX + "CAMERA")
+
 if camera is None:
     camera = bpy.data.objects.new(PREFIX + "CAMERA", camera_data)
     collection.objects.link(camera)
-elif camera not in collection.objects[:]:
+else:
     move_to_collection(camera, collection)
 
-camera.location = (6.85, BED_Y - 7.30, 5.20)
-camera.data.lens = 54
-point_camera(camera, (0, BED_Y - 0.15, 1.48))
+camera.location = (2.35, BED_Y - 2.65, 1.86)
+camera.data.lens = 52
+point_at(camera, (0.0, BED_Y + 0.03, 0.92))
 bpy.context.scene.camera = camera
 
-# Soft three-point lighting, all scoped to this test collection.
-for name, location, energy, size, color in (
-    ("Key_Light", (4.0, BED_Y - 3.0, 6.7), 1050, 4.2, (1.0, 0.82, 0.68)),
-    ("Fill_Light", (-4.8, BED_Y - 1.0, 4.6), 700, 3.8, (0.68, 0.80, 1.0)),
-    ("Headboard_Light", (0.0, BED_Y + 3.0, 5.5), 850, 3.0, (1.0, 0.72, 0.48)),
-):
-    light_data = bpy.data.lights.new(PREFIX + name + "_Data", "AREA")
-    light_data.energy = energy
-    light_data.shape = "DISK"
-    light_data.size = size
-    light_data.color = color
-    light = bpy.data.objects.new(PREFIX + name, light_data)
-    light.location = location
-    collection.objects.link(light)
-    point_camera(light, (0, BED_Y, 1.2))
+target = (0.0, BED_Y - 0.02, 0.88)
+add_area_light(
+    collection,
+    "Key_Light",
+    (1.75, BED_Y - 1.55, 2.55),
+    850,
+    2.5,
+    (1.0, 0.82, 0.68),
+    target,
+)
+add_area_light(
+    collection,
+    "Fill_Light",
+    (-1.85, BED_Y - 0.45, 2.05),
+    520,
+    2.2,
+    (0.72, 0.82, 1.0),
+    target,
+)
+add_area_light(
+    collection,
+    "Headboard_Rim",
+    (0.35, BED_Y + 1.80, 2.45),
+    620,
+    1.8,
+    (1.0, 0.64, 0.42),
+    (0.0, head_y, 1.30),
+)
 
-# Presentation settings.
 scene = bpy.context.scene
 scene.render.resolution_x = 1280
 scene.render.resolution_y = 720
 scene.render.resolution_percentage = 100
+
+# Neutral color-management choices keep the palette readable.
+try:
+    scene.view_settings.look = "AgX - Medium High Contrast"
+except Exception:
+    pass
 
 window = bpy.context.window
 screen = window.screen if window else None
@@ -452,28 +918,37 @@ if screen:
     for area in screen.areas:
         if area.type != "VIEW_3D":
             continue
+
         space = area.spaces.active
         try:
+            # Material Preview is fast, shows all node-based textures, and is
+            # more deterministic than waiting for a full render in live mode.
             space.shading.type = "MATERIAL"
             space.shading.light = "STUDIO"
             space.shading.show_shadows = True
             space.shading.show_cavity = True
             space.shading.cavity_type = "WORLD"
+            space.shading.use_scene_world = False
+            space.shading.use_scene_lights = False
         except Exception:
             pass
+
         region = next((r for r in area.regions if r.type == "WINDOW"), None)
-        if region:
+        if region is not None:
             try:
                 with bpy.context.temp_override(window=window, area=area, region=region):
                     bpy.ops.view3d.view_camera()
             except RuntimeError:
                 pass
 
-# Select the mattress as a clear focus object.
 bpy.ops.object.select_all(action="DESELECT")
-focus = bpy.data.objects.get(PREFIX + "Mattress_Topper")
-if focus:
+focus = bpy.data.objects.get(PREFIX + "Sage_Duvet")
+if focus is not None:
     focus.select_set(True)
     bpy.context.view_layer.objects.active = focus
 
-print("OrdaX detailed bed generated in isolated collection.")
+print(
+    "OrdaX premium single bed rebuilt: "
+    f"{MATTRESS_W:.2f} x {MATTRESS_L:.2f} m, "
+    "procedural walnut/fabric materials, layered bedding."
+)
