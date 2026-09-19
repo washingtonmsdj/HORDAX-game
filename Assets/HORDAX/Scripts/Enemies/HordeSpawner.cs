@@ -113,12 +113,15 @@ namespace HORDAX.Enemies
             enemy.transform.rotation = Quaternion.Euler(0f, 180f + Random.Range(-6f, 6f), 0f);
             enemy.transform.localScale = new Vector3(0.86f, Random.Range(1.05f, 1.28f), 0.86f) * size;
 
-            Renderer renderer = enemy.GetComponentInChildren<Renderer>();
-            if (renderer != null && requestedPrefab == null)
+            if (requestedPrefab == null)
             {
-                renderer.sharedMaterial = rank == EnemyRank.Boss
+                Material material = rank == EnemyRank.Boss
                     ? PrototypeMaterials.Boss
                     : rank == EnemyRank.Elite ? PrototypeMaterials.Elite : PrototypeMaterials.Enemy;
+
+                Renderer[] renderers = enemy.GetComponentsInChildren<Renderer>();
+                for (int rendererIndex = 0; rendererIndex < renderers.Length; rendererIndex++)
+                    renderers[rendererIndex].sharedMaterial = material;
             }
 
             agent.Initialize(player, health, speed, damage, pool, rank, coins, score);
