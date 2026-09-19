@@ -28,16 +28,16 @@ def build():
 
     # Rails: real dimensions, stable anchors.
     left = add_cube(col, "Left_Rail", "frame", "left_rail",
-                    (OX-frame_w/2+0.035, OY, 0.37), (0.07, frame_l-0.06, 0.23),
+                    (OX-frame_w/2+0.030, OY, 0.37), (0.06, frame_l-0.06, 0.23),
                     walnut, bevel=0.016)
     right = add_cube(col, "Right_Rail", "frame", "right_rail",
-                     (OX+frame_w/2-0.035, OY, 0.37), (0.07, frame_l-0.06, 0.23),
+                     (OX+frame_w/2-0.030, OY, 0.37), (0.06, frame_l-0.06, 0.23),
                      walnut, bevel=0.016)
     foot = add_cube(col, "Foot_Rail", "frame", "foot_rail",
-                    (OX, OY-frame_l/2+0.045, 0.39), (frame_w, 0.09, 0.26),
+                    (OX, OY-frame_l/2+0.015, 0.39), (frame_w, 0.07, 0.26),
                     walnut, bevel=0.020)
     support = add_cube(col, "Mattress_Support", "frame", "support",
-                       (OX, OY, 0.46), (0.91, 1.84, 0.07),
+                       (OX, OY, 0.425), (0.90, 1.82, 0.07),
                        walnut_dark, bevel=0.010)
 
     for obj in (left, right, foot, support):
@@ -51,7 +51,7 @@ def build():
         add_tapered_leg(col, f"Leg_{index}", (x, y, 0.17), 0.34, walnut_dark)
 
     # Headboard posts and backer.
-    head_y = OY + frame_l/2 - 0.015
+    head_y = OY + frame_l/2 + 0.015
     for index, x in enumerate((OX-0.515, OX+0.515)):
         post = add_cube(col, f"Headboard_Post_{index}", "frame", "headboard_post",
                         (x, head_y, 1.23), (0.075, 0.13, 1.72),
@@ -62,7 +62,7 @@ def build():
                  walnut, bevel=0.030, segments=6)
 
     back = add_cube(col, "Headboard_Back", "frame", "headboard_back",
-                    (OX, head_y+0.015, 1.39), (0.99, 0.095, 1.48),
+                    (OX, head_y+0.055, 1.39), (0.99, 0.095, 1.48),
                     walnut_dark, bevel=0.040, segments=5)
     add_collision(back, thickness=0.004, friction=10.0)
 
@@ -72,7 +72,7 @@ def build():
     for index in range(channels):
         x = OX - usable_w/2 + channel_w/2 + index*channel_w
         panel = add_cube(col, f"Headboard_Channel_{index}", "frame", "headboard_channel",
-                         (x, head_y-0.050, 1.40),
+                         (x, head_y-0.010, 1.40),
                          (channel_w-0.009, 0.105, 1.40),
                          taupe, bevel=0.048, segments=8)
         panel["ordax_channel_index"] = index
