@@ -29,15 +29,15 @@ PREVIEW_PATH = ARTIFACT_ROOT / "boat_blockout_preview.png"
 # X = boat length, Y = beam, Z = vertical.
 # Values were chosen from the supplied orthographic/3-quarter reference.
 STATIONS = [
-    (-1.60, 0.055, 0.56,  0.02),
-    (-1.38, 0.155, 0.49, -0.06),
-    (-1.05, 0.285, 0.41, -0.14),
-    (-0.62, 0.405, 0.34, -0.22),
-    ( 0.00, 0.475, 0.31, -0.27),
-    ( 0.62, 0.405, 0.34, -0.22),
-    ( 1.05, 0.285, 0.41, -0.14),
-    ( 1.38, 0.155, 0.49, -0.06),
-    ( 1.60, 0.055, 0.56,  0.02),
+    (-1.60, 0.065, 0.59,  0.03),
+    (-1.38, 0.185, 0.49, -0.045),
+    (-1.05, 0.325, 0.38, -0.125),
+    (-0.62, 0.415, 0.30, -0.205),
+    ( 0.00, 0.445, 0.27, -0.240),
+    ( 0.62, 0.415, 0.30, -0.205),
+    ( 1.05, 0.325, 0.38, -0.125),
+    ( 1.38, 0.185, 0.49, -0.045),
+    ( 1.60, 0.065, 0.59,  0.03),
 ]
 
 CROSS_SAMPLES = 17
@@ -82,13 +82,13 @@ def _aged_wood_material():
     mapping.inputs["Scale"].default_value = (0.65, 5.5, 2.2)
 
     ramp.color_ramp.elements[0].position = 0.20
-    ramp.color_ramp.elements[0].color = (0.018, 0.009, 0.0045, 1)
+    ramp.color_ramp.elements[0].color = (0.004, 0.002, 0.001, 1)
     ramp.color_ramp.elements[1].position = 0.82
-    ramp.color_ramp.elements[1].color = (0.28, 0.115, 0.045, 1)
+    ramp.color_ramp.elements[1].color = (0.14, 0.050, 0.016, 1)
     mid = ramp.color_ramp.elements.new(0.52)
-    mid.color = (0.085, 0.030, 0.012, 1)
+    mid.color = (0.038, 0.012, 0.004, 1)
 
-    bsdf.inputs["Roughness"].default_value = 0.78
+    bsdf.inputs["Roughness"].default_value = 0.84
     bsdf.inputs["Metallic"].default_value = 0.0
     bump.inputs["Strength"].default_value = 0.26
     bump.inputs["Distance"].default_value = 0.035
@@ -107,8 +107,10 @@ def _rope_material():
     mat = bpy.data.materials.get("ORDAX_BOAT_MAT_Rope")
     if mat is None:
         mat = bpy.data.materials.new("ORDAX_BOAT_MAT_Rope")
-    mat.diffuse_color = (0.22, 0.14, 0.075, 1)
-    mat.roughness = 0.93
+    mat.use_nodes = True
+    bsdf = mat.node_tree.nodes.get("Principled BSDF")
+    bsdf.inputs["Base Color"].default_value = (0.075, 0.040, 0.016, 1)
+    bsdf.inputs["Roughness"].default_value = 0.94
     return mat
 
 
@@ -126,7 +128,8 @@ def _cross_point(station, u: float) -> tuple[float, float, float]:
     x, half_width, sheer_z, keel_z = station
     # U-shaped section: narrow keel, flaring side wall toward the gunwale.
     # Exponent keeps the center deep while the sides rise more sharply.
-    z = keel_z + (sheer_z - keel_z) * (abs(u) ** 1.62)
+    au = abs(u)
+    z = keel_z + (sheer_z - keel_z) * (0.16 * au + 0.84 * (au ** 1.34))
     y = half_width * u
     return (x, y, z)
 
@@ -172,12 +175,15 @@ def _make_hull(col, wood):
     return hull
 
 
-def _curve_object(col, name, points, bevel_depth, material, *, cyclic=False):
+def _curve_object(
+    col, name, points, bevel_depth, material, *,
+    cyclic=False, bevel_resolution=3, resolution_u=4,
+):
     curve = bpy.data.curves.new(name + "_Curve", "CURVE")
     curve.dimensions = "3D"
-    curve.resolution_u = 4
+    curve.resolution_u = resolution_u
     curve.bevel_depth = bevel_depth
-    curve.bevel_resolution = 3
+    curve.bevel_resolution = bevel_resolution
     spline = curve.splines.new("NURBS")
     spline.points.add(len(points) - 1)
     for p, co in zip(spline.points, points):
@@ -208,8 +214,10 @@ def _make_gunwales(col, wood):
             col,
             f"ORDAX_BOAT_Gunwale_{side}",
             pts,
-            0.038,
+            0.040,
             wood,
+            bevel_resolution=0,
+            resolution_u=8,
         )
         obj["ordax_role"] = "gunwale"
 
@@ -223,8 +231,10 @@ def _make_plank_lines(col, wood):
                 col,
                 f"ORDAX_BOAT_PlankLine_{side_name}_{index:02d}",
                 pts,
-                0.012,
+                0.010,
                 wood,
+                bevel_resolution=0,
+                resolution_u=6,
             )
             obj["ordax_role"] = "plank_seam"
 
@@ -263,8 +273,10 @@ def _make_structure(col, wood):
             col,
             f"ORDAX_BOAT_Rib_{idx:02d}",
             pts,
-            0.024,
+            0.022,
             wood,
+            bevel_resolution=0,
+            resolution_u=3,
         )
         rib["ordax_role"] = "rib"
 
@@ -272,7 +284,7 @@ def _make_structure(col, wood):
     for idx, x in enumerate((-0.66, 0.0, 0.66), start=1):
         s = _interp_station(x)
         half = s[1] * 0.84
-        z = 0.185 if idx != 2 else 0.175
+        z = 0.145 if idx != 2 else 0.135
         beam = _cube(
             col,
             f"ORDAX_BOAT_Thwart_{idx:02d}",
@@ -288,7 +300,7 @@ def _make_structure(col, wood):
         board = _cube(
             col,
             f"ORDAX_BOAT_FloorBoard_{idx:02d}",
-            (0, y, -0.205),
+            (0, y, -0.178),
             (2.18, 0.095, 0.035),
             wood,
             bevel=0.006,
@@ -301,8 +313,8 @@ def _make_posts_and_rope_proxy(col, wood, rope):
         post = _cube(
             col,
             f"ORDAX_BOAT_{label}_Post",
-            (x, 0, 0.60),
-            (0.13, 0.13, 0.48),
+            (x, 0, 0.655),
+            (0.15, 0.15, 0.50),
             wood,
             bevel=0.02,
         )
@@ -311,11 +323,11 @@ def _make_posts_and_rope_proxy(col, wood, rope):
         # Basic coils are enough for silhouette validation; high-detail rope follows later.
         for n in range(4):
             bpy.ops.mesh.primitive_torus_add(
-                major_radius=0.105 + n * 0.006,
-                minor_radius=0.018,
+                major_radius=0.096 + n * 0.004,
+                minor_radius=0.016,
                 major_segments=36,
                 minor_segments=8,
-                location=(x, 0, 0.58 + n * 0.038),
+                location=(x, 0, 0.61 + n * 0.034),
             )
             torus = bpy.context.object
             torus.name = f"ORDAX_BOAT_{label}_RopeCoil_{n+1:02d}"
@@ -330,9 +342,9 @@ def _make_posts_and_rope_proxy(col, wood, rope):
             col,
             f"ORDAX_BOAT_{label}_RopeTail",
             [
-                (x, 0.05, 0.64),
-                (x + 0.03 * direction, 0.07, 0.35),
-                (x + 0.04 * direction, 0.09, 0.02),
+                (x, 0.05, 0.66),
+                (x + 0.03 * direction, 0.07, 0.40),
+                (x + 0.04 * direction, 0.09, 0.08),
             ],
             0.018,
             rope,
@@ -381,22 +393,22 @@ def _setup_camera_and_light(col):
     scene.world = world
     world.use_nodes = True
     world.node_tree.nodes["Background"].inputs["Color"].default_value = (0.008, 0.008, 0.010, 1)
-    world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.23
+    world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.07
 
-    bpy.ops.object.camera_add(location=(4.35, -4.55, 2.55))
+    bpy.ops.object.camera_add(location=(3.65, -3.85, 1.95))
     cam = bpy.context.object
     cam.name = "ORDAX_BOAT_Camera_3Q"
     cam.data.lens = 58
-    _look_at(cam, (0.10, 0, 0.02))
+    _look_at(cam, (0.06, 0, 0.04))
     scene.camera = cam
     for owner in list(cam.users_collection):
         owner.objects.unlink(cam)
     col.objects.link(cam)
 
     for name, loc, energy, size in (
-        ("Key", (1.6, -2.4, 4.2), 950, 4.0),
-        ("Fill", (-3.0, -1.2, 2.1), 520, 3.5),
-        ("Rim", (1.8, 3.2, 3.3), 760, 3.0),
+        ("Key", (1.6, -2.4, 4.2), 620, 4.0),
+        ("Fill", (-3.0, -1.2, 2.1), 240, 3.5),
+        ("Rim", (1.8, 3.2, 3.3), 420, 3.0),
     ):
         bpy.ops.object.light_add(type="AREA", location=loc)
         light = bpy.context.object
@@ -411,8 +423,10 @@ def _setup_camera_and_light(col):
 
     # Dark neutral ground, close to the concept presentation.
     ground_mat = bpy.data.materials.get("ORDAX_BOAT_MAT_Ground") or bpy.data.materials.new("ORDAX_BOAT_MAT_Ground")
-    ground_mat.diffuse_color = (0.012, 0.012, 0.014, 1)
-    ground_mat.roughness = 0.72
+    ground_mat.use_nodes = True
+    ground_bsdf = ground_mat.node_tree.nodes.get("Principled BSDF")
+    ground_bsdf.inputs["Base Color"].default_value = (0.006, 0.006, 0.007, 1)
+    ground_bsdf.inputs["Roughness"].default_value = 0.82
     ground = _cube(col, "ORDAX_BOAT_Ground", (0, 0, -0.34), (6.8, 5.0, 0.05), ground_mat, bevel=0)
     ground["ordax_role"] = "presentation_ground"
 
@@ -477,7 +491,7 @@ def _validate(col):
         ]
         if not (3.18 <= hull_dims[0] <= 3.22):
             errors.append(f"hull length out of expected range: {hull_dims[0]:.3f}m")
-        if not (0.94 <= hull_dims[1] <= 0.96):
+        if not (0.88 <= hull_dims[1] <= 0.91):
             errors.append(f"hull beam out of expected range: {hull_dims[1]:.3f}m")
         # This is the full raised-tip-to-keel envelope, not the amidships
         # section depth. The reference intentionally has raised bow/stern.
