@@ -136,8 +136,7 @@ def _set_visual_thickness(cloth,thickness):
     if modifier is None:
         raise RuntimeError("Cloth simulation did not create Fabric thickness modifier")
     modifier.thickness=float(thickness)
-    modifier.offset=0.0
-
+    # Build visual thickness away from the collision surface. A symmetric\n    # solidify would put half the fabric thickness back inside the collider\n    # after Cloth has already solved a valid non-penetrating surface.\n    modifier.offset=1.0\n
 
 def build(part_id: str,*,export=True):
     if part_id not in SPECS:
