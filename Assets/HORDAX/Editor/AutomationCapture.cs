@@ -5,6 +5,11 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using HORDAX.Core;
+using HORDAX.Data;
+using HORDAX.Enemies;
+using HORDAX.Player;
+using HORDAX.World;
 
 namespace HORDAX.EditorTools
 {
@@ -130,6 +135,7 @@ namespace HORDAX.EditorTools
                 texture.ReadPixels(new Rect(0, 0, width, height), 0, 0, false);
                 texture.Apply(false, false);
                 File.WriteAllBytes(output, texture.EncodeToPNG());
+                WriteSnapshot(output, camera);
 
                 Debug.Log($"[HORDAX Automation] Screenshot written: {output}");
             }
@@ -141,6 +147,56 @@ namespace HORDAX.EditorTools
                 target.Release();
                 UnityEngine.Object.DestroyImmediate(target);
             }
+        }
+
+        private static void WriteSnapshot(string screenshotPath, Camera camera)
+        {
+            RunnerController player = UnityEngine.Object.FindFirstObjectByType<RunnerController>();
+            EnemyAgent[] enemies = UnityEngine.Object.FindObjectsByType<EnemyAgent>(FindObjectsSortMode.None);
+
+            int elites = 0;
+            int bosses = 0;
+            for (int i = 0; i < enemies.Length; i++)
+            {
+                if (enemies[i] == null) continue;
+                if (enemies[i].Rank == EnemyRank.Boss) bosses++;
+                else if (enemies[i].Rank == EnemyRank.Elite) elites++;
+            }
+
+            CaptureSnapshot snapshot = new CaptureSnapshot
+            {
+                capturedAtUtc = DateTime.UtcNow.ToString("o"),
+                revision = "TWO-LANE CORE / PASS 1",
+                gameState = GameManager.Instance != null ? GameManager.Instance.State.ToString() : "unknown",
+                playerPosition = player != null ? player.transform.position : Vector3.zero,
+                cameraPosition = camera != null ? camera.transform.position : Vector3.zero,
+                activeEnemies = enemies.Length,
+                activeElites = elites,
+                activeBosses = bosses,
+                arsenalLaneCenterX = TrackLayout.ArsenalCenterX,
+                hordeLaneCenterX = TrackLayout.HordeCenterX,
+                laneHalfWidth = TrackLayout.LaneHalfWidth
+            };
+
+            string jsonPath = Path.ChangeExtension(screenshotPath, ".json");
+            File.WriteAllText(jsonPath, JsonUtility.ToJson(snapshot, true));
+            Debug.Log($"[HORDAX Automation] Snapshot written: {jsonPath}");
+        }
+
+        [Serializable]
+        private sealed class CaptureSnapshot
+        {
+            public string capturedAtUtc;
+            public string revision;
+            public string gameState;
+            public Vector3 playerPosition;
+            public Vector3 cameraPosition;
+            public int activeEnemies;
+            public int activeElites;
+            public int activeBosses;
+            public float arsenalLaneCenterX;
+            public float hordeLaneCenterX;
+            public float laneHalfWidth;
         }
 
         private static string GetArgument(string name)
