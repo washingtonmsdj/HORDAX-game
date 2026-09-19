@@ -144,19 +144,38 @@ namespace HORDAX.Prototype
                     false);
             }
 
-            CreateWorldLabel(
+            CreateLaneHeader(
                 world.transform,
-                "ARSENAL / UPGRADES",
-                new Vector3(TrackLayout.ArsenalCenterX, 0.08f, 12f),
-                52,
-                0.055f);
+                TrackLayout.ArsenalCenterX,
+                14f,
+                "ARSENAL  >>>",
+                PrototypeMaterials.ArsenalLane,
+                PrototypeMaterials.Divider);
 
-            CreateWorldLabel(
+            CreateLaneHeader(
                 world.transform,
-                "HORDA / BOSS",
-                new Vector3(TrackLayout.HordeCenterX, 0.08f, 12f),
-                52,
-                0.055f);
+                TrackLayout.HordeCenterX,
+                14f,
+                "<<<  HORDA",
+                PrototypeMaterials.HordeLane,
+                PrototypeMaterials.Boss);
+
+            for (float z = 24f; z < finishZ; z += 32f)
+            {
+                CreateLaneDirectionArrow(
+                    world.transform,
+                    TrackLayout.ArsenalCenterX,
+                    z,
+                    true,
+                    PrototypeMaterials.Divider);
+
+                CreateLaneDirectionArrow(
+                    world.transform,
+                    TrackLayout.HordeCenterX,
+                    z,
+                    false,
+                    PrototypeMaterials.Boss);
+            }
 
             for (float z = 18f; z < finishZ; z += 24f)
             {
@@ -684,6 +703,105 @@ namespace HORDAX.Prototype
                 .transform.localPosition = new Vector3(postX, 1.8f, 0f);
             CreateBlock("Finish Top", root.transform.position, new Vector3(finishWidth, 0.45f, 0.55f), PrototypeMaterials.Finish, root.transform, false)
                 .transform.localPosition = new Vector3(0f, 3.35f, 0f);
+        }
+
+        private static void CreateLaneHeader(
+            Transform parent,
+            float x,
+            float z,
+            string label,
+            Material backingMaterial,
+            Material accentMaterial)
+        {
+            GameObject root = new GameObject(label + " HEADER");
+            root.transform.SetParent(parent, false);
+            root.transform.localPosition = new Vector3(x, 3.35f, z);
+
+            GameObject panel = CreateBlock(
+                label + " Panel",
+                root.transform.position,
+                new Vector3(4.85f, 0.95f, 0.20f),
+                backingMaterial,
+                root.transform,
+                false);
+            panel.transform.localPosition = Vector3.zero;
+
+            GameObject accent = CreateBlock(
+                label + " Accent",
+                root.transform.position,
+                new Vector3(4.25f, 0.09f, 0.24f),
+                accentMaterial,
+                root.transform,
+                false);
+            accent.transform.localPosition = new Vector3(0f, -0.34f, -0.03f);
+
+            float postX = 2.25f;
+            GameObject leftPost = CreateBlock(
+                label + " Left Post",
+                root.transform.position,
+                new Vector3(0.16f, 2.1f, 0.16f),
+                PrototypeMaterials.Rail,
+                root.transform,
+                false);
+            leftPost.transform.localPosition = new Vector3(-postX, -1.45f, 0.05f);
+
+            GameObject rightPost = CreateBlock(
+                label + " Right Post",
+                root.transform.position,
+                new Vector3(0.16f, 2.1f, 0.16f),
+                PrototypeMaterials.Rail,
+                root.transform,
+                false);
+            rightPost.transform.localPosition = new Vector3(postX, -1.45f, 0.05f);
+
+            CreateWorldLabel(
+                root.transform,
+                label,
+                new Vector3(0f, 0.02f, -0.13f),
+                74,
+                0.052f);
+        }
+
+        private static void CreateLaneDirectionArrow(
+            Transform parent,
+            float x,
+            float z,
+            bool forward,
+            Material material)
+        {
+            GameObject root = new GameObject(forward ? "Arsenal Forward Arrow" : "Horde Reverse Arrow");
+            root.transform.SetParent(parent, false);
+            root.transform.localPosition = new Vector3(x, 0.055f, z);
+            root.transform.localRotation = Quaternion.Euler(0f, forward ? 0f : 180f, 0f);
+
+            GameObject shaft = CreateBlock(
+                "Arrow Shaft",
+                root.transform.position,
+                new Vector3(0.12f, 0.035f, 1.65f),
+                material,
+                root.transform,
+                false);
+            shaft.transform.localPosition = new Vector3(0f, 0f, -0.10f);
+
+            GameObject leftWing = CreateBlock(
+                "Arrow Left Wing",
+                root.transform.position,
+                new Vector3(0.12f, 0.035f, 0.92f),
+                material,
+                root.transform,
+                false);
+            leftWing.transform.localPosition = new Vector3(-0.30f, 0f, 0.55f);
+            leftWing.transform.localRotation = Quaternion.Euler(0f, -42f, 0f);
+
+            GameObject rightWing = CreateBlock(
+                "Arrow Right Wing",
+                root.transform.position,
+                new Vector3(0.12f, 0.035f, 0.92f),
+                material,
+                root.transform,
+                false);
+            rightWing.transform.localPosition = new Vector3(0.30f, 0f, 0.55f);
+            rightWing.transform.localRotation = Quaternion.Euler(0f, 42f, 0f);
         }
 
         private static TextMesh CreateWorldLabel(Transform parent, string value, Vector3 localPosition, int fontSize, float characterSize)
