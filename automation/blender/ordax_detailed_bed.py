@@ -766,7 +766,7 @@ add_area_light(collection, "Fill", (-1.85, BED_Y - 0.35, 2.30), 620, 2.6, (0.82,
 add_area_light(collection, "Head_Rim", (0.0, BED_Y + 1.75, 2.65), 500, 2.2, (1.0, 0.78, 0.62), (0.0, head_y, 1.45))
 
 scene = bpy.context.scene
-scene.render.engine = "BLENDER_EEVEE_NEXT"
+scene.render.engine = "BLENDER_EEVEE"
 scene.render.resolution_x = 1280
 scene.render.resolution_y = 960
 scene.render.resolution_percentage = 100
