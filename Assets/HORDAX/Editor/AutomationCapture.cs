@@ -175,7 +175,10 @@ namespace HORDAX.EditorTools
 
             int activatedSpawners = 0;
             int pendingSpawners = 0;
-            float nextEncounterZ = float.PositiveInfinity;
+            int enemiesRemainingToSpawn = 0;
+            float currentEncounterZ = float.PositiveInfinity;
+            float currentEncounterDistance = float.PositiveInfinity;
+            float nextPendingEncounterZ = float.PositiveInfinity;
             float playerZ = player != null ? player.transform.position.z : 0f;
 
             for (int i = 0; i < spawners.Length; i++)
@@ -184,15 +187,30 @@ namespace HORDAX.EditorTools
                 if (spawner == null) continue;
 
                 if (spawner.Activated)
+                {
                     activatedSpawners++;
-                else
-                    pendingSpawners++;
+                    enemiesRemainingToSpawn += spawner.RemainingCount;
 
-                if (spawner.EncounterZ >= playerZ && spawner.EncounterZ < nextEncounterZ)
-                    nextEncounterZ = spawner.EncounterZ;
+                    float distance = Mathf.Abs(spawner.EncounterZ - playerZ);
+                    if (distance < currentEncounterDistance)
+                    {
+                        currentEncounterDistance = distance;
+                        currentEncounterZ = spawner.EncounterZ;
+                    }
+                }
+                else
+                {
+                    pendingSpawners++;
+                    if (spawner.EncounterZ >= playerZ &&
+                        spawner.EncounterZ < nextPendingEncounterZ)
+                    {
+                        nextPendingEncounterZ = spawner.EncounterZ;
+                    }
+                }
             }
 
-            bool hasNextEncounter = !float.IsPositiveInfinity(nextEncounterZ);
+            bool hasCurrentEncounter = !float.IsPositiveInfinity(currentEncounterZ);
+            bool hasNextPendingEncounter = !float.IsPositiveInfinity(nextPendingEncounterZ);
             CaptureSnapshot snapshot = new CaptureSnapshot
             {
                 capturedAtUtc = DateTime.UtcNow.ToString("o"),
@@ -217,8 +235,12 @@ namespace HORDAX.EditorTools
                 playerForwardSpeed = player != null ? player.ForwardSpeed : 0f,
                 activatedSpawners = activatedSpawners,
                 pendingSpawners = pendingSpawners,
-                nextEncounterZ = hasNextEncounter ? nextEncounterZ : -1f,
-                distanceToNextEncounter = hasNextEncounter ? Mathf.Max(0f, nextEncounterZ - playerZ) : -1f,
+                enemiesRemainingToSpawn = enemiesRemainingToSpawn,
+                currentEncounterZ = hasCurrentEncounter ? currentEncounterZ : -1f,
+                nextPendingEncounterZ = hasNextPendingEncounter ? nextPendingEncounterZ : -1f,
+                distanceToNextPendingEncounter = hasNextPendingEncounter
+                    ? Mathf.Max(0f, nextPendingEncounterZ - playerZ)
+                    : -1f,
                 enemyPoolCreated = enemyPool != null ? enemyPool.CreatedCount : 0,
                 enemyPoolAvailable = enemyPool != null ? enemyPool.AvailableCount : 0,
                 arsenalLaneCenterX = TrackLayout.ArsenalCenterX,
@@ -256,8 +278,10 @@ namespace HORDAX.EditorTools
             public float playerForwardSpeed;
             public int activatedSpawners;
             public int pendingSpawners;
-            public float nextEncounterZ;
-            public float distanceToNextEncounter;
+            public int enemiesRemainingToSpawn;
+            public float currentEncounterZ;
+            public float nextPendingEncounterZ;
+            public float distanceToNextPendingEncounter;
             public int enemyPoolCreated;
             public int enemyPoolAvailable;
             public float arsenalLaneCenterX;
