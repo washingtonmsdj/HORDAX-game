@@ -1,0 +1,94 @@
+{
+  "asset": "single_bed_reference",
+  "standard_version": 1,
+  "units": "METERS",
+  "origin": [
+    0,
+    -10,
+    0
+  ],
+  "dimensions": {
+    "mattress_width": 0.88,
+    "mattress_length": 1.88,
+    "mattress_height": 0.3,
+    "frame_width": 1.02,
+    "frame_length": 2.02,
+    "headboard_height": 1.56,
+    "headboard_channels": 7
+  },
+  "tolerances": {
+    "dimension_relative": 0.04,
+    "penetration_m": 0.008,
+    "contact_clearance_m": 0.003
+  },
+  "components": [
+    {
+      "id": "bed_structure",
+      "artifact": "Artifacts/Blender/bed_parts/bed_structure.blend",
+      "status": "isolated",
+      "rules": {
+        "bed_legs": 4,
+        "headboard_integrated": true
+      }
+    },
+    {
+      "id": "mattress",
+      "artifact": "Artifacts/Blender/bed_parts/mattress.blend",
+      "status": "isolated"
+    },
+    {
+      "id": "pillow_back",
+      "artifact": "Artifacts/Blender/bed_parts/pillow_back.blend",
+      "status": "isolated"
+    },
+    {
+      "id": "pillow_left",
+      "artifact": "Artifacts/Blender/bed_parts/pillow_left.blend",
+      "status": "isolated"
+    },
+    {
+      "id": "pillow_right",
+      "artifact": "Artifacts/Blender/bed_parts/pillow_right.blend",
+      "status": "isolated"
+    },
+    {
+      "id": "pillow_accent",
+      "artifact": "Artifacts/Blender/bed_parts/pillow_accent.blend",
+      "status": "isolated"
+    },
+    {
+      "id": "pillow_lumbar",
+      "artifact": "Artifacts/Blender/bed_parts/pillow_lumbar.blend",
+      "status": "isolated"
+    },
+    {
+      "id": "fitted_sheet",
+      "artifact": "Artifacts/Blender/bed_parts/fitted_sheet.blend",
+      "status": "isolated"
+    },
+    {
+      "id": "top_sheet",
+      "artifact": "Artifacts/Blender/bed_parts/top_sheet.blend",
+      "status": "isolated"
+    },
+    {
+      "id": "duvet",
+      "artifact": "Artifacts/Blender/bed_parts/duvet.blend",
+      "status": "isolated"
+    }
+  ],
+  "build_order": [
+    "isolated_parts",
+    "individual_validation",
+    "human_visual_review",
+    "master_assembly_later",
+    "pairwise_contact_validation"
+  ],
+  "artifact": "Artifacts/Blender/bed_parts_review.blend",
+  "assembly_enabled": false,
+  "assembly_gate": "all isolated parts approved",
+  "reference_notes": {
+    "bed_structure": "frame and headboard are one physical asset; exactly four legs; rear legs continue as headboard posts",
+    "pillows": "thin soft sewn forms; dimensions proportional to 0.88 m mattress and generated reference"
+  }
+}

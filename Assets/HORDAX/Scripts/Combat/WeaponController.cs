@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using HORDAX.Core;
 using HORDAX.Data;
+using HORDAX.Enemies;
 using HORDAX.Prototype;
+using HORDAX.World;
 
 namespace HORDAX.Combat
 {
@@ -28,12 +30,14 @@ namespace HORDAX.Combat
         private readonly Stack<Bullet> prototypeBulletPool = new Stack<Bullet>();
         private readonly Dictionary<GameObject, Stack<Bullet>> prefabBulletPools = new Dictionary<GameObject, Stack<Bullet>>();
         private readonly Dictionary<Bullet, GameObject> sourcePrefabByBullet = new Dictionary<Bullet, GameObject>();
+        private readonly Dictionary<ShootableTarget, float> reservedDamageByTarget = new Dictionary<ShootableTarget, float>();
         private float shotTimer;
         private float flashTimer;
         private GameObject muzzleFlash;
         private int upgradeLevel = 1;
         private float permanentDamageMultiplier = 1f;
         private float permanentFireRateMultiplier = 1f;
+        private ShootableTarget currentTarget;
 
         public event Action ShotFired;
         public event Action WeaponChanged;
@@ -48,7 +52,30 @@ namespace HORDAX.Combat
         public float SpreadDegrees => spreadDegrees;
         public float RecoilKick => recoilKick;
         public int UpgradeLevel => upgradeLevel;
+        public int ReservedTargetCount => reservedDamageByTarget.Count;
+        public float ReservedDamageTotal
+        {
+            get
+            {
+                float total = 0f;
+                foreach (KeyValuePair<ShootableTarget, float> pair in reservedDamageByTarget)
+                    total += Mathf.Max(0f, pair.Value);
+                return total;
+            }
+        }
         public WeaponData Definition => weaponData;
+
+        public bool TryGetAimPoint(out Vector3 point)
+        {
+            if (currentTarget != null && currentTarget.CanBeTargeted)
+            {
+                point = currentTarget.TargetPoint;
+                return true;
+            }
+
+            point = Vector3.zero;
+            return false;
+        }
 
         public void SetMuzzle(Transform value) => muzzle = value;
 
@@ -99,8 +126,8 @@ namespace HORDAX.Combat
                     displayName = "SMG";
                     damage = 4f;
                     fireRate = 18f;
-                    range = 31f;
-                    bulletSpeed = 52f;
+                    range = 44f;
+                    bulletSpeed = 70f;
                     projectilesPerShot = 1;
                     spreadDegrees = 1.2f;
                     recoilKick = 0.035f;
@@ -110,8 +137,8 @@ namespace HORDAX.Combat
                     displayName = "SHOTGUN";
                     damage = 3.5f;
                     fireRate = 4.2f;
-                    range = 24f;
-                    bulletSpeed = 42f;
+                    range = 36f;
+                    bulletSpeed = 58f;
                     projectilesPerShot = 5;
                     spreadDegrees = 5.5f;
                     recoilKick = 0.13f;
@@ -121,8 +148,8 @@ namespace HORDAX.Combat
                     displayName = "MINIGUN";
                     damage = 4.5f;
                     fireRate = 24f;
-                    range = 38f;
-                    bulletSpeed = 58f;
+                    range = 52f;
+                    bulletSpeed = 78f;
                     projectilesPerShot = 1;
                     spreadDegrees = 1.5f;
                     recoilKick = 0.045f;
@@ -132,8 +159,8 @@ namespace HORDAX.Combat
                     displayName = "RIFLE";
                     damage = 5f;
                     fireRate = 12f;
-                    range = 34f;
-                    bulletSpeed = 45f;
+                    range = 46f;
+                    bulletSpeed = 60f;
                     projectilesPerShot = 1;
                     spreadDegrees = 0.4f;
                     recoilKick = 0.055f;
@@ -214,16 +241,52 @@ namespace HORDAX.Combat
                 if (flashTimer <= 0f && muzzleFlash != null) muzzleFlash.SetActive(false);
             }
 
-            if (GameManager.Instance == null || GameManager.Instance.State != GameState.Playing) return;
+            if (GameManager.Instance == null || GameManager.Instance.State != GameState.Playing)
+            {
+                currentTarget = null;
+                return;
+            }
+
+            currentTarget = SelectTarget();
 
             shotTimer -= Time.deltaTime;
+            if (currentTarget == null)
+            {
+                // Cooldown may recover while no target is available, but never build
+                // an artificial backlog that would burst-fire when a target appears.
+                shotTimer = Mathf.Max(0f, shotTimer);
+                return;
+            }
+
             if (shotTimer > 0f) return;
 
-            ShootableTarget target = SelectTarget();
-            if (target == null) return;
+            float interval = 1f / Mathf.Max(0.01f, fireRate);
+            int shotsThisFrame = 0;
+            const int maxCatchUpShotsPerFrame = 4;
 
-            Fire(target);
-            shotTimer = 1f / Mathf.Max(0.01f, fireRate);
+            // Preserve timer overshoot so low frame rates and accelerated automation
+            // still deliver the configured rounds-per-second instead of silently
+            // reducing weapon DPS.
+            while (shotTimer <= 0f && shotsThisFrame < maxCatchUpShotsPerFrame)
+            {
+                // Re-evaluate after every reserved volley. The previous shot may
+                // already have enough damage in flight to finish its target.
+                ShootableTarget shotTarget = SelectTarget();
+                if (shotTarget == null)
+                {
+                    currentTarget = null;
+                    shotTimer = 0f;
+                    break;
+                }
+
+                currentTarget = shotTarget;
+                Fire(shotTarget);
+                shotTimer += interval;
+                shotsThisFrame++;
+            }
+
+            if (shotsThisFrame == maxCatchUpShotsPerFrame && shotTimer < -interval)
+                shotTimer = 0f;
         }
 
         private ShootableTarget SelectTarget()
@@ -241,7 +304,17 @@ namespace HORDAX.Combat
                 if (offset.z < -0.5f || offset.z > range) continue;
                 if (Mathf.Abs(offset.x) > 8f) continue;
 
-                float score = offset.z * offset.z + offset.x * offset.x * 1.75f;
+                float estimatedHealth = GetEstimatedHealth(candidate);
+                if (!float.IsPositiveInfinity(estimatedHealth))
+                {
+                    float reserved = GetReservedDamage(candidate);
+                    if (reserved >= estimatedHealth - 0.001f)
+                        continue;
+                }
+
+                // HORDAX uses adjacent arsenal/horde lanes, so lateral distance must not
+                // overpower breach urgency. Forward distance remains the main threat score.
+                float score = offset.z * offset.z + offset.x * offset.x * 0.35f;
                 if (score >= bestScore) continue;
 
                 best = candidate;
@@ -266,6 +339,7 @@ namespace HORDAX.Combat
                 if (direction.sqrMagnitude > 0.001f)
                     bullet.transform.rotation = Quaternion.LookRotation(direction.normalized);
 
+                ReserveDamage(target, damage);
                 bullet.Initialize(target, damage, bulletSpeed, aimOffset, projectileScale, RecycleBullet);
             }
 
@@ -312,6 +386,15 @@ namespace HORDAX.Combat
                 if (collider != null) Destroy(collider);
                 Renderer renderer = instance.GetComponent<Renderer>();
                 if (renderer != null) renderer.sharedMaterial = PrototypeMaterials.Bullet;
+
+                TrailRenderer trail = instance.AddComponent<TrailRenderer>();
+                trail.time = 0.09f;
+                trail.startWidth = 0.10f;
+                trail.endWidth = 0.015f;
+                trail.minVertexDistance = 0.04f;
+                trail.sharedMaterial = PrototypeMaterials.Bullet;
+                trail.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                trail.receiveShadows = false;
             }
 
             Bullet bullet = instance.GetComponent<Bullet>();
@@ -333,8 +416,54 @@ namespace HORDAX.Combat
             return pool;
         }
 
-        private void RecycleBullet(Bullet bullet)
+        private float GetEstimatedHealth(ShootableTarget target)
         {
+            EnemyAgent enemy = target as EnemyAgent;
+            if (enemy != null)
+                return enemy.CurrentHealth;
+
+            DamageGate gate = target as DamageGate;
+            if (gate != null)
+                return gate.CurrentHealth;
+
+            return float.PositiveInfinity;
+        }
+
+        private float GetReservedDamage(ShootableTarget target)
+        {
+            if (ReferenceEquals(target, null))
+                return 0f;
+
+            return reservedDamageByTarget.TryGetValue(target, out float value)
+                ? Mathf.Max(0f, value)
+                : 0f;
+        }
+
+        private void ReserveDamage(ShootableTarget target, float amount)
+        {
+            if (ReferenceEquals(target, null) || amount <= 0f)
+                return;
+
+            float current = GetReservedDamage(target);
+            reservedDamageByTarget[target] = current + amount;
+        }
+
+        private void ReleaseReservedDamage(ShootableTarget target, float amount)
+        {
+            if (ReferenceEquals(target, null) ||
+                !reservedDamageByTarget.TryGetValue(target, out float current))
+                return;
+
+            float remaining = Mathf.Max(0f, current - Mathf.Max(0f, amount));
+            if (remaining <= 0.001f)
+                reservedDamageByTarget.Remove(target);
+            else
+                reservedDamageByTarget[target] = remaining;
+        }
+
+        private void RecycleBullet(Bullet bullet, ShootableTarget assignedTarget, float assignedDamage)
+        {
+            ReleaseReservedDamage(assignedTarget, assignedDamage);
             if (bullet == null) return;
 
             GameObject sourcePrefab;

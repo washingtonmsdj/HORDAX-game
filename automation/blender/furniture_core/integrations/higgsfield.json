@@ -1,0 +1,31 @@
+{
+  "provider": "higgsfield",
+  "enabled_by_default": false,
+  "authority": "candidate_generation_only",
+  "accepted_roles": [
+    "reference_image",
+    "scene_blockout",
+    "candidate_mesh",
+    "material_candidate",
+    "camera_previsualization"
+  ],
+  "must_not_bypass": [
+    "real_dimension_normalization",
+    "stable_ordax_ids",
+    "part_isolation",
+    "pairwise_collision_validation",
+    "family_profile_validation",
+    "human_visual_review"
+  ],
+  "integration_paths": {
+    "chatgpt_plugin": "Higgsfield plugin; user connects account explicitly",
+    "blender_plugin": "Official Higgsfield Blender add-on with Scene Builder / 3D Model / Image / Video / Asset",
+    "blender_mcp": "Official bridge documented by Higgsfield",
+    "api": "Optional server-side API using HF_API_KEY_ID and HF_API_KEY_SECRET"
+  },
+  "cost_policy": {
+    "web_free_tier_may_exist": true,
+    "automated_api_or_mcp_should_be_treated_as_paid": true,
+    "require_cost_visibility_before_generation": true
+  }
+}

@@ -21,7 +21,7 @@ namespace HORDAX.Prototype
 
         private void Awake()
         {
-            if (FindObjectOfType<RunnerController>() != null) return;
+            if (FindAnyObjectByType<RunnerController>() != null) return;
 
             if (GameSession.SelectedLevel != null)
                 levelDefinition = GameSession.SelectedLevel;
@@ -76,19 +76,106 @@ namespace HORDAX.Prototype
 
         private void BuildRoad()
         {
-            GameObject world = new GameObject("WORLD - Replace visuals here");
+            GameObject world = new GameObject("WORLD - TWO LANE TRACK");
             int roadSegments = Mathf.CeilToInt(finishZ / 20f) + 1;
+            float laneWidth = TrackLayout.LaneHalfWidth * 2f;
 
             for (int i = 0; i < roadSegments; i++)
             {
                 float centerZ = i * 20f + 10f;
-                CreateBlock("Road", new Vector3(0f, -0.3f, centerZ), new Vector3(12f, 0.6f, 20.2f), PrototypeMaterials.Road, world.transform, true);
-                CreateBlock("Left Rail", new Vector3(-6.25f, 0.25f, centerZ), new Vector3(0.35f, 1.1f, 20.2f), PrototypeMaterials.Rail, world.transform, false);
-                CreateBlock("Right Rail", new Vector3(6.25f, 0.25f, centerZ), new Vector3(0.35f, 1.1f, 20.2f), PrototypeMaterials.Rail, world.transform, false);
+
+                CreateBlock(
+                    "ARSENAL LANE",
+                    new Vector3(TrackLayout.ArsenalCenterX, -0.3f, centerZ),
+                    new Vector3(laneWidth, 0.6f, 20.2f),
+                    PrototypeMaterials.ArsenalLane,
+                    world.transform,
+                    true);
+
+                CreateBlock(
+                    "HORDE LANE",
+                    new Vector3(TrackLayout.HordeCenterX, -0.3f, centerZ),
+                    new Vector3(laneWidth, 0.6f, 20.2f),
+                    PrototypeMaterials.HordeLane,
+                    world.transform,
+                    true);
+
+                CreateBlock(
+                    "Center Divider",
+                    new Vector3(0f, 0.08f, centerZ),
+                    new Vector3(TrackLayout.DividerHalfWidth * 2f, 0.16f, 20.2f),
+                    PrototypeMaterials.Divider,
+                    world.transform,
+                    false);
+
+                CreateBlock(
+                    "Left Rail",
+                    new Vector3(-TrackLayout.OuterRailX, 0.25f, centerZ),
+                    new Vector3(0.35f, 1.1f, 20.2f),
+                    PrototypeMaterials.Rail,
+                    world.transform,
+                    false);
+
+                CreateBlock(
+                    "Right Rail",
+                    new Vector3(TrackLayout.OuterRailX, 0.25f, centerZ),
+                    new Vector3(0.35f, 1.1f, 20.2f),
+                    PrototypeMaterials.Rail,
+                    world.transform,
+                    false);
             }
 
             for (float z = 4f; z < finishZ; z += 8f)
-                CreateBlock("Lane Mark", new Vector3(0f, 0.02f, z), new Vector3(0.12f, 0.03f, 2.5f), PrototypeMaterials.Bullet, world.transform, false);
+            {
+                CreateBlock(
+                    "Arsenal Lane Mark",
+                    new Vector3(TrackLayout.ArsenalCenterX, 0.02f, z),
+                    new Vector3(0.10f, 0.03f, 2.5f),
+                    PrototypeMaterials.Bullet,
+                    world.transform,
+                    false);
+
+                CreateBlock(
+                    "Horde Lane Mark",
+                    new Vector3(TrackLayout.HordeCenterX, 0.02f, z),
+                    new Vector3(0.10f, 0.03f, 2.5f),
+                    PrototypeMaterials.Boss,
+                    world.transform,
+                    false);
+            }
+
+            CreateLaneHeader(
+                world.transform,
+                TrackLayout.ArsenalCenterX,
+                14f,
+                "ARSENAL  >>>",
+                PrototypeMaterials.ArsenalLane,
+                PrototypeMaterials.Divider);
+
+            CreateLaneHeader(
+                world.transform,
+                TrackLayout.HordeCenterX,
+                14f,
+                "<<<  HORDA",
+                PrototypeMaterials.HordeLane,
+                PrototypeMaterials.Boss);
+
+            for (float z = 24f; z < finishZ; z += 32f)
+            {
+                CreateLaneDirectionArrow(
+                    world.transform,
+                    TrackLayout.ArsenalCenterX,
+                    z,
+                    true,
+                    PrototypeMaterials.Divider);
+
+                CreateLaneDirectionArrow(
+                    world.transform,
+                    TrackLayout.HordeCenterX,
+                    z,
+                    false,
+                    PrototypeMaterials.Boss);
+            }
 
             for (float z = 18f; z < finishZ; z += 24f)
             {
@@ -100,7 +187,7 @@ namespace HORDAX.Prototype
         private void BuildPlayer()
         {
             GameObject root = new GameObject("PLAYER");
-            root.transform.position = new Vector3(0f, 0.8f, 0f);
+            root.transform.position = new Vector3(TrackLayout.ArsenalCenterX, 0.8f, 0f);
 
             BoxCollider collider = root.AddComponent<BoxCollider>();
             collider.size = new Vector3(0.85f, 1.6f, 0.85f);
@@ -109,13 +196,59 @@ namespace HORDAX.Prototype
             body.useGravity = false;
 
             player = root.AddComponent<RunnerController>();
-            root.AddComponent<PlayerHealth>();
+            player.ConfigureLane(TrackLayout.ArsenalCenterX, TrackLayout.LaneHalfWidth - 0.35f);
+            PlayerHealth playerHealth = root.AddComponent<PlayerHealth>();
+            playerHealth.ConfigureBaseHealth(200f);
             playerWeapon = root.AddComponent<WeaponController>();
 
-            GameObject visual = CreatePrimitiveWithoutCollider(PrimitiveType.Capsule, "Player Visual", root.transform);
-            visual.transform.localPosition = Vector3.zero;
-            visual.transform.localScale = new Vector3(0.7f, 0.8f, 0.7f);
-            visual.GetComponent<Renderer>().sharedMaterial = PrototypeMaterials.Player;
+            GameObject visualRoot = new GameObject("Player Visual");
+            visualRoot.transform.SetParent(root.transform, false);
+
+            GameObject torso = CreatePrimitiveWithoutCollider(PrimitiveType.Capsule, "Torso", visualRoot.transform);
+            torso.transform.localPosition = new Vector3(0f, 0.08f, 0f);
+            torso.transform.localScale = new Vector3(0.58f, 0.58f, 0.52f);
+            torso.GetComponent<Renderer>().sharedMaterial = PrototypeMaterials.Player;
+
+            GameObject head = CreatePrimitiveWithoutCollider(PrimitiveType.Sphere, "Head", visualRoot.transform);
+            head.transform.localPosition = new Vector3(0f, 0.82f, 0.02f);
+            head.transform.localScale = Vector3.one * 0.42f;
+            head.GetComponent<Renderer>().sharedMaterial = PrototypeMaterials.Player;
+
+            GameObject leftArm = CreateBlock(
+                "Left Arm",
+                root.transform.position,
+                new Vector3(0.16f, 0.62f, 0.16f),
+                PrototypeMaterials.Player,
+                visualRoot.transform,
+                false);
+            leftArm.transform.localPosition = new Vector3(-0.47f, 0.10f, 0.05f);
+
+            GameObject rightArm = CreateBlock(
+                "Right Arm",
+                root.transform.position,
+                new Vector3(0.16f, 0.62f, 0.16f),
+                PrototypeMaterials.Player,
+                visualRoot.transform,
+                false);
+            rightArm.transform.localPosition = new Vector3(0.47f, 0.10f, 0.05f);
+
+            GameObject leftLeg = CreateBlock(
+                "Left Leg",
+                root.transform.position,
+                new Vector3(0.20f, 0.68f, 0.22f),
+                PrototypeMaterials.Player,
+                visualRoot.transform,
+                false);
+            leftLeg.transform.localPosition = new Vector3(-0.20f, -0.62f, 0f);
+
+            GameObject rightLeg = CreateBlock(
+                "Right Leg",
+                root.transform.position,
+                new Vector3(0.20f, 0.68f, 0.22f),
+                PrototypeMaterials.Player,
+                visualRoot.transform,
+                false);
+            rightLeg.transform.localPosition = new Vector3(0.20f, -0.62f, 0f);
 
             GameObject weaponVisual = CreateBlock("Weapon", root.transform.position + new Vector3(0.45f, 0.35f, 0.55f), new Vector3(0.18f, 0.18f, 1.1f), PrototypeMaterials.Rail, root.transform, false);
             weaponVisual.transform.localPosition = new Vector3(0.45f, 0.35f, 0.55f);
@@ -127,6 +260,18 @@ namespace HORDAX.Prototype
 
             PrototypeWeaponView weaponView = root.AddComponent<PrototypeWeaponView>();
             weaponView.Initialize(playerWeapon, weaponVisual.transform);
+
+            GameObject defenseLine = CreateBlock(
+                "Horde Defense Line",
+                root.transform.position,
+                new Vector3(TrackLayout.LaneHalfWidth * 2f - 0.35f, 0.05f, 0.28f),
+                PrototypeMaterials.Boss,
+                root.transform,
+                false);
+            defenseLine.transform.localPosition = new Vector3(
+                TrackLayout.HordeCenterX - TrackLayout.ArsenalCenterX,
+                -0.77f,
+                0f);
         }
 
         private void ApplyStartingLoadout()
@@ -135,7 +280,11 @@ namespace HORDAX.Prototype
 
             ProgressionService progression = ProgressionService.GetOrCreate();
             WeaponUnlockDefinition equipped = PrototypeArmoryCatalog.GetById(progression.EquippedWeaponId);
-            if (equipped != null)
+            if (equipped == null) return;
+
+            if (equipped.WeaponData != null)
+                playerWeapon.ApplyDefinition(equipped.WeaponData);
+            else
                 playerWeapon.ApplyPrototype(equipped.PrototypeWeapon);
         }
 
@@ -160,7 +309,7 @@ namespace HORDAX.Prototype
 
         private void BuildEnemyPool()
         {
-            if (FindObjectOfType<EnemyPool>() != null) return;
+            if (FindAnyObjectByType<EnemyPool>() != null) return;
             GameObject poolObject = new GameObject("ENEMY POOL - Replace enemy prefabs later");
             poolObject.AddComponent<EnemyPool>();
         }
@@ -180,6 +329,7 @@ namespace HORDAX.Prototype
             camera.nearClipPlane = 0.15f;
             camera.farClipPlane = 420f;
             RunnerCamera follow = cameraObject.AddComponent<RunnerCamera>();
+            follow.ConfigureTrackFraming(0f);
             follow.SetTarget(player.transform);
         }
 
@@ -218,7 +368,8 @@ namespace HORDAX.Prototype
                                 step.enemyData, EnemyRank.Elite,
                                 Mathf.Max(step.coinReward, 8),
                                 Mathf.Max(step.scoreReward, 80),
-                                Mathf.Max(step.scaleMultiplier, 1.35f));
+                                Mathf.Max(step.scaleMultiplier, 1.35f),
+                                true);
                             break;
 
                         case LevelStepType.Boss:
@@ -230,7 +381,8 @@ namespace HORDAX.Prototype
                                 step.enemyData, EnemyRank.Boss,
                                 Mathf.Max(step.coinReward, 100),
                                 Mathf.Max(step.scoreReward, 1200),
-                                Mathf.Max(step.scaleMultiplier, 2.25f));
+                                Mathf.Max(step.scaleMultiplier, 2.25f),
+                                true);
                             break;
 
                         case LevelStepType.Gate:
@@ -297,22 +449,43 @@ namespace HORDAX.Prototype
 
         private void BuildDefaultLevel()
         {
-            CreateHorde("Wave 01", 30f, 30, 6, 5f, 3.1f, 7f);
+            // The prototype is tuned as a readable power curve: early leaks hurt,
+            // but a single imperfect wave should not end the run before the player
+            // reaches the weapon/upgrade loop.
+            CreateHorde("Wave 01", 30f, 30, 6, 5f, 3.1f, 0.5f);
             CreateGate("Gate 50", 54f, 50f);
-            CreateWeaponPickup("SMG Pickup", 62f, null, WeaponArchetype.SMG, "SMG");
+            CreateWeaponPickup(
+                "SMG Pickup",
+                62f,
+                PrototypeArmoryCatalog.GetById("smg")?.WeaponData,
+                WeaponArchetype.SMG,
+                "SMG");
 
-            CreateHorde("Wave 02", 88f, 48, 8, 8f, 3.45f, 8f);
-            CreateHorde("Elite Squad", 116f, 4, 4, 26f, 3.8f, 12f, null, EnemyRank.Elite, 8, 90, 1.35f);
+            CreateHorde("Wave 02", 88f, 48, 8, 8f, 3.45f, 0.75f);
+            CreateHealPickup("Recovery 00", 104f, 0f, 24f, "+24 HP");
+            CreateHorde("Elite Squad", 116f, 4, 4, 26f, 3.8f, 2.5f, null, EnemyRank.Elite, 8, 90, 1.35f, true);
             CreateGate("Gate 120", 134f, 120f);
             CreateUpgrade("Upgrade 01", 141f, 3f, 1.12f, "+POWER");
+            CreateHealPickup("Recovery 01", 151f, 0f, 30f, "+30 HP");
 
-            CreateHorde("Wave 03", 166f, 72, 9, 11f, 3.8f, 9f);
+            CreateHorde("Wave 03", 166f, 72, 9, 11f, 3.8f, 1f);
             CreateGate("Gate 230", 196f, 230f);
-            CreateWeaponPickup("Shotgun Pickup", 203f, null, WeaponArchetype.Shotgun, "SHOTGUN");
+            CreateWeaponPickup(
+                "Shotgun Pickup",
+                203f,
+                PrototypeArmoryCatalog.GetById("shotgun")?.WeaponData,
+                WeaponArchetype.Shotgun,
+                "SHOTGUN");
+            CreateHealPickup("Recovery 02", 216f, 0f, 35f, "+35 HP");
 
-            CreateHorde("Wave 04", 228f, 96, 10, 14f, 4.0f, 10f);
-            CreateWeaponPickup("Minigun Pickup", 252f, null, WeaponArchetype.Minigun, "MINIGUN");
-            CreateHorde("BLOCK BOSS", 276f, 1, 1, 450f, 2.6f, 25f, null, EnemyRank.Boss, 125, 1500, 2.5f);
+            CreateHorde("Wave 04", 228f, 96, 10, 14f, 4.0f, 1.5f);
+            CreateWeaponPickup(
+                "Minigun Pickup",
+                252f,
+                PrototypeArmoryCatalog.GetById("minigun")?.WeaponData,
+                WeaponArchetype.Minigun,
+                "MINIGUN");
+            CreateHorde("BLOCK BOSS", 276f, 1, 1, 450f, 2.6f, 8f, null, EnemyRank.Boss, 125, 1500, 2.5f, true);
 
             CreateFinish(finishZ);
         }
@@ -329,23 +502,52 @@ namespace HORDAX.Prototype
             EnemyRank rank = EnemyRank.Grunt,
             int coinReward = 1,
             int scoreReward = 10,
-            float scaleMultiplier = 1f)
+            float scaleMultiplier = 1f,
+            bool forceRank = false)
         {
             GameObject spawner = new GameObject(string.IsNullOrWhiteSpace(label) ? "Horde" : label);
-            spawner.transform.position = new Vector3(0f, 0f, z);
+            spawner.transform.position = new Vector3(TrackLayout.HordeCenterX, 0f, z);
             HordeSpawner horde = spawner.AddComponent<HordeSpawner>();
-            horde.Configure(player, count, columns, health, speed, damage, data, rank, coinReward, scoreReward, scaleMultiplier);
+            horde.Configure(player, count, columns, health, speed, damage, data, rank, coinReward, scoreReward, scaleMultiplier, forceRank);
+            horde.ConfigureLane(TrackLayout.HordeCenterX, TrackLayout.LaneHalfWidth - 0.25f);
+
+            Material encounterMaterial = rank == EnemyRank.Boss
+                ? PrototypeMaterials.Boss
+                : rank == EnemyRank.Elite ? PrototypeMaterials.Elite : PrototypeMaterials.HordeLane;
+
+            GameObject encounterLine = CreateBlock(
+                "Encounter Marker",
+                spawner.transform.position + new Vector3(0f, 0.035f, 0f),
+                new Vector3(TrackLayout.LaneHalfWidth * 2f - 0.25f, 0.07f, rank == EnemyRank.Boss ? 0.55f : 0.22f),
+                encounterMaterial,
+                spawner.transform,
+                false);
+            encounterLine.transform.localPosition = new Vector3(0f, 0.035f, 0f);
+
+            string encounterLabel = rank == EnemyRank.Boss
+                ? "BOSS"
+                : rank == EnemyRank.Elite
+                    ? $"ELITE x{count}"
+                    : $"HORDA x{count}";
+
+            CreateWorldLabel(
+                spawner.transform,
+                encounterLabel,
+                new Vector3(0f, rank == EnemyRank.Boss ? 2.8f : 2.0f, 0f),
+                rank == EnemyRank.Boss ? 72 : 48,
+                rank == EnemyRank.Boss ? 0.065f : 0.05f);
         }
 
         private void CreateGate(string label, float z, float hitPoints)
         {
             GameObject root = new GameObject(string.IsNullOrWhiteSpace(label) ? "Gate" : label);
-            root.transform.position = new Vector3(0f, 1.55f, z);
+            root.transform.position = new Vector3(TrackLayout.ArsenalCenterX, 1.55f, z);
             BoxCollider trigger = root.AddComponent<BoxCollider>();
             trigger.isTrigger = true;
-            trigger.size = new Vector3(10.5f, 3.1f, 1.2f);
+            float gateWidth = TrackLayout.LaneHalfWidth * 2f - 0.4f;
+            trigger.size = new Vector3(gateWidth, 3.1f, 1.2f);
 
-            GameObject visual = CreateBlock("Gate Visual", root.transform.position, new Vector3(10.5f, 3.1f, 1.0f), PrototypeMaterials.Gate, root.transform, false);
+            GameObject visual = CreateBlock("Gate Visual", root.transform.position, new Vector3(gateWidth, 3.1f, 1.0f), PrototypeMaterials.Gate, root.transform, false);
             visual.transform.localPosition = Vector3.zero;
 
             GameObject textObject = new GameObject("HP Label");
@@ -367,7 +569,7 @@ namespace HORDAX.Prototype
         private void CreateUpgrade(string label, float z, float damage, float cadence, string displayText)
         {
             GameObject root = new GameObject(string.IsNullOrWhiteSpace(label) ? "Upgrade" : label);
-            root.transform.position = new Vector3(0f, 0.9f, z);
+            root.transform.position = new Vector3(TrackLayout.ArsenalCenterX, 0.9f, z);
             BoxCollider trigger = root.AddComponent<BoxCollider>();
             trigger.isTrigger = true;
             trigger.size = new Vector3(2.2f, 2.2f, 2.2f);
@@ -389,7 +591,7 @@ namespace HORDAX.Prototype
         private void CreateWeaponPickup(string label, float z, WeaponData data, WeaponArchetype fallback, string displayText)
         {
             GameObject root = new GameObject(string.IsNullOrWhiteSpace(label) ? "Weapon Pickup" : label);
-            root.transform.position = new Vector3(0f, 0.95f, z);
+            root.transform.position = new Vector3(TrackLayout.ArsenalCenterX, 0.95f, z);
             BoxCollider trigger = root.AddComponent<BoxCollider>();
             trigger.isTrigger = true;
             trigger.size = new Vector3(2.6f, 2.5f, 2.6f);
@@ -433,7 +635,7 @@ namespace HORDAX.Prototype
         private void CreateHealPickup(string label, float z, float x, float amount, string displayText)
         {
             GameObject root = new GameObject(string.IsNullOrWhiteSpace(label) ? "Heal Pickup" : label);
-            root.transform.position = new Vector3(Mathf.Clamp(x, -5.2f, 5.2f), 0.85f, z);
+            root.transform.position = new Vector3(TrackLayout.ArsenalXFromOffset(x), 0.85f, z);
 
             BoxCollider trigger = root.AddComponent<BoxCollider>();
             trigger.isTrigger = true;
@@ -452,7 +654,7 @@ namespace HORDAX.Prototype
         private void CreateRewardPickup(string label, float z, float x, int coins, int score, string displayText)
         {
             GameObject root = new GameObject(string.IsNullOrWhiteSpace(label) ? "Reward Pickup" : label);
-            root.transform.position = new Vector3(Mathf.Clamp(x, -5.2f, 5.2f), 0.8f, z);
+            root.transform.position = new Vector3(TrackLayout.ArsenalXFromOffset(x), 0.8f, z);
 
             BoxCollider trigger = root.AddComponent<BoxCollider>();
             trigger.isTrigger = true;
@@ -471,7 +673,7 @@ namespace HORDAX.Prototype
         private void CreateHazard(string label, float z, float x, float damage, float width, string displayText)
         {
             GameObject root = new GameObject(string.IsNullOrWhiteSpace(label) ? "Hazard" : label);
-            root.transform.position = new Vector3(Mathf.Clamp(x, -5.2f, 5.2f), 0.18f, z);
+            root.transform.position = new Vector3(TrackLayout.ArsenalXFromOffset(x), 0.18f, z);
 
             BoxCollider trigger = root.AddComponent<BoxCollider>();
             trigger.isTrigger = true;
@@ -495,16 +697,121 @@ namespace HORDAX.Prototype
         private void CreateFinish(float z)
         {
             GameObject root = new GameObject("FINISH");
-            root.transform.position = new Vector3(0f, 0f, z);
+            root.transform.position = new Vector3(TrackLayout.ArsenalCenterX, 0f, z);
             BoxCollider trigger = root.AddComponent<BoxCollider>();
             trigger.isTrigger = true;
             trigger.center = new Vector3(0f, 1.5f, 0f);
-            trigger.size = new Vector3(11.5f, 3f, 1.2f);
+
+            float finishWidth = TrackLayout.LaneHalfWidth * 2f - 0.35f;
+            trigger.size = new Vector3(finishWidth, 3f, 1.2f);
             root.AddComponent<FinishZone>();
 
-            CreateBlock("Finish Left", new Vector3(-5.2f, 1.8f, z), new Vector3(0.55f, 3.6f, 0.55f), PrototypeMaterials.Finish, root.transform, false).transform.localPosition = new Vector3(-5.2f, 1.8f, 0f);
-            CreateBlock("Finish Right", new Vector3(5.2f, 1.8f, z), new Vector3(0.55f, 3.6f, 0.55f), PrototypeMaterials.Finish, root.transform, false).transform.localPosition = new Vector3(5.2f, 1.8f, 0f);
-            CreateBlock("Finish Top", new Vector3(0f, 3.35f, z), new Vector3(10.9f, 0.55f, 0.55f), PrototypeMaterials.Finish, root.transform, false).transform.localPosition = new Vector3(0f, 3.35f, 0f);
+            float postX = finishWidth * 0.5f - 0.28f;
+            CreateBlock("Finish Left", root.transform.position, new Vector3(0.45f, 3.6f, 0.55f), PrototypeMaterials.Finish, root.transform, false)
+                .transform.localPosition = new Vector3(-postX, 1.8f, 0f);
+            CreateBlock("Finish Right", root.transform.position, new Vector3(0.45f, 3.6f, 0.55f), PrototypeMaterials.Finish, root.transform, false)
+                .transform.localPosition = new Vector3(postX, 1.8f, 0f);
+            CreateBlock("Finish Top", root.transform.position, new Vector3(finishWidth, 0.45f, 0.55f), PrototypeMaterials.Finish, root.transform, false)
+                .transform.localPosition = new Vector3(0f, 3.35f, 0f);
+        }
+
+        private static void CreateLaneHeader(
+            Transform parent,
+            float x,
+            float z,
+            string label,
+            Material backingMaterial,
+            Material accentMaterial)
+        {
+            GameObject root = new GameObject(label + " HEADER");
+            root.transform.SetParent(parent, false);
+            root.transform.localPosition = new Vector3(x, 3.35f, z);
+
+            GameObject panel = CreateBlock(
+                label + " Panel",
+                root.transform.position,
+                new Vector3(4.85f, 0.95f, 0.20f),
+                backingMaterial,
+                root.transform,
+                false);
+            panel.transform.localPosition = Vector3.zero;
+
+            GameObject accent = CreateBlock(
+                label + " Accent",
+                root.transform.position,
+                new Vector3(4.25f, 0.09f, 0.24f),
+                accentMaterial,
+                root.transform,
+                false);
+            accent.transform.localPosition = new Vector3(0f, -0.34f, -0.03f);
+
+            float postX = 2.25f;
+            GameObject leftPost = CreateBlock(
+                label + " Left Post",
+                root.transform.position,
+                new Vector3(0.16f, 2.1f, 0.16f),
+                PrototypeMaterials.Rail,
+                root.transform,
+                false);
+            leftPost.transform.localPosition = new Vector3(-postX, -1.45f, 0.05f);
+
+            GameObject rightPost = CreateBlock(
+                label + " Right Post",
+                root.transform.position,
+                new Vector3(0.16f, 2.1f, 0.16f),
+                PrototypeMaterials.Rail,
+                root.transform,
+                false);
+            rightPost.transform.localPosition = new Vector3(postX, -1.45f, 0.05f);
+
+            CreateWorldLabel(
+                root.transform,
+                label,
+                new Vector3(0f, 0.02f, -0.13f),
+                74,
+                0.052f);
+        }
+
+        private static void CreateLaneDirectionArrow(
+            Transform parent,
+            float x,
+            float z,
+            bool forward,
+            Material material)
+        {
+            GameObject root = new GameObject(forward ? "Arsenal Forward Arrow" : "Horde Reverse Arrow");
+            root.transform.SetParent(parent, false);
+            root.transform.localPosition = new Vector3(x, 0.055f, z);
+            root.transform.localRotation = Quaternion.Euler(0f, forward ? 0f : 180f, 0f);
+
+            GameObject shaft = CreateBlock(
+                "Arrow Shaft",
+                root.transform.position,
+                new Vector3(0.12f, 0.035f, 1.65f),
+                material,
+                root.transform,
+                false);
+            shaft.transform.localPosition = new Vector3(0f, 0f, -0.10f);
+
+            GameObject leftWing = CreateBlock(
+                "Arrow Left Wing",
+                root.transform.position,
+                new Vector3(0.12f, 0.035f, 0.92f),
+                material,
+                root.transform,
+                false);
+            leftWing.transform.localPosition = new Vector3(-0.30f, 0f, 0.55f);
+            leftWing.transform.localRotation = Quaternion.Euler(0f, -42f, 0f);
+
+            GameObject rightWing = CreateBlock(
+                "Arrow Right Wing",
+                root.transform.position,
+                new Vector3(0.12f, 0.035f, 0.92f),
+                material,
+                root.transform,
+                false);
+            rightWing.transform.localPosition = new Vector3(0.30f, 0f, 0.55f);
+            rightWing.transform.localRotation = Quaternion.Euler(0f, 42f, 0f);
         }
 
         private static TextMesh CreateWorldLabel(Transform parent, string value, Vector3 localPosition, int fontSize, float characterSize)

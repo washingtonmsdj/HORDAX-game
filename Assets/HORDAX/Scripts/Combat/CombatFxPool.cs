@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using HORDAX.Prototype;
+using HORDAX.Data;
 
 namespace HORDAX.Combat
 {
@@ -36,7 +37,16 @@ namespace HORDAX.Combat
 
         public void PlayDeath(Vector3 position, float scale = 0.75f)
         {
-            Play(position, PrototypeMaterials.Enemy, scale, 0.16f, Vector3.up * 0.8f + Random.insideUnitSphere * 0.8f);
+            PlayDeath(position, scale, EnemyRank.Grunt);
+        }
+
+        public void PlayDeath(Vector3 position, float scale, EnemyRank rank)
+        {
+            Material material = rank == EnemyRank.Boss
+                ? PrototypeMaterials.Boss
+                : rank == EnemyRank.Elite ? PrototypeMaterials.Elite : PrototypeMaterials.Enemy;
+
+            Play(position, material, scale, 0.16f, Vector3.up * 0.8f + Random.insideUnitSphere * 0.8f);
         }
 
         public void PlayGateBreak(Vector3 position, float scale = 1.2f)

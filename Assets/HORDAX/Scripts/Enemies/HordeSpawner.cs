@@ -9,7 +9,7 @@ namespace HORDAX.Enemies
     {
         [SerializeField] private int count = 18;
         [SerializeField] private int columns = 6;
-        [SerializeField] private float activationDistance = 34f;
+        [SerializeField] private float activationDistance = 46f;
         [SerializeField] private float enemyHealth = 5f;
         [SerializeField] private float enemySpeed = 3.2f;
         [SerializeField] private float enemyDamage = 8f;
@@ -17,8 +17,12 @@ namespace HORDAX.Enemies
         [SerializeField] private int coinReward = 1;
         [SerializeField] private int scoreReward = 10;
         [SerializeField] private float scaleMultiplier = 1f;
-        [SerializeField] private float spawnJitter = 0.24f;
-        [SerializeField, Min(1)] private int spawnPerFrame = 24;
+        [SerializeField] private float spawnJitter = 0.18f;
+        [SerializeField] private float laneCenterX;
+        [SerializeField] private float laneHalfWidth = 2.75f;
+        [SerializeField] private bool constrainToLane;
+        [SerializeField, Min(1)] private int spawnPerBatch = 5;
+        [SerializeField, Min(0.01f)] private float spawnInterval = 0.07f;
         [SerializeField] private EnemyData enemyData;
         [SerializeField] private GameObject enemyPrefab;
 
@@ -26,6 +30,14 @@ namespace HORDAX.Enemies
         private EnemyPool pool;
         private bool activated;
         private int spawnedCount;
+        private float spawnTimer;
+        private bool forceConfiguredRank;
+
+        public bool Activated => activated;
+        public int SpawnedCount => spawnedCount;
+        public int RemainingCount => Mathf.Max(0, count - spawnedCount);
+        public EnemyRank ConfiguredRank => enemyRank;
+        public float EncounterZ => transform.position.z;
 
         public void Configure(
             RunnerController runner,
@@ -38,7 +50,8 @@ namespace HORDAX.Enemies
             EnemyRank fallbackRank = EnemyRank.Grunt,
             int fallbackCoinReward = 1,
             int fallbackScoreReward = 10,
-            float fallbackScale = 1f)
+            float fallbackScale = 1f,
+            bool forceRank = false)
         {
             player = runner;
             count = Mathf.Max(1, enemyCount);
@@ -51,12 +64,28 @@ namespace HORDAX.Enemies
             coinReward = Mathf.Max(0, fallbackCoinReward);
             scoreReward = Mathf.Max(0, fallbackScoreReward);
             scaleMultiplier = Mathf.Max(0.1f, fallbackScale);
+            forceConfiguredRank = forceRank;
+
+            EnemyRank configuredRank = forceRank
+                ? fallbackRank
+                : definition != null ? definition.Rank : fallbackRank;
+
+            activationDistance = configuredRank == EnemyRank.Boss
+                ? 28f
+                : configuredRank == EnemyRank.Elite ? 40f : 46f;
+        }
+
+        public void ConfigureLane(float centerX, float halfWidth)
+        {
+            laneCenterX = centerX;
+            laneHalfWidth = Mathf.Max(0.5f, halfWidth);
+            constrainToLane = true;
         }
 
         private void Start()
         {
-            if (player == null) player = FindObjectOfType<RunnerController>();
-            pool = FindObjectOfType<EnemyPool>();
+            if (player == null) player = FindAnyObjectByType<RunnerController>();
+            pool = FindAnyObjectByType<EnemyPool>();
 
             if (pool == null)
             {
@@ -73,55 +102,86 @@ namespace HORDAX.Enemies
             {
                 if (player.transform.position.z < transform.position.z - activationDistance) return;
                 activated = true;
+                spawnTimer = 0f;
             }
 
+            spawnTimer -= Time.deltaTime;
+            if (spawnTimer > 0f) return;
+
             SpawnBatch();
+            spawnTimer = spawnInterval;
         }
 
         private void SpawnBatch()
         {
-            int batchEnd = Mathf.Min(count, spawnedCount + Mathf.Max(1, spawnPerFrame));
+            int batchEnd = Mathf.Min(count, spawnedCount + Mathf.Max(1, spawnPerBatch));
             for (; spawnedCount < batchEnd; spawnedCount++)
                 SpawnOne(spawnedCount);
         }
 
         private void SpawnOne(int index)
         {
-            const float spacingX = 1.24f;
+            const float maxSpacingX = 1.08f;
             const float spacingZ = 1.10f;
 
             float health = enemyData != null ? enemyData.Health : enemyHealth;
             float speed = enemyData != null ? enemyData.MoveSpeed : enemySpeed;
             float damage = enemyData != null ? enemyData.ContactDamage : enemyDamage;
-            EnemyRank rank = enemyData != null ? enemyData.Rank : enemyRank;
+            EnemyRank rank = forceConfiguredRank
+                ? enemyRank
+                : enemyData != null ? enemyData.Rank : enemyRank;
             int coins = enemyData != null ? enemyData.CoinReward : coinReward;
             int score = enemyData != null ? enemyData.ScoreReward : scoreReward;
             float size = enemyData != null ? enemyData.ScaleMultiplier : scaleMultiplier;
             GameObject requestedPrefab = enemyData != null && enemyData.VisualPrefab != null ? enemyData.VisualPrefab : enemyPrefab;
 
-            int col = index % columns;
-            int row = index / columns;
-            float widthOffset = (columns - 1) * spacingX * 0.5f;
-            float x = col * spacingX - widthOffset + Random.Range(-spawnJitter, spawnJitter);
+            int effectiveColumns = constrainToLane ? Mathf.Clamp(columns, 1, 6) : columns;
+            int col = index % effectiveColumns;
+            int row = index / effectiveColumns;
+            float availableWidth = constrainToLane
+                ? laneHalfWidth * 2f
+                : Mathf.Max(0f, (effectiveColumns - 1) * maxSpacingX);
+            float spacingX = effectiveColumns > 1
+                ? Mathf.Min(maxSpacingX, availableWidth / Mathf.Max(1, effectiveColumns - 1))
+                : 0f;
+            float widthOffset = (effectiveColumns - 1) * spacingX * 0.5f;
+            float localX = col * spacingX - widthOffset + Random.Range(-spawnJitter, spawnJitter);
+            float x = constrainToLane
+                ? Mathf.Clamp(laneCenterX + localX, laneCenterX - laneHalfWidth, laneCenterX + laneHalfWidth)
+                : localX;
             float z = row * spacingZ + Random.Range(-spawnJitter, spawnJitter);
 
             EnemyAgent agent = pool.Acquire(requestedPrefab);
             GameObject enemy = agent.gameObject;
             enemy.name = $"{name}_Enemy_{index:000}";
             enemy.transform.SetParent(null, true);
-            enemy.transform.position = transform.position + new Vector3(x, 0.6f * size, z);
+            float spawnHeight = requestedPrefab == null ? 0.95f : 0.6f;
+            enemy.transform.position = new Vector3(x, transform.position.y + spawnHeight * size, transform.position.z + z);
             enemy.transform.rotation = Quaternion.Euler(0f, 180f + Random.Range(-6f, 6f), 0f);
             enemy.transform.localScale = new Vector3(0.86f, Random.Range(1.05f, 1.28f), 0.86f) * size;
 
-            Renderer renderer = enemy.GetComponentInChildren<Renderer>();
-            if (renderer != null && requestedPrefab == null)
+            if (requestedPrefab == null)
             {
-                renderer.sharedMaterial = rank == EnemyRank.Boss
+                Material material = rank == EnemyRank.Boss
                     ? PrototypeMaterials.Boss
                     : rank == EnemyRank.Elite ? PrototypeMaterials.Elite : PrototypeMaterials.Enemy;
+
+                Renderer[] renderers = enemy.GetComponentsInChildren<Renderer>();
+                for (int rendererIndex = 0; rendererIndex < renderers.Length; rendererIndex++)
+                    renderers[rendererIndex].sharedMaterial = material;
             }
 
-            agent.Initialize(player, health, speed, damage, pool, rank, coins, score);
+            agent.Initialize(
+                player,
+                health,
+                speed,
+                damage,
+                pool,
+                rank,
+                coins,
+                score,
+                constrainToLane,
+                x);
             enemy.SetActive(true);
         }
     }

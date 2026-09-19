@@ -15,6 +15,7 @@ namespace HORDAX.World
         private Vector3 baseScale;
         private float punch;
 
+        public float CurrentHealth => Mathf.Max(0f, health);
         public override Vector3 TargetPoint => transform.position + Vector3.up * 1.3f;
 
         public void Initialize(float hitPoints, TextMesh valueLabel)
