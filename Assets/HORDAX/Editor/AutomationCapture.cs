@@ -113,7 +113,7 @@ namespace HORDAX.EditorTools
         {
             Camera camera = Camera.main;
             if (camera == null)
-                camera = UnityEngine.Object.FindFirstObjectByType<Camera>();
+                camera = UnityEngine.Object.FindAnyObjectByType<Camera>();
 
             if (camera == null)
                 throw new InvalidOperationException("No camera was available for HORDAX automation capture.");
@@ -152,10 +152,10 @@ namespace HORDAX.EditorTools
 
         private static void WriteSnapshot(string screenshotPath, Camera camera)
         {
-            RunnerController player = UnityEngine.Object.FindFirstObjectByType<RunnerController>();
+            RunnerController player = UnityEngine.Object.FindAnyObjectByType<RunnerController>();
             PlayerHealth health = player != null ? player.GetComponent<PlayerHealth>() : null;
             WeaponController weapon = player != null ? player.GetComponent<WeaponController>() : null;
-            EnemyPool enemyPool = UnityEngine.Object.FindFirstObjectByType<EnemyPool>();
+            EnemyPool enemyPool = UnityEngine.Object.FindAnyObjectByType<EnemyPool>();
             EnemyAgent boss = EnemyAgent.ActiveBoss;
             EnemyAgent[] enemies = UnityEngine.Object.FindObjectsByType<EnemyAgent>(FindObjectsSortMode.None);
 
