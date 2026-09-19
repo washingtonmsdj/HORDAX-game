@@ -35,6 +35,7 @@ namespace HORDAX.Enemies
         private float logicTimer;
         private float cachedDistance = float.MaxValue;
         private Vector3 cachedDirection;
+        private int bossBarrierOwnerId;
 
         public EnemyRank Rank => rank;
         public override Vector3 TargetPoint => transform.position + Vector3.up * Mathf.Max(0.55f, transform.localScale.y * 0.45f);
@@ -49,6 +50,8 @@ namespace HORDAX.Enemies
             int coins = 1,
             int score = 10)
         {
+            ReleaseBossBarrier();
+
             player = runner;
             playerHealth = runner != null ? runner.GetComponent<PlayerHealth>() : null;
             ownerPool = pool;
@@ -66,12 +69,25 @@ namespace HORDAX.Enemies
             cachedDistance = float.MaxValue;
             cachedDirection = Vector3.zero;
             RefreshSteering();
+
+            if (rank == EnemyRank.Boss && GameManager.Instance != null)
+            {
+                bossBarrierOwnerId = GetInstanceID();
+                float barrierOffset = Mathf.Max(6f, transform.localScale.z * 2.5f);
+                GameManager.Instance.RegisterBossBarrier(bossBarrierOwnerId, transform.position.z - barrierOffset);
+            }
         }
 
         protected override void OnEnable()
         {
             base.OnEnable();
             health = maxHealth;
+        }
+
+        protected override void OnDisable()
+        {
+            ReleaseBossBarrier();
+            base.OnDisable();
         }
 
         private void Start()
@@ -159,6 +175,7 @@ namespace HORDAX.Enemies
 
         private void Die()
         {
+            ReleaseBossBarrier();
             transform.localScale = baseScale;
 
             if (ownerPool != null)
@@ -168,6 +185,14 @@ namespace HORDAX.Enemies
             }
 
             Destroy(gameObject);
+        }
+
+        private void ReleaseBossBarrier()
+        {
+            if (bossBarrierOwnerId == 0) return;
+
+            GameManager.Instance?.ReleaseBossBarrier(bossBarrierOwnerId);
+            bossBarrierOwnerId = 0;
         }
     }
 }
