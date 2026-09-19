@@ -16,6 +16,7 @@ namespace HORDAX.UI
         private WeaponController weapon;
         private Text statusText;
         private Text statsText;
+        private Text encounterText;
         private Image healthFill;
         private Image progressFill;
         private GameObject resultControls;
@@ -52,6 +53,10 @@ namespace HORDAX.UI
                 $"DMG {weapon.Damage:0.#}   ROF {weapon.FireRate:0.#}   x{weapon.ProjectilesPerShot}\n" +
                 $"KILLS {GameManager.Instance.EnemyKills}   BOSS {GameManager.Instance.BossKills}/{GameManager.Instance.RequiredBossKills}   " +
                 $"COINS {GameManager.Instance.RunCoins}   SCORE {GameManager.Instance.Score}";
+
+            bool bossEncounter = GameManager.Instance.TryGetActiveBossBarrier(out _);
+            encounterText.text = bossEncounter ? "BOSS FIGHT  -  DEFEAT THE BOSS TO ADVANCE" : string.Empty;
+            encounterText.gameObject.SetActive(bossEncounter);
 
             bool ended = state == GameState.Won || state == GameState.Lost;
             if (resultControls != null && resultControls.activeSelf != ended)
@@ -163,6 +168,16 @@ namespace HORDAX.UI
             statsRect.sizeDelta = new Vector2(1840f, 92f);
             statsText.horizontalOverflow = HorizontalWrapMode.Overflow;
             statsText.verticalOverflow = VerticalWrapMode.Overflow;
+
+            encounterText = CreateText("Encounter Status", transform, font, 34, TextAnchor.MiddleCenter);
+            RectTransform encounterRect = encounterText.rectTransform;
+            encounterRect.anchorMin = new Vector2(0.5f, 1f);
+            encounterRect.anchorMax = new Vector2(0.5f, 1f);
+            encounterRect.pivot = new Vector2(0.5f, 1f);
+            encounterRect.anchoredPosition = new Vector2(0f, -165f);
+            encounterRect.sizeDelta = new Vector2(1100f, 52f);
+            encounterText.color = new Color(1f, 0.45f, 0.18f, 1f);
+            encounterText.gameObject.SetActive(false);
 
             statusText = CreateText("Status", transform, font, 62, TextAnchor.MiddleCenter);
             RectTransform statusRect = statusText.rectTransform;
