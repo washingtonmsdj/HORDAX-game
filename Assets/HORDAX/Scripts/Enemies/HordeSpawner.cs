@@ -9,7 +9,7 @@ namespace HORDAX.Enemies
     {
         [SerializeField] private int count = 18;
         [SerializeField] private int columns = 6;
-        [SerializeField] private float activationDistance = 34f;
+        [SerializeField] private float activationDistance = 46f;
         [SerializeField] private float enemyHealth = 5f;
         [SerializeField] private float enemySpeed = 3.2f;
         [SerializeField] private float enemyDamage = 8f;
