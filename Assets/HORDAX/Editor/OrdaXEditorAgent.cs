@@ -203,6 +203,10 @@ namespace HORDAX.EditorTools
                         SceneSummary(command, true);
                         break;
 
+                    case "benchmark_islands_generate":
+                        GenerateIslandBenchmark(command);
+                        break;
+
                     case "capture":
                         BeginCapture(command);
                         break;
@@ -258,6 +262,40 @@ namespace HORDAX.EditorTools
             response.validationErrors = new List<string>(report.Errors).ToArray();
             response.validationWarnings = new List<string>(report.Warnings).ToArray();
             SaveResponse(response);
+        }
+
+        private static void GenerateIslandBenchmark(AgentCommand command)
+        {
+            if (EditorApplication.isCompiling || EditorApplication.isUpdating)
+            {
+                WriteResponse(command, false, "Unity Editor is compiling or importing.");
+                return;
+            }
+
+            try
+            {
+                IslandReferenceBenchmark.Generate();
+                AgentResponse response = BaseResponse(command);
+                response.ok = true;
+                response.summary = "Island reference benchmark generated in the live Unity Editor.";
+                response.artifact = Path.Combine(
+                    ProjectRoot,
+                    "Artifacts",
+                    "Unity",
+                    "IslandReferenceBenchmark",
+                    "island-reference.png");
+                response.snapshotPath = Path.Combine(
+                    ProjectRoot,
+                    "Artifacts",
+                    "Unity",
+                    "IslandReferenceBenchmark",
+                    "island-reference.json");
+                SaveResponse(response);
+            }
+            catch (Exception error)
+            {
+                WriteResponse(command, false, error.GetType().Name + ": " + error.Message);
+            }
         }
 
         private static void OpenScene(AgentCommand command)
