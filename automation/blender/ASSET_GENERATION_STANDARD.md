@@ -21,6 +21,8 @@ This is the default workflow for future generated 3D assets. A generated asset i
   - `ordax_asset`
   - `ordax_component`
   - `ordax_role`
+  - `ordax_object_id`
+  - `ordax_standard_version`
 - One collection per component.
 - No unrelated scene objects may be deleted.
 - Object scale should be applied before final validation.
@@ -60,3 +62,7 @@ Use three passes:
 A failed earlier pass is fixed before later passes continue.
 
 The bed pipeline in `automation/blender/bed_pipeline/` is the reference implementation of this standard.
+
+## Persistent-session correctness
+
+Blender Live is a persistent Python process. Every generation entrypoint must invalidate import caches and reload its pipeline modules from the synchronized source tree. A generation must never silently execute stale module code after a Git update.
