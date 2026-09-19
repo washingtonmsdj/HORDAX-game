@@ -47,10 +47,15 @@ PART_OFFSETS={
 }
 
 
-def _remove_obsolete_source_collections():
-    for name in ("ORDAX_PART_FRAME","ORDAX_PART_HEADBOARD","ORDAX_PART_PILLOW_SAGE","ORDAX_PART_PILLOW_TERRACOTTA"):
-        col=bpy.data.collections.get(name)
-        if col is None:
+def _reset_part_source_collections():
+    """Recreate every generated part collection in the active scene.
+
+    Blender Live keeps one process alive across runs. Reusing a collection that
+    belongs only to a previous scene makes physics operators fail because the
+    object is outside the active ViewLayer.
+    """
+    for col in list(bpy.data.collections):
+        if not col.name.startswith("ORDAX_PART_"):
             continue
         for obj in list(col.objects):
             bpy.data.objects.remove(obj,do_unlink=True)
@@ -58,7 +63,7 @@ def _remove_obsolete_source_collections():
 
 
 def build_parts():
-    _remove_obsolete_source_collections()
+    _reset_part_source_collections()
     reports={}
     collections={}
 
