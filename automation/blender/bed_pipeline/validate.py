@@ -67,10 +67,74 @@ def validate(*, raise_on_error=True):
     # Every generated object is tagged and should not carry accidental scale.
     generated = [o for o in bpy.context.scene.objects if o.get("ordax_asset") == ASSET_ID]
     report["metrics"]["generated_objects"] = len(generated)
+
+    object_ids = [str(o.get("ordax_object_id") or "") for o in generated]
+    if any(not value for value in object_ids):
+        _error(report, "missing_object_id", "every generated object requires ordax_object_id")
+    duplicates = sorted({value for value in object_ids if value and object_ids.count(value) > 1})
+    if duplicates:
+        _error(report, "duplicate_object_id", duplicates)
+
     for obj in generated:
         if any(abs(float(s) - 1.0) > 0.001 for s in obj.scale):
             # Rotation is allowed, unapplied scale is not.
             _warning(report, "unapplied_scale", obj.name)
+
+    # Rigid assembly clearance gate. A visible contact may be close, but
+    # mattress geometry must not physically occupy frame/headboard volume.
+    if mattress:
+        m_lo, m_hi = world_bounds(mattress)
+        clearance = tol("contact_clearance_m")
+        penetration = tol("penetration_m")
+        left = object_by_role("left_rail")
+        right = object_by_role("right_rail")
+        foot = object_by_role("foot_rail")
+        support = object_by_role("support")
+
+        if left:
+            _lo, left_hi = world_bounds(left)
+            gap = m_lo.x - left_hi.x
+            report["metrics"]["left_rail_clearance"] = round(gap, 5)
+            if gap < -penetration:
+                _error(report, "mattress_left_rail_penetration", f"{gap:.4f}")
+            elif gap < clearance:
+                _warning(report, "mattress_left_rail_clearance", f"{gap:.4f}")
+
+        if right:
+            right_lo, _hi = world_bounds(right)
+            gap = right_lo.x - m_hi.x
+            report["metrics"]["right_rail_clearance"] = round(gap, 5)
+            if gap < -penetration:
+                _error(report, "mattress_right_rail_penetration", f"{gap:.4f}")
+            elif gap < clearance:
+                _warning(report, "mattress_right_rail_clearance", f"{gap:.4f}")
+
+        if foot:
+            _lo, foot_hi = world_bounds(foot)
+            gap = m_lo.y - foot_hi.y
+            report["metrics"]["foot_rail_clearance"] = round(gap, 5)
+            if gap < -penetration:
+                _error(report, "mattress_foot_rail_penetration", f"{gap:.4f}")
+            elif gap < clearance:
+                _warning(report, "mattress_foot_rail_clearance", f"{gap:.4f}")
+
+        if support:
+            _lo, support_hi = world_bounds(support)
+            vertical = m_lo.z - support_hi.z
+            report["metrics"]["support_vertical_clearance"] = round(vertical, 5)
+            if vertical < -penetration:
+                _error(report, "mattress_support_penetration", f"{vertical:.4f}")
+            elif abs(vertical) > 0.012:
+                _warning(report, "mattress_support_contact", f"{vertical:.4f}")
+
+        if channels:
+            head_front = min(world_bounds(o)[0].y for o in channels)
+            gap = head_front - m_hi.y
+            report["metrics"]["headboard_clearance"] = round(gap, 5)
+            if gap < -penetration:
+                _error(report, "mattress_headboard_penetration", f"{gap:.4f}")
+            elif gap < clearance:
+                _warning(report, "mattress_headboard_clearance", f"{gap:.4f}")
 
     # Protected mattress zone: cloth may fall off the sides/foot, but vertices
     # above the mattress footprint must not penetrate the fitted-sheet surface.
