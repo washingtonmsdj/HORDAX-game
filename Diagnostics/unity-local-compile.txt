@@ -1,0 +1,2127 @@
+HORDAX UNITY LOCAL DIAGNOSTICS V2
+================================
+Data: 18/09/2026 23:36:58,58
+Source log: C:\Users\TONECOS\Documents\github\HORDAX-game\Logs\Editor.log
+Local branch: dev/unity6-gameplay-pass-1
+Local SHA: b7ad7da
+
+---- GIT STATUS ----
+
+---- UNITY VERSION ----
+m_EditorVersion: 6000.6.1f1
+m_EditorVersionWithRevision: 6000.6.1f1 (7efac9f6c10e)
+
+---- COMPILER / SCRIPT ERRORS WITH CONTEXT ----
+[1925] Assets\HORDAX\Scripts\Enemies\HordeSpawner.cs(71,20): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1926] 
+[1927] Assets\HORDAX\Scripts\Prototype\PrototypeBootstrap.cs(24,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1928] 
+[1929] Assets\HORDAX\Scripts\Enemies\EnemyAgent.cs(87,38): error CS0619: 'Object.GetInstanceID()' is obsolete: 'Use GetEntityId instead.'
+[1930] 
+[1931] Assets\HORDAX\Scripts\Enemies\EnemyAgent.cs(110,42): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1932] 
+[1933] Assets\HORDAX\Scripts\Prototype\PrototypeBootstrap.cs(292,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1934] 
+[1935] Assets\HORDAX\Scripts\UI\HudController.cs(318,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1936] *** Tundra build failed (19.16 seconds), 4 items updated, 247 evaluated## Script Compilation Error for: Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll (+2 others)
+[1937] ## CmdLine: "C:\Program Files\Unity\Hub\Editor\6000.6.1f1-x86_64\Editor\Data\DotNetSdk\dotnet.exe" exec "C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/DotNetSdk/sdk/8.0.318/Roslyn/bincore/csc.dll" /nostdlib /noconfig /shared "@Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.rsp" "@Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.rsp2"
+---
+[1940] Assets\HORDAX\Scripts\UI\MetaMenuController.cs(41,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1941] Assets\HORDAX\Scripts\Enemies\HordeSpawner.cs(70,42): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1942] Assets\HORDAX\Scripts\Enemies\HordeSpawner.cs(71,20): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1943] Assets\HORDAX\Scripts\Prototype\PrototypeBootstrap.cs(24,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1944] Assets\HORDAX\Scripts\Enemies\EnemyAgent.cs(87,38): error CS0619: 'Object.GetInstanceID()' is obsolete: 'Use GetEntityId instead.'
+[1945] Assets\HORDAX\Scripts\Enemies\EnemyAgent.cs(110,42): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1946] Assets\HORDAX\Scripts\Prototype\PrototypeBootstrap.cs(292,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1947] Assets\HORDAX\Scripts\UI\HudController.cs(318,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1948] 
+[1949] 
+[1950] Total cache size 3352940
+[1951] Total cache size after purge 3352940, took 00:00:00.3561772
+[1952] Assets\HORDAX\Scripts\Core\ProgressionService.cs(65,43): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+---
+[1953] Assets\HORDAX\Scripts\UI\MetaMenuController.cs(41,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1954] Assets\HORDAX\Scripts\Enemies\HordeSpawner.cs(70,42): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1955] Assets\HORDAX\Scripts\Enemies\HordeSpawner.cs(71,20): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1956] Assets\HORDAX\Scripts\Prototype\PrototypeBootstrap.cs(24,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1957] Assets\HORDAX\Scripts\Enemies\EnemyAgent.cs(87,38): error CS0619: 'Object.GetInstanceID()' is obsolete: 'Use GetEntityId instead.'
+[1958] Assets\HORDAX\Scripts\Enemies\EnemyAgent.cs(110,42): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1959] Assets\HORDAX\Scripts\Prototype\PrototypeBootstrap.cs(292,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1960] Assets\HORDAX\Scripts\UI\HudController.cs(318,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[1961] Importing 'GUID: 0000000000000000b000000000000000 - Path: ProjectSettings/EditorBuildSettings.asset' with importer (LibraryAssetImporter)
+[1962] Imported 'GUID: 0000000000000000b000000000000000' -> (Import Result ID: 'f594a42ced62a8e3aa30b32df92fc80c') in 0.180 seconds [static dependencies only]. Details - ImportResultOutputID=0a89a5c5f492143e0fa186859e17ba6f DependenciesID=94a6017707ffe434014d4a5112152437 StaticDependenciesID=1247f036b627c056822e8e19debaefbf 
+[1963] 
+[1964] Asset Pipeline Refresh (id=e8871c75915af0140a338e27f516f792): Total: 43.831 seconds - Initiated by RefreshV2(AllowForceSynchronousImport)
+[1965] 	(Values over 0.05ms)
+---
+
+---- LAST 2500 LOG LINES ----
+VBCSCompilerPreWarmer: pre-warm launched (dotnet PID 21284)
+VBCSCompiler prewarm took 12.72 ms
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.6/staging' branch; Version is '6000.6.1f1 (7efac9f6c10e) revision 8321737'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-TONECOS" at "2026-09-19T00:30:14.1428853Z"
+OS: 'Windows 10  (10.0.19045) 64bit Professional' Language: 'pt' Physical Memory: 16337 MB
+BatchMode: 0, IsHumanControllingUs: 1, StartBugReporterOnCrash: 1, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-09-19T00:30:14Z
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 8828, path: "C:/Program Files/Unity Hub/UnityLicensingClient_V1/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              75f1e207bc8e4bedacb6a3eb50203f9c
+  Correlation Id:          69f62fec4681df419f6062ae79efa515
+  External correlation Id: 543381275786232757
+  Machine Id:              +d1Qf0WWVFuXd/G0qs1psZqy6ok=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-TONECOS" (connect: 0.00s, validation: 0.01s, handshake: 0.16s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-TONECOS-notifications" at "2026-09-19T00:30:14.3135197Z"
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: 4674146127341-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.03
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 0.26s
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.6.1f1-x86_64\Editor\Unity.exe
+-projectPath
+C:\Users\TONECOS\Documents\github\HORDAX-game
+Successfully changed project path to: C:\Users\TONECOS\Documents\github\HORDAX-game
+C:/Users/TONECOS/Documents/github/HORDAX-game
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=1"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Player connection [22240]  Target information:
+
+Player connection [22240]  * "[IP] 192.168.100.197 [Port] 55504 [Flags] 2 [Guid] 891337611 [EditorId] 891337611 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-COHT67R) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [22240]  * "[IP] 172.21.80.1 [Port] 55504 [Flags] 2 [Guid] 891337611 [EditorId] 891337611 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-COHT67R) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [22240] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [22240] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Package Manager] Connected to IPC stream "Upm-15872" after 1.4 seconds.
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+Launching Unity Data Store - C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Tools/Unity.DataStore.exe 
+Unity Data Store artifact dir = Library/DataStore, working dir = C:/Users/TONECOS/Documents/github/HORDAX-game[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Unity Data Store running and initialised
+Initialize engine version: 6000.6.1f1 (7efac9f6c10e)
+[EntityIdStore] init: VM path (explicit commit), pageSize=4096, blockCount=1048576, entitiesPerBlock=256, slots reserved=4294967296 bytes
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/Users/TONECOS/Documents/github/HORDAX-game/Assets
+[D3D12 Device Filter] Vendor Name: NVIDIA
+[D3D12 Device Filter] Device Name: NVIDIA GeForce GTX 750
+[D3D12 Device Filter] Driver Version: 32.0.15.8266
+[D3D12 Device Filter] Feature Level: 11.0
+[D3D12 Device Filter] Graphics Memory: 1999 MB
+[D3D12 Device Filter] Processor Count: 4
+[D3D12 Device Filter] Device Type: Discrete
+[D3D12 Device Filter] D3D12 API denied by user filter: {"Feature Level Comparator": Less Than"Feature Level": "12.1", "Device Type:": Do Not Care}
+GfxDevice: creating device client; kGfxThreadingModeThreaded
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 750 (ID=0x1381)
+    Vendor:   NVIDIA
+    VRAM:     1999 MB
+    Driver:   32.0.15.8266
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = 'C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56872
+CodeReloadManager initialized
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.004953 seconds.
+Native extension for WindowsStandalone target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:False
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  1.630 seconds
+Domain Reload Profiling: 3088ms
+	BeginReloadAssembly (393ms)
+		CreateAndSetChildDomain (37ms)
+	RebuildCommonClasses (10ms)
+	RebuildNativeTypeToScriptingClass (49ms)
+	initialDomainReloadingComplete (175ms)
+	LoadAllAssembliesAndSetupDomain (828ms)
+		LoadAssemblies (347ms)
+		TypeCache.Refresh (581ms)
+			TypeCache.ScanAssembly (549ms)
+		AnalyzeDomain (1ms)
+	FinalizeReload (1633ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (3ms)
+			InitializePlatformSupportModulesInManaged (4ms)
+			BeforeProcessingInitializeOnLoad (280ms)
+			ProcessInitializeOnLoadAttributes (264ms)
+			ProcessInitializeOnLoadMethodAttributes (579ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 8 packages:
+  Built-in packages:
+    com.unity.modules.jsonserialize@1.0.0 (location: C:\Users\TONECOS\Documents\github\HORDAX-game\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.ugui@2.6.0 (location: C:\Users\TONECOS\Documents\github\HORDAX-game\Library\PackageCache\com.unity.ugui@fa62679cc16a)
+    com.unity.modules.ui@1.0.0 (location: C:\Users\TONECOS\Documents\github\HORDAX-game\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.imgui@1.0.0 (location: C:\Users\TONECOS\Documents\github\HORDAX-game\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.audio@1.0.0 (location: C:\Users\TONECOS\Documents\github\HORDAX-game\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.physics2d@1.0.0 (location: C:\Users\TONECOS\Documents\github\HORDAX-game\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.physics@1.0.0 (location: C:\Users\TONECOS\Documents\github\HORDAX-game\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.physicscore2d@1.0.0 (location: C:\Users\TONECOS\Documents\github\HORDAX-game\Library\PackageCache\com.unity.modules.physicscore2d)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.12 seconds
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.1f1-x86_64\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/Users/TONECOS/Documents/github/HORDAX-game
+ExitCode: 4 Duration: 0s602ms
+Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1900b0aE-inputdata.json
+[202/247    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+*** Tundra requires additional run (0.49 seconds), 1 items updated, 200 evaluated
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.1f1-x86_64\Editor\Data\DotNetSdk\dotnet.exe "C:\Program Files\Unity\Hub\Editor\6000.6.1f1-x86_64\Editor\Data\Tools\BuildPipeline\ScriptCompilationBuildProgram.exe" "Library/Bee/1900b0aE.dag.json" "Library/Bee/1900b0aE-inputdata.json" "Library\Bee\buildprogram0.traceevents"
+WorkingDir: C:/Users/TONECOS/Documents/github/HORDAX-game
+ExitCode: 0 Duration: 7s523ms
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.1f1-x86_64\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --dagfilejson="Library\Bee\1900b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
+WorkingDir: C:/Users/TONECOS/Documents/github/HORDAX-game
+ExitCode: 0 Duration: 0s365ms
+Finished compiling graph: 250 nodes, 1864 flattened edges (1732 ToBuild, 16 ToUse), maximum node priority 135
+[222/247    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+*** Tundra build success (0.30 seconds), 1 items updated, 247 evaluated
+Total cache size 3352940
+AssetDatabase: script compilation time: 12.333467s
+Total cache size after purge 3352940, took 00:00:00.0315686
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  2.009 seconds
+Domain Reload Profiling: 3156ms
+	BeginReloadAssembly (601ms)
+		DisableScriptedObjects (57ms)
+		CreateAndSetChildDomain (94ms)
+	RebuildCommonClasses (21ms)
+	RebuildNativeTypeToScriptingClass (59ms)
+	initialDomainReloadingComplete (106ms)
+	LoadAllAssembliesAndSetupDomain (358ms)
+		LoadAssemblies (312ms)
+		TypeCache.Refresh (22ms)
+			TypeCache.ScanAssembly (13ms)
+		AnalyzeDomain (23ms)
+			BuildScriptInfoCaches (15ms)
+			ResolveRequiredComponents (6ms)
+	FinalizeReload (2011ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (3ms)
+			InitializePlatformSupportModulesInManaged (5ms)
+			BeforeProcessingInitializeOnLoad (264ms)
+			ProcessInitializeOnLoadAttributes (895ms)
+			ProcessInitializeOnLoadMethodAttributes (103ms)
+			AfterProcessingInitializeOnLoad (24ms)
+		AwakeInstancesAfterBackupRestoration (105ms)
+Starting new worker id: 0 with log in C:/Users/TONECOS/Documents/github/HORDAX-game/Logs/AssetImportWorkerHW0.log
+
+Asset Pipeline Refresh (id=9c2a8067c41ad6a4090c6b51eaa1023e): Total: 16.099 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=2302 ms
+		Asset DB Callback time: managed=48 ms, native=124 ms
+		Scripting: domain reloads=1, domain reload time=1236 ms, compile time=12342 ms, other=45 ms
+		Project Asset Count: scripts=136, non-scripts=50
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 128.058ms
+	ApplyChangesToAssetFolders: 0.551ms
+	Scan: 65.469ms
+	Collect global state as custom dependencies: 24.444ms
+	CategorizeScriptCompilationAssets: 1.967ms
+	ProcessAssetsWithTransientArtifactChanges: 20.803ms
+	CategorizeAssets: 2.177ms
+	CompileScripts: 12341.538ms
+	ImportOutOfDateAssets: 2028.168ms (2012.223ms without children)
+		UnloadImportedAssets: 0.142ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.052ms
+		ImportSchedulerStart: 15.747ms
+	PostProcessAllAssets: 48.384ms
+		MonoPostProcessAllAssets: 48.298ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 18.239ms
+			SyncVS.PostprocessSyncProject 3.369ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 3.186ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 2.026ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.568ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.463ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.320ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.175ms
+	UnloadStreamsBegin: 2.570ms
+	Untracked: 1391.012ms
+
+Application.AssetDatabase Initial Refresh End
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Scanning for USB devices : 6.839ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-HORDAX-game
+Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 428 unused Assets / (0.6 MB). Loaded Objects now: 1157.
+Memory consumption went from 239.1 MB to 238.5 MB.
+Total: 8.749400 ms (FindLiveObjects: 0.255100 ms CreateObjectMapping: 0.033200 ms MarkObjects: 7.717200 ms  DeleteObjects: 0.556100 ms)
+
+[LAYOUT] C:/Users/TONECOS/AppData/Roaming/Unity/Editor-5.x/Preferences\Layouts\default does not exist. Copying base layouts.
+[LAYOUT] About to load C:/Users/TONECOS/AppData/Roaming/Unity/Editor-5.x/Preferences\Layouts\default\Default.wlt, keepMainWindow=False
+Worker ready: AssetImportWorkerHW0 0
+[LAYOUT] About to save layout C:\Users\TONECOS\Documents\github\HORDAX-game\UserSettings\Layouts\default-6000.dwlt
+[LAYOUT] About to save layout C:/Users/TONECOS/AppData/Roaming/Unity/Editor-5.x/Preferences\Layouts\current\default-6000.dwlt
+[MODES] ModeService[default].InitializeCurrentMode
+[MODES] ModeService[default].RaiseModeChanged(default, default)
+This project uses Input Manager, which is marked for deprecation. To manage input in your project, use the <a href="https://docs.unity3d.com/Packages/com.unity.inputsystem@latest">Input System package</a> instead.
+<RI> Initializing input.
+
+XInput1_3.dll not found. Trying XInput9_1_0.dll instead...
+<RI> Input initialized.
+
+[Project] Loading completed in 40.952 seconds
+	Project init time: 				27.743 seconds
+		Template init time: 		0.000 seconds
+		Package Manager init time: 		1.405 seconds
+		Asset Database init time: 		0.523 seconds
+		Global illumination init time: 	0.004 seconds
+		Assemblies load time: 			3.219 seconds
+		Unity extensions init time: 	0.007 seconds
+		Asset Database refresh time: 	16.099 seconds
+	Scene opening time: 			5.886 seconds
+##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1789777855070,"processId":15872,"projectLoad":40.9521061,"projectInit":27.7432519,"templateInit":0.0,"packageManagerInit":1.4048539,"assetDatabaseInit":0.52333,"globalIlluminationInit":0.0038402,"assembliesLoad":3.2185774,"unityExtensionsInit":0.0067854,"assetDatabaseRefresh":16.0992237,"sceneOpening":5.8857351}
+##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1789777855070,"processId":15872,"editorVersion":"6000.6.1f1 (7efac9f6c10e)","branch":"6000.6/staging","buildType":"Release","platform":"Windows"}
+Created GICache directory at C:/Users/TONECOS/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.202s, timestamps: [53.707 - 53.909]
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully updated the access token
+[Licensing::Module] Successfully updated access token: "hsPyphmr"... (expires: 2026-09-19T02:19:37Z)
+[Licensing::Client] Successfully resolved entitlement details
+
+Asset Pipeline Refresh (id=8a80ad60f08a5cf4d929e05bdf478664): Total: 1.575 seconds - Initiated by RefreshV2(AllowForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=1573 ms
+		Asset DB Callback time: managed=0 ms, native=0 ms
+		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
+		Project Asset Count: scripts=136, non-scripts=50
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 2.142ms
+	ApplyChangesToAssetFolders: 0.063ms
+	Scan: 24.915ms
+	Collect global state as custom dependencies: 1.169ms
+	CategorizeAssets: 0.252ms
+	ImportOutOfDateAssets: 0.544ms (0.061ms without children)
+		UnloadImportedAssets: 0.091ms
+		ImportSchedulerStart: 0.355ms
+	UnloadStreamsBegin: 2.380ms
+	Untracked: 1048.113ms
+
+InvalidOperationException: Cannot create a new scene additively with an untitled scene unsaved.
+  at (wrapper managed-to-native) UnityEditor.SceneManagement.EditorSceneManager.NewScene_Injected(UnityEditor.SceneManagement.NewSceneSetup,UnityEditor.SceneManagement.NewSceneMode,UnityEngine.SceneManagement.Scene&)
+  at UnityEditor.SceneManagement.EditorSceneManager.NewScene (UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode) [0x00000] in <d3386a5b246b4c92adb8d270fa9e6d17>:0 
+  at HORDAX.EditorTools.PrototypeSceneGenerator.GenerateScene (System.Boolean overwrite, System.Boolean openAfter) [0x0002c] in C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\PrototypeSceneGenerator.cs:65 
+  at HORDAX.EditorTools.PrototypeSceneGenerator.EnsurePrototypeScene () [0x00014] in C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\PrototypeSceneGenerator.cs:51 
+  at UnityEditor.EditorApplication.Internal_CallDelayFunctions () [0x00029] in <d3386a5b246b4c92adb8d270fa9e6d17>:0 
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+(Filename: Assets/HORDAX/Editor/PrototypeSceneGenerator.cs Line: 65)
+
+TrimDiskCacheJob: Current cache size 0mb
+Reloading assemblies for play mode.
+Reloading assemblies after forced synchronous recompile.
+Begin MonoManager ReloadAssembly
+[Licensing::Client] Successfully resolved entitlement details
+Native extension for WindowsStandalone target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  3.770 seconds
+Domain Reload Profiling: 5205ms
+	BeginReloadAssembly (956ms)
+		DisableScriptedObjects (290ms)
+		CreateAndSetChildDomain (194ms)
+	RebuildCommonClasses (20ms)
+	RebuildNativeTypeToScriptingClass (57ms)
+	initialDomainReloadingComplete (97ms)
+	LoadAllAssembliesAndSetupDomain (305ms)
+		LoadAssemblies (308ms)
+		TypeCache.Refresh (11ms)
+		AnalyzeDomain (7ms)
+			ResolveRequiredComponents (4ms)
+	FinalizeReload (3772ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (3ms)
+			InitializePlatformSupportModulesInManaged (4ms)
+			BeforeProcessingInitializeOnLoad (297ms)
+			ProcessInitializeOnLoadAttributes (165ms)
+			ProcessInitializeOnLoadMethodAttributes (64ms)
+			AfterProcessingInitializeOnLoad (17ms)
+		AwakeInstancesAfterBackupRestoration (2441ms)
+
+Asset Pipeline Refresh (id=7c2052a73ec16d840987848c0d432eb1): Total: 6.042 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=4222 ms
+		Asset DB Callback time: managed=81 ms, native=222 ms
+		Scripting: domain reloads=1, domain reload time=1509 ms, compile time=5 ms, other=0 ms
+		Project Asset Count: scripts=136, non-scripts=50
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 3.333ms
+	ApplyChangesToAssetFolders: 0.084ms
+	Collect global state as custom dependencies: 2.063ms
+	ProcessAssetsWithTransientArtifactChanges: 81.686ms
+	CategorizeAssets: 1.656ms
+	CompileScripts: 5.076ms
+	ImportOutOfDateAssets: 3778.064ms (3772.547ms without children)
+		UnloadImportedAssets: 5.026ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.078ms
+		ImportSchedulerStart: 0.407ms
+	PostProcessAllAssets: 303.017ms
+		VCAutoAddAssetPostprocess 21.971ms
+		PostProcessCallbackCreateDeferredMaterials 2.485ms
+		PostprocessAssetsUpdateCachedIcon 1.104ms
+		ShaderAssetModifiedCallback 0.749ms
+		RaytracingShaderImportPostprocess 0.664ms
+		ComputeShaderImportPostprocess 0.543ms
+		SpeedTreeImporter.PostprocessAllAssets 0.447ms
+		AssemblyValidation.PostprocessAllAssets 0.269ms
+		BlockShaderImporter.PostprocessAllAssets 0.243ms
+		LocalizationDatabase.AssetDatabasePostprocessCallback 0.232ms
+		MonoPostProcessAllAssets: 77.084ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 12.390ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 12.120ms
+			AssetPostprocessor.OnPostprocessAllAssets 10.014ms
+			AssetChangedListener.OnPostprocessAllAssets 5.324ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 2.957ms
+			SyncVS.PostprocessSyncProject 2.840ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 2.830ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 1.813ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 1.027ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.686ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.606ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.558ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.548ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 0.514ms
+			AssetEvents.OnPostprocessAllAssets 0.468ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.417ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.399ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.314ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.306ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.296ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.291ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.190ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.186ms
+	PostAssetChangesProfiler: 45.450ms
+	UnloadStreamsBegin: 2.393ms
+	Untracked: 1796.615ms
+
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            22.377 ms
+	Integration:            195.046 ms
+	Integration of assets:  0.033 ms
+	Thread Wait Time:       -0.012 ms
+	Total Operation Time:   217.443 ms
+[Licensing::Client] Successfully resolved entitlement details
+InvalidOperationException: This cannot be used during play mode, please use SceneManager.CreateScene() instead.
+  at (wrapper managed-to-native) UnityEditor.SceneManagement.EditorSceneManager.NewScene_Injected(UnityEditor.SceneManagement.NewSceneSetup,UnityEditor.SceneManagement.NewSceneMode,UnityEngine.SceneManagement.Scene&)
+  at UnityEditor.SceneManagement.EditorSceneManager.NewScene (UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode) [0x00000] in <d3386a5b246b4c92adb8d270fa9e6d17>:0 
+  at HORDAX.EditorTools.PrototypeSceneGenerator.GenerateScene (System.Boolean overwrite, System.Boolean openAfter) [0x0002c] in C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\PrototypeSceneGenerator.cs:65 
+  at HORDAX.EditorTools.PrototypeSceneGenerator.EnsurePrototypeScene () [0x00014] in C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\PrototypeSceneGenerator.cs:51 
+  at UnityEditor.EditorApplication.Internal_CallDelayFunctions () [0x00029] in <d3386a5b246b4c92adb8d270fa9e6d17>:0 
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+(Filename: Assets/HORDAX/Editor/PrototypeSceneGenerator.cs Line: 65)
+
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+Importing 'GUID: 3dc365ed623dd3c4f988782780107451 - Path: Assets/HORDAX/Scenes' with importer (DefaultImporter)
+Imported 'GUID: 3dc365ed623dd3c4f988782780107451' -> (Import Result ID: '6d1839e83211e5640f3baeecf1f8bb0b') in 0.289 seconds [static dependencies only]. Details - ImportResultOutputID=72a98ad82e68e51ce902c963816b5ea1 DependenciesID=6bbb6065f20f35e84ae4638c7906b1ad StaticDependenciesID=e32693861c4f02e045dde083b3056db9 
+
+Asset Pipeline Refresh (id=33cc93fec0e791c4a8809408d66ee2c0): Total: 0.599 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=1 (actual=1, local cache=0, cache server=0)
+		Asset DB Process Time: managed=24 ms, native=352 ms
+		Asset DB Callback time: managed=195 ms, native=25 ms
+		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
+		Project Asset Count: scripts=137, non-scripts=50
+		Asset File Changes: new=1, changed=1, moved=0, deleted=0
+		Scan Filter Count: 0
+	ApplyChangesToAssetFolders: 0.056ms
+	Scan: 42.772ms
+	Collect global state as custom dependencies: 1.133ms
+	OnSourceAssetsModified: 26.319ms
+	CategorizeAssets: 21.783ms
+	ImportOutOfDateAssets: 291.980ms (0.124ms without children)
+		ImportManagerImport: 291.331ms (2.235ms without children)
+		UnloadImportedAssets: 0.140ms
+		ImportSchedulerStart: 0.347ms
+	PostProcessAllAssets: 15.286ms
+		VersionControlSettings.HiddenFilePostprocess 0.073ms
+		MonoPostProcessAllAssets: 14.931ms
+			AssetChangedListener.OnPostprocessAllAssets 10.525ms
+			AssetPostprocessor.OnPostprocessAllAssets 3.800ms
+			SyncVS.PostprocessSyncProject 0.167ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.055ms
+	PostAssetChangesProfiler: 179.792ms
+	UnloadStreamsBegin: 2.291ms
+	PersistCurrentRevisions: 0.094ms
+	Untracked: 7.665ms
+
+Asset Pipeline Refresh (id=1f98ed86bedd90e41bd249fe8299c461): Total: 0.019 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=d12cc619961b68d48959ba0ac4adf543): Total: 0.006 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=7066babfe86b97f4c9908c0ba9cd1e90): Total: 0.005 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            1.041 ms
+	Integration:            24.226 ms
+	Integration of assets:  0.004 ms
+	Thread Wait Time:       0.020 ms
+	Total Operation Time:   25.292 ms
+Unloading 328 unused Assets / (17.4 MB). Loaded Objects now: 2158.
+Memory consumption went from 378.6 MB to 361.2 MB.
+Total: 33.588800 ms (FindLiveObjects: 0.394600 ms CreateObjectMapping: 0.038600 ms MarkObjects: 27.073900 ms  DeleteObjects: 5.891700 ms)
+
+[Licensing::Client] Successfully resolved entitlement details
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.1f1-x86_64\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/Users/TONECOS/Documents/github/HORDAX-game
+ExitCode: 0 Duration: 12s
+[221/247    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[BUSY       6s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
+[243/247   10s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
+[244/247    1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll, with 146 defines and 301 references
+
+processors: zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+[245/247    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
+[246/247    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+*** Tundra build success (12.11 seconds), 5 items updated, 247 evaluated
+Total cache size 3352940
+Total cache size after purge 3352940, took 00:00:00.0249055
+Reloading assemblies after forced synchronous recompile.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  3.015 seconds
+Domain Reload Profiling: 4372ms
+	BeginReloadAssembly (844ms)
+		DisableScriptedObjects (194ms)
+		CreateAndSetChildDomain (183ms)
+	RebuildCommonClasses (23ms)
+	RebuildNativeTypeToScriptingClass (61ms)
+	initialDomainReloadingComplete (101ms)
+	LoadAllAssembliesAndSetupDomain (327ms)
+		LoadAssemblies (289ms)
+		TypeCache.Refresh (11ms)
+		AnalyzeDomain (31ms)
+			BuildScriptInfoCaches (23ms)
+			ResolveRequiredComponents (6ms)
+	FinalizeReload (3017ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (3ms)
+			InitializePlatformSupportModulesInManaged (4ms)
+			BeforeProcessingInitializeOnLoad (354ms)
+			ProcessInitializeOnLoadAttributes (151ms)
+			ProcessInitializeOnLoadMethodAttributes (74ms)
+			AfterProcessingInitializeOnLoad (22ms)
+		AwakeInstancesAfterBackupRestoration (1424ms)
+
+Asset Pipeline Refresh (id=a0530fdf0d827914d86ad63f877c6134): Total: 17.275 seconds - Initiated by RefreshV2(AllowForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=3152 ms
+		Asset DB Callback time: managed=82 ms, native=2 ms
+		Scripting: domain reloads=1, domain reload time=1429 ms, compile time=12608 ms, other=0 ms
+		Project Asset Count: scripts=137, non-scripts=50
+		Asset File Changes: new=0, changed=2, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 3.886ms
+	ApplyChangesToAssetFolders: 0.099ms
+	Scan: 54.241ms
+	Collect global state as custom dependencies: 3.722ms
+	OnSourceAssetsModified: 0.098ms
+	ProcessAssetsWithTransientArtifactChanges: 0.374ms
+	CategorizeAssets: 1.601ms
+	CompileScripts: 12607.841ms
+	ImportOutOfDateAssets: 3018.354ms (3017.159ms without children)
+		UnloadImportedAssets: 0.205ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.057ms
+		ImportSchedulerStart: 0.928ms
+	PostProcessAllAssets: 83.715ms
+		SpeedTreeImporter.PostprocessAllAssets 0.071ms
+		PostProcessCallbackCreateDeferredMaterials 0.056ms
+		MonoPostProcessAllAssets: 82.466ms
+			AssetChangedListener.OnPostprocessAllAssets 15.844ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 12.235ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 11.472ms
+			AssetPostprocessor.OnPostprocessAllAssets 9.050ms
+			SyncVS.PostprocessSyncProject 2.831ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 2.565ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 1.978ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 1.971ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 1.093ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.929ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.676ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.659ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.511ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.502ms
+			AssetEvents.OnPostprocessAllAssets 0.443ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 0.440ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.355ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.339ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.295ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.293ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.264ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.167ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.160ms
+	PostAssetChangesProfiler: 0.771ms
+	Untracked: 1466.621ms
+
+[Licensing::Client] Successfully resolved entitlement details
+InvalidOperationException: Cannot create a new scene additively with an untitled scene unsaved.
+  at (wrapper managed-to-native) UnityEditor.SceneManagement.EditorSceneManager.NewScene_Injected(UnityEditor.SceneManagement.NewSceneSetup,UnityEditor.SceneManagement.NewSceneMode,UnityEngine.SceneManagement.Scene&)
+  at UnityEditor.SceneManagement.EditorSceneManager.NewScene (UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode) [0x00000] in <d3386a5b246b4c92adb8d270fa9e6d17>:0 
+  at HORDAX.EditorTools.PrototypeSceneGenerator.GenerateScene (System.Boolean overwrite, System.Boolean openAfter) [0x0003e] in C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\PrototypeSceneGenerator.cs:95 
+  at HORDAX.EditorTools.PrototypeSceneGenerator.EnsurePrototypeScene () [0x0001b] in C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\PrototypeSceneGenerator.cs:75 
+  at UnityEditor.EditorApplication.Internal_CallDelayFunctions () [0x00029] in <d3386a5b246b4c92adb8d270fa9e6d17>:0 
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+(Filename: Assets/HORDAX/Editor/PrototypeSceneGenerator.cs Line: 95)
+
+InvalidOperationException: Cannot create a new scene additively with an untitled scene unsaved.
+  at (wrapper managed-to-native) UnityEditor.SceneManagement.EditorSceneManager.NewScene_Injected(UnityEditor.SceneManagement.NewSceneSetup,UnityEditor.SceneManagement.NewSceneMode,UnityEngine.SceneManagement.Scene&)
+  at UnityEditor.SceneManagement.EditorSceneManager.NewScene (UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode) [0x00000] in <d3386a5b246b4c92adb8d270fa9e6d17>:0 
+  at HORDAX.EditorTools.PrototypeSceneGenerator.GenerateScene (System.Boolean overwrite, System.Boolean openAfter) [0x0003e] in C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\PrototypeSceneGenerator.cs:95 
+  at HORDAX.EditorTools.PrototypeSceneGenerator.OpenFromMenu () [0x0001e] in C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\PrototypeSceneGenerator.cs:33 
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+(Filename: Assets/HORDAX/Editor/PrototypeSceneGenerator.cs Line: 95)
+
+InvalidOperationException: Cannot create a new scene additively with an untitled scene unsaved.
+  at (wrapper managed-to-native) UnityEditor.SceneManagement.EditorSceneManager.NewScene_Injected(UnityEditor.SceneManagement.NewSceneSetup,UnityEditor.SceneManagement.NewSceneMode,UnityEngine.SceneManagement.Scene&)
+  at UnityEditor.SceneManagement.EditorSceneManager.NewScene (UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode) [0x00000] in <d3386a5b246b4c92adb8d270fa9e6d17>:0 
+  at HORDAX.EditorTools.PrototypeSceneGenerator.GenerateScene (System.Boolean overwrite, System.Boolean openAfter) [0x0003e] in C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\PrototypeSceneGenerator.cs:95 
+  at HORDAX.EditorTools.PrototypeSceneGenerator.OpenFromMenu () [0x0001e] in C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\PrototypeSceneGenerator.cs:33 
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+(Filename: Assets/HORDAX/Editor/PrototypeSceneGenerator.cs Line: 95)
+
+InvalidOperationException: Cannot create a new scene additively with an untitled scene unsaved.
+  at (wrapper managed-to-native) UnityEditor.SceneManagement.EditorSceneManager.NewScene_Injected(UnityEditor.SceneManagement.NewSceneSetup,UnityEditor.SceneManagement.NewSceneMode,UnityEngine.SceneManagement.Scene&)
+  at UnityEditor.SceneManagement.EditorSceneManager.NewScene (UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode) [0x00000] in <d3386a5b246b4c92adb8d270fa9e6d17>:0 
+  at HORDAX.EditorTools.FrontEndSceneGenerator.GenerateScene () [0x00029] in C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\FrontEndSceneGenerator.cs:80 
+  at HORDAX.EditorTools.FrontEndSceneGenerator.OpenFromMenu () [0x0001e] in C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\FrontEndSceneGenerator.cs:27 
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+(Filename: Assets/HORDAX/Editor/FrontEndSceneGenerator.cs Line: 80)
+
+InvalidOperationException: Cannot create a new scene additively with an untitled scene unsaved.
+  at (wrapper managed-to-native) UnityEditor.SceneManagement.EditorSceneManager.NewScene_Injected(UnityEditor.SceneManagement.NewSceneSetup,UnityEditor.SceneManagement.NewSceneMode,UnityEngine.SceneManagement.Scene&)
+  at UnityEditor.SceneManagement.EditorSceneManager.NewScene (UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode) [0x00000] in <d3386a5b246b4c92adb8d270fa9e6d17>:0 
+  at HORDAX.EditorTools.PrototypeSceneGenerator.GenerateScene (System.Boolean overwrite, System.Boolean openAfter) [0x0003e] in C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\PrototypeSceneGenerator.cs:95 
+  at HORDAX.EditorTools.PrototypeSceneGenerator.OpenFromMenu () [0x0001e] in C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\PrototypeSceneGenerator.cs:33 
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+(Filename: Assets/HORDAX/Editor/PrototypeSceneGenerator.cs Line: 95)
+
+InvalidOperationException: Cannot create a new scene additively with an untitled scene unsaved.
+  at (wrapper managed-to-native) UnityEditor.SceneManagement.EditorSceneManager.NewScene_Injected(UnityEditor.SceneManagement.NewSceneSetup,UnityEditor.SceneManagement.NewSceneMode,UnityEngine.SceneManagement.Scene&)
+  at UnityEditor.SceneManagement.EditorSceneManager.NewScene (UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode) [0x00000] in <d3386a5b246b4c92adb8d270fa9e6d17>:0 
+  at HORDAX.EditorTools.PrototypeSceneGenerator.GenerateScene (System.Boolean overwrite, System.Boolean openAfter) [0x0003e] in C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\PrototypeSceneGenerator.cs:95 
+  at HORDAX.EditorTools.PrototypeSceneGenerator.OpenFromMenu () [0x0001e] in C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\PrototypeSceneGenerator.cs:33 
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+(Filename: Assets/HORDAX/Editor/PrototypeSceneGenerator.cs Line: 95)
+
+Asset Pipeline Refresh (id=8de1df04045b0b543bc6043afa8f8f6f): Total: 0.008 seconds - Initiated by RefreshV2(AllowForceSynchronousImport)
+Reloading assemblies for play mode.
+Reloading assemblies after forced synchronous recompile.
+Begin MonoManager ReloadAssembly
+[Licensing::Client] Successfully resolved entitlement details
+Native extension for WindowsStandalone target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  2.786 seconds
+Domain Reload Profiling: 4077ms
+	BeginReloadAssembly (812ms)
+		DisableScriptedObjects (210ms)
+		CreateAndSetChildDomain (182ms)
+	RebuildCommonClasses (21ms)
+	RebuildNativeTypeToScriptingClass (62ms)
+	initialDomainReloadingComplete (103ms)
+	LoadAllAssembliesAndSetupDomain (290ms)
+		LoadAssemblies (272ms)
+		TypeCache.Refresh (6ms)
+		AnalyzeDomain (7ms)
+			ResolveRequiredComponents (4ms)
+	FinalizeReload (2788ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (3ms)
+			InitializePlatformSupportModulesInManaged (4ms)
+			BeforeProcessingInitializeOnLoad (247ms)
+			ProcessInitializeOnLoadAttributes (140ms)
+			ProcessInitializeOnLoadMethodAttributes (72ms)
+			AfterProcessingInitializeOnLoad (31ms)
+		AwakeInstancesAfterBackupRestoration (1522ms)
+
+Asset Pipeline Refresh (id=1512b1e93b12c5b4597e052ccf282465): Total: 4.259 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=2858 ms
+		Asset DB Callback time: managed=34 ms, native=0 ms
+		Scripting: domain reloads=1, domain reload time=1360 ms, compile time=5 ms, other=0 ms
+		Project Asset Count: scripts=137, non-scripts=50
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 3.269ms
+	ApplyChangesToAssetFolders: 0.079ms
+	Collect global state as custom dependencies: 2.131ms
+	ProcessAssetsWithTransientArtifactChanges: 0.053ms
+	CategorizeAssets: 1.616ms
+	CompileScripts: 5.450ms
+	ImportOutOfDateAssets: 2789.438ms (2788.743ms without children)
+		UnloadImportedAssets: 0.251ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.052ms
+		ImportSchedulerStart: 0.387ms
+	PostProcessAllAssets: 34.150ms
+		MonoPostProcessAllAssets: 34.142ms
+			AssetChangedListener.OnPostprocessAllAssets 15.844ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 12.235ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 11.827ms
+			AssetPostprocessor.OnPostprocessAllAssets 9.050ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 2.565ms
+			SyncVS.PostprocessSyncProject 2.565ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 1.498ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 1.093ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.929ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.676ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.659ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.553ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.539ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.502ms
+			AssetEvents.OnPostprocessAllAssets 0.443ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 0.440ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.355ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.308ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.295ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.283ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.264ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.166ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.160ms
+	Untracked: 1402.724ms
+
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            0.928 ms
+	Integration:            79.979 ms
+	Integration of assets:  0.003 ms
+	Thread Wait Time:       0.023 ms
+	Total Operation Time:   80.933 ms
+[Licensing::Client] Successfully resolved entitlement details
+Start Indexing on Editor startup
+ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection.
+Parameter name: index
+  at System.Collections.Generic.List`1[T].get_Item (System.Int32 index) [0x00009] in <c5ae8a4eeb824526b5df2932bc2395e0>:0 
+  at UnityEditor.Search.SearchDatabase+<EnumerateAll>d__78.MoveNext () [0x00089] in <0e56a7249b2646c28fd53cac01412ebf>:0 
+  at System.Linq.Enumerable.TryGetFirst[TSource] (System.Collections.Generic.IEnumerable`1[T] source, System.Boolean& found) [0x00045] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at System.Linq.Enumerable.First[TSource] (System.Collections.Generic.IEnumerable`1[T] source) [0x00000] in <f1b392d8fe224ca2b1f9fab1000b77eb>:0 
+  at UnityEditor.Search.SearchDatabase.GetDefaultSearchDatabase () [0x00005] in <0e56a7249b2646c28fd53cac01412ebf>:0 
+  at UnityEditor.Search.SearchInit.IndexationOnStartup () [0x0000a] in <0e56a7249b2646c28fd53cac01412ebf>:0 
+  at UnityEditor.EditorApplication.Internal_CallDelayFunctions () [0x00029] in <d3386a5b246b4c92adb8d270fa9e6d17>:0 
+UnityEngine.StackTraceUtility:ExtractStringFromExceptionInternal(Object, String&, String&)
+
+Asset Pipeline Refresh (id=a7375bd82a50d134f98f87a839d44f82): Total: 0.018 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=9d07c4ded53c6d14ab653a22f2a5dd3c): Total: 0.004 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+[Worker0] Imported GUID: 3dc365ed623dd3c4f988782780107451 - Path: Assets/HORDAX/Scenes - Importer: PreviewImporter -> (ImportResultId: 'a09e95300c530a56f995d00c2e8919a9') in 0.0177365 seconds
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Asset Pipeline Refresh (id=da29ae335d916ab49a1fa53f2206c42b): Total: 0.235 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+[Licensing::Client] Successfully resolved entitlement details
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.1f1-x86_64\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/Users/TONECOS/Documents/github/HORDAX-game
+Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            0.774 ms
+	Integration:            27.536 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.034 ms
+	Total Operation Time:   28.346 ms
+Unloading 4 unused Assets / (379.8 KB). Loaded Objects now: 2307.
+Memory consumption went from 383.7 MB to 383.3 MB.
+Total: 20.614400 ms (FindLiveObjects: 0.374200 ms CreateObjectMapping: 0.029900 ms MarkObjects: 19.977600 ms  DeleteObjects: 0.045400 ms)
+
+[Licensing::Client] Successfully resolved entitlement details
+ExitCode: 0 Duration: 6s796ms
+[221/247    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[243/247    1s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
+[244/247    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll, with 146 defines and 301 references
+
+processors: zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+1 processor(s) skipped this assembly
+[245/247    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
+[246/247    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+*** Tundra build success (6.71 seconds), 5 items updated, 247 evaluated
+Total cache size 3352940
+Total cache size after purge 3352940, took 00:00:00.0356797
+Reloading assemblies after finishing script compilation.
+Reloading assemblies after forced synchronous recompile.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  3.919 seconds
+Domain Reload Profiling: 5796ms
+	BeginReloadAssembly (1297ms)
+		DisableScriptedObjects (283ms)
+		CreateAndSetChildDomain (341ms)
+	RebuildCommonClasses (26ms)
+	RebuildNativeTypeToScriptingClass (74ms)
+	initialDomainReloadingComplete (117ms)
+	LoadAllAssembliesAndSetupDomain (361ms)
+		LoadAssemblies (455ms)
+		TypeCache.Refresh (12ms)
+		AnalyzeDomain (32ms)
+			BuildScriptInfoCaches (26ms)
+			ResolveRequiredComponents (4ms)
+	FinalizeReload (3920ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (3ms)
+			InitializePlatformSupportModulesInManaged (3ms)
+			BeforeProcessingInitializeOnLoad (436ms)
+			ProcessInitializeOnLoadAttributes (195ms)
+			ProcessInitializeOnLoadMethodAttributes (91ms)
+			AfterProcessingInitializeOnLoad (21ms)
+		AwakeInstancesAfterBackupRestoration (2095ms)
+
+Asset Pipeline Refresh (id=df46e06104e9c4b4e845c44ffee90d19): Total: 7.287 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=5275 ms
+		Asset DB Callback time: managed=53 ms, native=0 ms
+		Scripting: domain reloads=1, domain reload time=1950 ms, compile time=6 ms, other=0 ms
+		Project Asset Count: scripts=137, non-scripts=50
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 3.210ms
+	ApplyChangesToAssetFolders: 0.080ms
+	Collect global state as custom dependencies: 2.966ms
+	ProcessAssetsWithTransientArtifactChanges: 0.229ms
+	CategorizeAssets: 1.680ms
+	CompileScripts: 6.254ms
+	ImportOutOfDateAssets: 3921.866ms (3921.035ms without children)
+		UnloadImportedAssets: 0.432ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.051ms
+		ImportSchedulerStart: 0.345ms
+	PostProcessAllAssets: 53.123ms
+		MonoPostProcessAllAssets: 53.116ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 17.644ms
+			AssetChangedListener.OnPostprocessAllAssets 15.219ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 13.799ms
+			AssetPostprocessor.OnPostprocessAllAssets 7.841ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 5.650ms
+			SyncVS.PostprocessSyncProject 3.323ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 2.737ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 1.768ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 1.292ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 1.143ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.941ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.936ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.625ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 0.521ms
+			AssetEvents.OnPostprocessAllAssets 0.490ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.374ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.366ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.356ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.309ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.298ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.295ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.188ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.166ms
+	Untracked: 2007.572ms
+
+[Licensing::Client] Successfully resolved entitlement details
+Start Indexing on Editor startup
+[Indexing] Starting Initial Indexing for Assets
+Asset Pipeline Refresh (id=c0de77d8b8c9cb149baed7c5ea7a483d): Total: 0.044 seconds - Initiated by RefreshV2(AllowForceSynchronousImport)
+Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 4 unused Assets / (1.8 KB). Loaded Objects now: 2308.
+Memory consumption went from 392.0 MB to 392.0 MB.
+Total: 24.174400 ms (FindLiveObjects: 0.374300 ms CreateObjectMapping: 0.029500 ms MarkObjects: 23.385700 ms  DeleteObjects: 0.184900 ms)
+
+[Worker0] Imported GUID: a5f1c980e14778746bf227d3d2f913b7 - Path: Assets/HORDAX/Scripts/Prototype/PrototypeUpgradeCatalog.cs - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '8aa2b46acf33d5ec74c9d762f6db7e7a') in 5.2017309 seconds
+Importing 'GUID: e22680bb02d02794ebb4aaa0c888d828 - Path: Assets/HORDAX/Scenes/Prototype.unity' with importer (DefaultImporter)
+Imported 'GUID: e22680bb02d02794ebb4aaa0c888d828' -> (Import Result ID: '6717dcf41a0c02adad52defd7748352e') in 0.010 seconds [static dependencies only]. Details - ImportResultOutputID=488aae22797d984fba40693fd2afd481 DependenciesID=a7442ca9e2eb4f84c29a0e2809b1cc5e StaticDependenciesID=05ea9bdb32b439a2c774310ee19bc14a 
+
+Asset Pipeline Refresh (id=4cc171a529939a14180b7a3bee594e38): Total: 0.699 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=1 (actual=1, local cache=0, cache server=0)
+		Asset DB Process Time: managed=4 ms, native=647 ms
+		Asset DB Callback time: managed=45 ms, native=1 ms
+		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
+		Project Asset Count: scripts=137, non-scripts=51
+		Asset File Changes: new=1, changed=1, moved=0, deleted=0
+		Scan Filter Count: 4
+	Scan: 378.266ms
+	Collect global state as custom dependencies: 1.407ms
+	OnSourceAssetsModified: 1.085ms
+	CategorizeAssets: 0.167ms
+	ImportOutOfDateAssets: 270.854ms (258.112ms without children)
+		ImportManagerImport: 12.045ms (1.477ms without children)
+		UnloadImportedAssets: 0.326ms
+		ImportSchedulerStart: 0.326ms
+	PostProcessAllAssets: 41.156ms
+		VersionControlSettings.HiddenFilePostprocess 0.069ms
+		MonoPostProcessAllAssets: 40.338ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 13.170ms
+			AssetPostprocessor.OnPostprocessAllAssets 7.999ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 5.709ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 3.281ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 2.115ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 1.045ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.838ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.727ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.703ms
+			AssetChangedListener.OnPostprocessAllAssets 0.664ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 0.639ms
+			AssetEvents.OnPostprocessAllAssets 0.533ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.434ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.276ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.181ms
+			SyncVS.PostprocessSyncProject 0.178ms
+	PostAssetChangesProfiler: 4.799ms
+	PersistCurrentRevisions: 0.089ms
+	Untracked: 1.167ms
+
+AcceleratorClientConnectionCallback - disconnected - :0
+Importing 'GUID: 0000000000000000b000000000000000 - Path: ProjectSettings/EditorBuildSettings.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 0000000000000000b000000000000000' -> (Import Result ID: 'b6b349ccecd7c2a21e5eb772fb74c499') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=0a89a5c5f492143e0fa186859e17ba6f DependenciesID=b92086efbcc4d7ed295068384ef84843 StaticDependenciesID=c8a3c79b976e2d641aa986927beeb0cd 
+Asset Pipeline Refresh (id=91f21630ab7bf454486f5c199aa6a31b): Total: 0.033 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=0051ae47cb9614244bf911e771855588): Total: 0.021 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+HORDAX prototype scene generated at Assets/HORDAX/Scenes/Prototype.unity
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+HORDAX.EditorTools.PrototypeSceneGenerator:GenerateScene (bool) (at Assets/HORDAX/Editor/PrototypeSceneGenerator.cs:104)
+HORDAX.EditorTools.PrototypeSceneGenerator:OpenFromMenu () (at Assets/HORDAX/Editor/PrototypeSceneGenerator.cs:26)
+
+(Filename: Assets/HORDAX/Editor/PrototypeSceneGenerator.cs Line: 104)
+
+[Worker0] Imported GUID: c851bee4305bddf438cc6ffc515991ce - Path: Packages/com.unity.ugui/CHANGELOG.md - Importer: ScriptedImporter/UnityEditor.QuickSearchModule:UnityEditor.Search:ASIAI0B -> (ImportResultId: '47d18536bf8042a74585f7fcdb4718cb') in 4.1805603 seconds
+Reloading assemblies for play mode.
+Reloading assemblies after forced synchronous recompile.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  3.765 seconds
+Domain Reload Profiling: 6079ms
+	BeginReloadAssembly (1707ms)
+		DisableScriptedObjects (972ms)
+		CreateAndSetChildDomain (220ms)
+	RebuildCommonClasses (26ms)
+	RebuildNativeTypeToScriptingClass (83ms)
+	initialDomainReloadingComplete (120ms)
+	LoadAllAssembliesAndSetupDomain (376ms)
+		LoadAssemblies (341ms)
+		TypeCache.Refresh (10ms)
+		AnalyzeDomain (11ms)
+			ResolveRequiredComponents (4ms)
+	FinalizeReload (3767ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (6ms)
+			InitializePlatformSupportModulesInManaged (5ms)
+			BeforeProcessingInitializeOnLoad (289ms)
+			ProcessInitializeOnLoadAttributes (179ms)
+			ProcessInitializeOnLoadMethodAttributes (105ms)
+			AfterProcessingInitializeOnLoad (20ms)
+		AwakeInstancesAfterBackupRestoration (2176ms)
+
+Asset Pipeline Refresh (id=0d13263b0f4c2d64e81663ddf66a0b6a): Total: 6.653 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=4211 ms
+		Asset DB Callback time: managed=39 ms, native=0 ms
+		Scripting: domain reloads=1, domain reload time=2396 ms, compile time=5 ms, other=0 ms
+		Project Asset Count: scripts=137, non-scripts=51
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 3.744ms
+	ApplyChangesToAssetFolders: 0.085ms
+	Collect global state as custom dependencies: 2.150ms
+	CategorizeAssets: 2.282ms
+	CompileScripts: 5.157ms
+	ImportOutOfDateAssets: 3768.566ms (3767.824ms without children)
+		UnloadImportedAssets: 0.363ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.056ms
+		ImportSchedulerStart: 0.319ms
+	PostProcessAllAssets: 39.197ms
+		MonoPostProcessAllAssets: 39.190ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 13.549ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 13.386ms
+			SyncVS.PostprocessSyncProject 2.750ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 1.565ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.646ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.592ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.550ms
+			AssetChangedListener.OnPostprocessAllAssets 0.400ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.331ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.192ms
+			AssetPostprocessor.OnPostprocessAllAssets 0.103ms
+	Untracked: 2445.054ms
+
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            0.763 ms
+	Integration:            1966.283 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.022 ms
+	Total Operation Time:   1967.070 ms
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.06 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.03 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.28 seconds
+Asset Pipeline Refresh (id=52c1960513145b745a74e7b39f59454c): Total: 0.018 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+[Licensing::Client] Successfully resolved entitlement details
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 326.220100 ms
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            0.649 ms
+	Integration:            408.447 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       4.291 ms
+	Total Operation Time:   413.388 ms
+Unloading 3 unused Assets / (403.5 KB). Loaded Objects now: 4022.
+Memory consumption went from 405.2 MB to 404.8 MB.
+Total: 32.682500 ms (FindLiveObjects: 0.589900 ms CreateObjectMapping: 0.055800 ms MarkObjects: 31.747500 ms  DeleteObjects: 0.075600 ms)
+
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 5.297800 ms
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            0.758 ms
+	Integration:            66.210 ms
+	Integration of assets:  0.003 ms
+	Thread Wait Time:       14.362 ms
+	Total Operation Time:   81.332 ms
+Unloading 0 unused Assets / (125.6 KB). Loaded Objects now: 4023.
+Memory consumption went from 405.1 MB to 405.0 MB.
+Total: 28.332600 ms (FindLiveObjects: 0.732700 ms CreateObjectMapping: 0.056200 ms MarkObjects: 27.313600 ms  DeleteObjects: 0.013000 ms)
+
+Asset Pipeline Refresh (id=7c54acbe0a8a20b49b85fa068658dc47): Total: 0.009 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=a7ba4be8643a660488fa5b4e9c87fec1): Total: 0.005 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 3.912900 ms
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            0.781 ms
+	Integration:            63.624 ms
+	Integration of assets:  0.003 ms
+	Thread Wait Time:       16.130 ms
+	Total Operation Time:   80.538 ms
+Unloading 0 unused Assets / (148.2 KB). Loaded Objects now: 4023.
+Memory consumption went from 404.8 MB to 404.7 MB.
+Total: 39.532300 ms (FindLiveObjects: 0.678800 ms CreateObjectMapping: 0.055500 ms MarkObjects: 38.573000 ms  DeleteObjects: 0.012300 ms)
+
+Asset Pipeline Refresh (id=ba4870507e4ff3d4380a494a9705e3ad): Total: 0.011 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            0.721 ms
+	Integration:            25.443 ms
+	Integration of assets:  0.003 ms
+	Thread Wait Time:       0.024 ms
+	Total Operation Time:   26.192 ms
+Unloading 1 unused Assets / (175.9 KB). Loaded Objects now: 2315.
+Memory consumption went from 404.1 MB to 404.0 MB.
+Total: 30.366100 ms (FindLiveObjects: 0.396500 ms CreateObjectMapping: 0.039200 ms MarkObjects: 29.703700 ms  DeleteObjects: 0.037200 ms)
+
+[Licensing::Client] Successfully resolved entitlement details
+Reloading assemblies for play mode.
+Reloading assemblies after forced synchronous recompile.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  3.268 seconds
+Domain Reload Profiling: 4676ms
+	BeginReloadAssembly (887ms)
+		DisableScriptedObjects (241ms)
+		CreateAndSetChildDomain (222ms)
+	RebuildCommonClasses (29ms)
+	RebuildNativeTypeToScriptingClass (63ms)
+	initialDomainReloadingComplete (108ms)
+	LoadAllAssembliesAndSetupDomain (319ms)
+		LoadAssemblies (288ms)
+		TypeCache.Refresh (6ms)
+		AnalyzeDomain (11ms)
+			ResolveRequiredComponents (8ms)
+	FinalizeReload (3270ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (3ms)
+			InitializePlatformSupportModulesInManaged (5ms)
+			BeforeProcessingInitializeOnLoad (292ms)
+			ProcessInitializeOnLoadAttributes (167ms)
+			ProcessInitializeOnLoadMethodAttributes (80ms)
+			AfterProcessingInitializeOnLoad (19ms)
+		AwakeInstancesAfterBackupRestoration (1818ms)
+
+Asset Pipeline Refresh (id=5c84d7f3fd5b1714c8f788e644117299): Total: 5.080 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=3405 ms
+		Asset DB Callback time: managed=36 ms, native=0 ms
+		Scripting: domain reloads=1, domain reload time=1628 ms, compile time=10 ms, other=0 ms
+		Project Asset Count: scripts=137, non-scripts=51
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 5.407ms
+	ApplyChangesToAssetFolders: 0.075ms
+	Collect global state as custom dependencies: 2.762ms
+	CategorizeAssets: 1.600ms
+	CompileScripts: 9.907ms
+	ImportOutOfDateAssets: 3271.748ms (3270.877ms without children)
+		UnloadImportedAssets: 0.374ms
+		ImportSchedulerStart: 0.445ms
+	PostProcessAllAssets: 36.005ms
+		MonoPostProcessAllAssets: 35.999ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 13.549ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 12.694ms
+			SyncVS.PostprocessSyncProject 2.479ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 1.582ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.616ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.545ms
+			AssetChangedListener.OnPostprocessAllAssets 0.400ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.349ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.339ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.184ms
+			AssetPostprocessor.OnPostprocessAllAssets 0.103ms
+	Untracked: 1696.071ms
+
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            2.624 ms
+	Integration:            230.704 ms
+	Integration of assets:  0.004 ms
+	Thread Wait Time:       0.017 ms
+	Total Operation Time:   233.350 ms
+[Licensing::Client] Successfully resolved entitlement details
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            2.703 ms
+	Integration:            26.881 ms
+	Integration of assets:  0.003 ms
+	Thread Wait Time:       0.016 ms
+	Total Operation Time:   29.602 ms
+Unloading 2 unused Assets / (443.6 KB). Loaded Objects now: 2317.
+Memory consumption went from 409.8 MB to 409.4 MB.
+Total: 27.999200 ms (FindLiveObjects: 0.397300 ms CreateObjectMapping: 0.038100 ms MarkObjects: 27.327100 ms  DeleteObjects: 0.040900 ms)
+
+Asset Pipeline Refresh (id=7ab739f8362793649bca2385b4ed43a1): Total: 0.022 seconds - Initiated by RefreshV2(AllowForceSynchronousImport)
+Asset Pipeline Refresh (id=39647bbb6e370d24e90680e9001256d5): Total: 0.007 seconds - Initiated by RefreshV2(AllowForceSynchronousImport)
+Reloading assemblies for play mode.
+Reloading assemblies after forced synchronous recompile.
+Begin MonoManager ReloadAssembly
+[Licensing::Client] Successfully resolved entitlement details
+Native extension for WindowsStandalone target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  3.546 seconds
+Domain Reload Profiling: 4992ms
+	BeginReloadAssembly (890ms)
+		DisableScriptedObjects (218ms)
+		CreateAndSetChildDomain (220ms)
+	RebuildCommonClasses (31ms)
+	RebuildNativeTypeToScriptingClass (74ms)
+	initialDomainReloadingComplete (112ms)
+	LoadAllAssembliesAndSetupDomain (338ms)
+		LoadAssemblies (295ms)
+		TypeCache.Refresh (6ms)
+		AnalyzeDomain (7ms)
+			ResolveRequiredComponents (4ms)
+	FinalizeReload (3548ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (3ms)
+			InitializePlatformSupportModulesInManaged (3ms)
+			BeforeProcessingInitializeOnLoad (310ms)
+			ProcessInitializeOnLoadAttributes (178ms)
+			ProcessInitializeOnLoadMethodAttributes (91ms)
+			AfterProcessingInitializeOnLoad (20ms)
+		AwakeInstancesAfterBackupRestoration (1945ms)
+
+Asset Pipeline Refresh (id=ccbf0a9b7a31a72468e1b4ff0bde9f3f): Total: 5.288 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=3718 ms
+		Asset DB Callback time: managed=38 ms, native=0 ms
+		Scripting: domain reloads=1, domain reload time=1523 ms, compile time=7 ms, other=0 ms
+		Project Asset Count: scripts=137, non-scripts=51
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 68.102ms
+	ApplyChangesToAssetFolders: 0.085ms
+	Collect global state as custom dependencies: 2.586ms
+	ProcessAssetsWithTransientArtifactChanges: 0.051ms
+	CategorizeAssets: 2.007ms
+	CompileScripts: 6.985ms
+	ImportOutOfDateAssets: 3549.532ms (3548.759ms without children)
+		UnloadImportedAssets: 0.346ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.056ms
+		ImportSchedulerStart: 0.368ms
+	PostProcessAllAssets: 38.360ms
+		MonoPostProcessAllAssets: 38.353ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 13.549ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 13.197ms
+			SyncVS.PostprocessSyncProject 2.468ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 1.560ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.604ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.577ms
+			AssetChangedListener.OnPostprocessAllAssets 0.400ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.319ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.306ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.196ms
+			AssetPostprocessor.OnPostprocessAllAssets 0.103ms
+	Untracked: 1572.677ms
+
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            0.775 ms
+	Integration:            247.010 ms
+	Integration of assets:  0.003 ms
+	Thread Wait Time:       0.027 ms
+	Total Operation Time:   247.816 ms
+[Licensing::Client] Successfully resolved entitlement details
+Asset Pipeline Refresh (id=4e8be9acdef21e043a6d7678ec5e968a): Total: 0.060 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=56d21aed82029f848ba144b03363b499): Total: 0.007 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            0.858 ms
+	Integration:            32.776 ms
+	Integration of assets:  0.004 ms
+	Thread Wait Time:       0.015 ms
+	Total Operation Time:   33.653 ms
+Unloading 2 unused Assets / (421.7 KB). Loaded Objects now: 2319.
+Memory consumption went from 416.5 MB to 416.1 MB.
+Total: 30.972200 ms (FindLiveObjects: 0.385800 ms CreateObjectMapping: 0.032100 ms MarkObjects: 30.275200 ms  DeleteObjects: 0.087600 ms)
+
+[Licensing::Client] Successfully resolved entitlement details
+Reloading assemblies for play mode.
+Reloading assemblies after forced synchronous recompile.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  4.115 seconds
+Domain Reload Profiling: 5867ms
+	BeginReloadAssembly (1092ms)
+		DisableScriptedObjects (261ms)
+		CreateAndSetChildDomain (270ms)
+	RebuildCommonClasses (28ms)
+	RebuildNativeTypeToScriptingClass (82ms)
+	initialDomainReloadingComplete (143ms)
+	LoadAllAssembliesAndSetupDomain (405ms)
+		LoadAssemblies (372ms)
+		TypeCache.Refresh (10ms)
+		AnalyzeDomain (10ms)
+			ResolveRequiredComponents (5ms)
+	FinalizeReload (4117ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (3ms)
+			InitializePlatformSupportModulesInManaged (4ms)
+			BeforeProcessingInitializeOnLoad (432ms)
+			ProcessInitializeOnLoadAttributes (237ms)
+			ProcessInitializeOnLoadMethodAttributes (99ms)
+			AfterProcessingInitializeOnLoad (44ms)
+		AwakeInstancesAfterBackupRestoration (2197ms)
+
+Asset Pipeline Refresh (id=29377ee7ac570484ba896ed8783abf54): Total: 6.137 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=4240 ms
+		Asset DB Callback time: managed=49 ms, native=0 ms
+		Scripting: domain reloads=1, domain reload time=1840 ms, compile time=6 ms, other=0 ms
+		Project Asset Count: scripts=137, non-scripts=51
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 3.311ms
+	ApplyChangesToAssetFolders: 0.075ms
+	Collect global state as custom dependencies: 16.338ms
+	ProcessAssetsWithTransientArtifactChanges: 0.053ms
+	CategorizeAssets: 4.558ms
+	CompileScripts: 5.584ms
+	ImportOutOfDateAssets: 4118.800ms (4117.819ms without children)
+		UnloadImportedAssets: 0.561ms
+		ImportSchedulerStart: 0.367ms
+	PostProcessAllAssets: 49.162ms
+		MonoPostProcessAllAssets: 49.155ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 23.172ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 13.549ms
+			SyncVS.PostprocessSyncProject 2.831ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 1.666ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 1.136ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.714ms
+			AssetChangedListener.OnPostprocessAllAssets 0.400ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.318ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.283ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.197ms
+			AssetPostprocessor.OnPostprocessAllAssets 0.103ms
+	Untracked: 1896.197ms
+
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            2.127 ms
+	Integration:            271.751 ms
+	Integration of assets:  0.003 ms
+	Thread Wait Time:       0.010 ms
+	Total Operation Time:   273.892 ms
+[Licensing::Client] Successfully resolved entitlement details
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            0.716 ms
+	Integration:            76.817 ms
+	Integration of assets:  0.004 ms
+	Thread Wait Time:       0.017 ms
+	Total Operation Time:   77.553 ms
+Unloading 2 unused Assets / (17.8 KB). Loaded Objects now: 2321.
+Memory consumption went from 422.9 MB to 422.9 MB.
+Total: 51.072200 ms (FindLiveObjects: 0.392600 ms CreateObjectMapping: 0.031600 ms MarkObjects: 50.377500 ms  DeleteObjects: 0.051500 ms)
+
+Asset Pipeline Refresh (id=a60597283e9a665438f9e81d3128d477): Total: 0.021 seconds - Initiated by RefreshV2(AllowForceSynchronousImport)
+Asset Pipeline Refresh (id=4c858f74861244d45a0a41e477788259): Total: 0.006 seconds - Initiated by RefreshV2(AllowForceSynchronousImport)
+Reloading assemblies for play mode.
+Reloading assemblies after forced synchronous recompile.
+Begin MonoManager ReloadAssembly
+[Licensing::Client] Successfully resolved entitlement details
+Native extension for WindowsStandalone target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+Scripting: successfully reloaded assembly
+- Finished resetting the current domain, in  3.809 seconds
+Domain Reload Profiling: 5492ms
+	BeginReloadAssembly (1038ms)
+		DisableScriptedObjects (275ms)
+		CreateAndSetChildDomain (254ms)
+	RebuildCommonClasses (27ms)
+	RebuildNativeTypeToScriptingClass (77ms)
+	initialDomainReloadingComplete (133ms)
+	LoadAllAssembliesAndSetupDomain (405ms)
+		LoadAssemblies (344ms)
+		TypeCache.Refresh (9ms)
+		AnalyzeDomain (7ms)
+			ResolveRequiredComponents (4ms)
+	FinalizeReload (3811ms)
+		SetupLoadedEditorAssemblies (0ms)
+			LogAssemblyErrors (5ms)
+			InitializePlatformSupportModulesInManaged (8ms)
+			BeforeProcessingInitializeOnLoad (326ms)
+			ProcessInitializeOnLoadAttributes (204ms)
+			ProcessInitializeOnLoadMethodAttributes (85ms)
+			AfterProcessingInitializeOnLoad (37ms)
+		AwakeInstancesAfterBackupRestoration (2084ms)
+
+Asset Pipeline Refresh (id=d50e42068eb4f414484121b28e83c95b): Total: 5.818 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=3910 ms
+		Asset DB Callback time: managed=52 ms, native=0 ms
+		Scripting: domain reloads=1, domain reload time=1844 ms, compile time=8 ms, other=0 ms
+		Project Asset Count: scripts=137, non-scripts=51
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokePackagesCallback: 3.424ms
+	ApplyChangesToAssetFolders: 0.079ms
+	Collect global state as custom dependencies: 2.214ms
+	ProcessAssetsWithTransientArtifactChanges: 0.051ms
+	CategorizeAssets: 1.578ms
+	CompileScripts: 8.444ms
+	ImportOutOfDateAssets: 3814.616ms (3812.193ms without children)
+		UnloadImportedAssets: 0.326ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.592ms
+		ImportSchedulerStart: 0.499ms
+	PostProcessAllAssets: 52.351ms
+		MonoPostProcessAllAssets: 52.343ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 17.000ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 13.549ms
+			SyncVS.PostprocessSyncProject 2.619ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 2.602ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 2.570ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.547ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.540ms
+			AssetChangedListener.OnPostprocessAllAssets 0.400ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.331ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.292ms
+			AssetPostprocessor.OnPostprocessAllAssets 0.103ms
+	Untracked: 1906.742ms
+
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            0.945 ms
+	Integration:            272.229 ms
+	Integration of assets:  0.004 ms
+	Thread Wait Time:       0.013 ms
+	Total Operation Time:   273.192 ms
+[Licensing::Client] Successfully resolved entitlement details
+Asset Pipeline Refresh (id=3bc878671b5cac843a17f7d79ea0b605): Total: 0.021 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully updated the access token
+[Licensing::Module] Successfully updated access token: "UPLrfdSn"... (expires: 2026-09-19T04:18:49Z)
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+Asset Pipeline Refresh (id=3dd642e45ee9367468b82a48e53e5d79): Total: 0.044 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            1.252 ms
+	Integration:            123.328 ms
+	Integration of assets:  0.003 ms
+	Thread Wait Time:       0.027 ms
+	Total Operation Time:   124.610 ms
+Unloading 2 unused Assets / (54.4 KB). Loaded Objects now: 2323.
+Memory consumption went from 429.6 MB to 429.5 MB.
+Total: 45.058800 ms (FindLiveObjects: 3.852600 ms CreateObjectMapping: 0.039900 ms MarkObjects: 40.843300 ms  DeleteObjects: 0.128000 ms)
+
+[Licensing::Client] Successfully resolved entitlement details
+AcceleratorClientConnectionCallback - disconnected - :0
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+[Licensing::Client] Successfully resolved entitlement details
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.1f1-x86_64\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/Users/TONECOS/Documents/github/HORDAX-game
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.1f1-x86_64\Editor\Data\DotNetSdk\dotnet.exe "C:\Program Files\Unity\Hub\Editor\6000.6.1f1-x86_64\Editor\Data\Tools\BuildPipeline\ScriptCompilationBuildProgram.exe" "Library/Bee/1900b0aE.dag.json" "Library/Bee/1900b0aE-inputdata.json" "Library\Bee\buildprogram0.traceevents"
+WorkingDir: C:/Users/TONECOS/Documents/github/HORDAX-game
+ExitCode: 4 Duration: 2s373ms
+Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1900b0aE-inputdata.json
+[201/247    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+*** Tundra requires additional run (1.19 seconds), 1 items updated, 200 evaluated
+ExitCode: 0 Duration: 13s
+Starting: C:\Program Files\Unity\Hub\Editor\6000.6.1f1-x86_64\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --dagfilejson="Library\Bee\1900b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
+WorkingDir: C:/Users/TONECOS/Documents/github/HORDAX-game
+ExitCode: 3 Duration: 19s
+Finished compiling graph: 250 nodes, 1864 flattened edges (1732 ToBuild, 16 ToUse), maximum node priority 135
+[194/247    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.rsp
+[196/247    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.rsp
+[204/247    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[BUSY       6s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll (+2 others)
+[BUSY      16s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll (+2 others)
+[239/247   18s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll (+2 others)
+##### CommandLine
+"C:\Program Files\Unity\Hub\Editor\6000.6.1f1-x86_64\Editor\Data\DotNetSdk\dotnet.exe" exec "C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/DotNetSdk/sdk/8.0.318/Roslyn/bincore/csc.dll" /nostdlib /noconfig /shared "@Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.rsp" "@Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.rsp2"
+##### Contents of Library\Bee\artifacts\1900b0aE.dag\Assembly-CSharp.rsp
+-target:library
+-out:"Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll"
+-refout:"Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.ref.dll"
+-define:UNITY_6000_6_1
+-define:UNITY_6000_6
+-define:UNITY_6000
+-define:UNITY_5_3_OR_NEWER
+-define:UNITY_5_4_OR_NEWER
+-define:UNITY_5_5_OR_NEWER
+-define:UNITY_5_6_OR_NEWER
+-define:UNITY_2017_1_OR_NEWER
+-define:UNITY_2017_2_OR_NEWER
+-define:UNITY_2017_3_OR_NEWER
+-define:UNITY_2017_4_OR_NEWER
+-define:UNITY_2018_1_OR_NEWER
+-define:UNITY_2018_2_OR_NEWER
+-define:UNITY_2018_3_OR_NEWER
+-define:UNITY_2018_4_OR_NEWER
+-define:UNITY_2019_1_OR_NEWER
+-define:UNITY_2019_2_OR_NEWER
+-define:UNITY_2019_3_OR_NEWER
+-define:UNITY_2019_4_OR_NEWER
+-define:UNITY_2020_1_OR_NEWER
+-define:UNITY_2020_2_OR_NEWER
+-define:UNITY_2020_3_OR_NEWER
+-define:UNITY_2021_1_OR_NEWER
+-define:UNITY_2021_2_OR_NEWER
+-define:UNITY_2021_3_OR_NEWER
+-define:UNITY_2022_1_OR_NEWER
+-define:UNITY_2022_2_OR_NEWER
+-define:UNITY_2022_3_OR_NEWER
+-define:UNITY_2023_1_OR_NEWER
+-define:UNITY_2023_2_OR_NEWER
+-define:UNITY_2023_3_OR_NEWER
+-define:UNITY_6000_0_OR_NEWER
+-define:UNITY_6000_1_OR_NEWER
+-define:UNITY_6000_2_OR_NEWER
+-define:UNITY_6000_3_OR_NEWER
+-define:UNITY_6000_4_OR_NEWER
+-define:UNITY_6000_5_OR_NEWER
+-define:UNITY_6000_6_OR_NEWER
+-define:PLATFORM_ARCH_64
+-define:UNITY_64
+-define:UNITY_INCLUDE_TESTS
+-define:ENABLE_AR
+-define:ENABLE_AUDIO
+-define:ENABLE_AUDIO_SCRIPTABLE_PIPELINE
+-define:ENABLE_BURST
+-define:ENABLE_CACHING
+-define:ENABLE_CLOTH
+-define:ENABLE_EVENT_QUEUE
+-define:ENABLE_MICROPHONE
+-define:ENABLE_MULTIPLE_DISPLAYS
+-define:ENABLE_PHYSICS
+-define:ENABLE_TEXTURE_STREAMING
+-define:ENABLE_VIRTUALTEXTURING
+-define:ENABLE_LZMA
+-define:ENABLE_UNITYEVENTS
+-define:ENABLE_VR
+-define:ENABLE_WEBCAM
+-define:ENABLE_UNITYWEBREQUEST
+-define:ENABLE_WWW
+-define:ENABLE_CLOUD_SERVICES
+-define:ENABLE_CLOUD_SERVICES_ADS
+-define:ENABLE_CLOUD_SERVICES_USE_WEBREQUEST
+-define:ENABLE_UNITY_CONSENT
+-define:ENABLE_UNITY_CLOUD_IDENTIFIERS
+-define:ENABLE_CLOUD_SERVICES_CRASH_REPORTING
+-define:ENABLE_CLOUD_SERVICES_NATIVE_CRASH_REPORTING
+-define:ENABLE_CLOUD_SERVICES_PURCHASING
+-define:ENABLE_CLOUD_SERVICES_ANALYTICS
+-define:ENABLE_CLOUD_SERVICES_BUILD
+-define:ENABLE_EDITOR_GAME_SERVICES
+-define:ENABLE_UNITY_GAME_SERVICES_ANALYTICS_SUPPORT
+-define:ENABLE_CLOUD_LICENSE
+-define:ENABLE_EDITOR_HUB_LICENSE
+-define:ENABLE_WEBSOCKET_CLIENT
+-define:ENABLE_GENERATE_NATIVE_PLUGINS_FOR_ASSEMBLIES_API
+-define:ENABLE_DIRECTOR_AUDIO
+-define:ENABLE_DIRECTOR_TEXTURE
+-define:ENABLE_MANAGED_JOBS
+-define:ENABLE_MANAGED_TRANSFORM_JOBS
+-define:ENABLE_MANAGED_ANIMATION_JOBS
+-define:ENABLE_MANAGED_AUDIO_JOBS
+-define:ENABLE_MANAGED_UNITYTLS
+-define:INCLUDE_DYNAMIC_GI
+-define:ENABLE_SCRIPTING_GC_WBARRIERS
+-define:PLATFORM_SUPPORTS_MONO
+-define:RENDER_SOFTWARE_CURSOR
+-define:ENABLE_MARSHALLING_TESTS
+-define:ENABLE_VIDEO
+-define:ENABLE_NAVIGATION_OFFMESHLINK_TO_NAVMESHLINK
+-define:ENABLE_ACCELERATOR_CLIENT_DEBUGGING
+-define:ENABLE_ACCESSIBILITY_SCREEN_READER
+-define:TEXTCORE_1_0_OR_NEWER
+-define:EDITOR_ONLY_NAVMESH_BUILDER_DEPRECATED
+-define:INCLUDE_UNIFIED_RAYTRACING_COMPUTE_BACKEND
+-define:INCLUDE_UNIFIED_RAYTRACING_HARDWARE_BACKEND
+-define:PLATFORM_STANDALONE_WIN
+-define:PLATFORM_STANDALONE
+-define:UNITY_STANDALONE_WIN
+-define:UNITY_STANDALONE
+-define:ENABLE_RUNTIME_GI
+-define:ENABLE_MOVIES
+-define:ENABLE_NETWORK
+-define:ENABLE_NVIDIA
+-define:ENABLE_AMD
+-define:ENABLE_CRUNCH_TEXTURE_COMPRESSION
+-define:ENABLE_CLOUD_SERVICES_ENGINE_DIAGNOSTICS
+-define:ENABLE_OUT_OF_PROCESS_CRASH_HANDLER
+-define:ENABLE_CLUSTER_SYNC
+-define:ENABLE_CLUSTERINPUT
+-define:PLATFORM_UPDATES_TIME_OUTSIDE_OF_PLAYER_LOOP
+-define:GFXDEVICE_WAITFOREVENT_MESSAGEPUMP
+-define:PLATFORM_USES_EXPLICIT_MEMORY_MANAGER_INITIALIZER
+-define:PLATFORM_SUPPORTS_WAIT_FOR_PRESENTATION
+-define:PLATFORM_SUPPORTS_SPLIT_GRAPHICS_JOBS
+-define:UNITY_SUPPORTS_GRAPHICS_API_VALIDATION
+-define:PLATFORM_USES_VULKAN_OLD_SWAPCHAIN
+-define:USE_READ_ASYNC_MANAGED_API
+-define:ENABLE_MONO
+-define:NET_STANDARD_2_0
+-define:NET_STANDARD
+-define:NET_STANDARD_2_1
+-define:NETSTANDARD
+-define:NETSTANDARD2_1
+-define:ENABLE_PROFILER
+-define:UNITY_INCLUDE_INSTRUMENTATION
+-define:DEBUG
+-define:TRACE
+-define:UNITY_ASSERTIONS
+-define:UNITY_ENABLE_CHECKS
+-define:UNITY_EDITOR
+-define:UNITY_EDITOR_64
+-define:UNITY_EDITOR_WIN
+-define:ENABLE_UNITY_COLLECTIONS_CHECKS
+-define:ENABLE_BURST_AOT
+-define:UNITY_TEAM_LICENSE
+-define:ENABLE_CUSTOM_RENDER_TEXTURE
+-define:ENABLE_DIRECTOR
+-define:ENABLE_LOCALIZATION
+-define:ENABLE_SPRITES
+-define:ENABLE_TERRAIN
+-define:ENABLE_TILEMAP
+-define:ENABLE_TIMELINE
+-define:ENABLE_LEGACY_INPUT_MANAGER
+-define:TEXTCORE_FONT_ENGINE_1_5_OR_NEWER
+-define:TEXTCORE_TEXT_ENGINE_1_5_OR_NEWER
+-define:TEXTCORE_FONT_ENGINE_1_6_OR_NEWER
+-define:CSHARP_7_OR_LATER
+-define:CSHARP_7_3_OR_NEWER
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/Microsoft.Bcl.AsyncInterfaces.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/Microsoft.Extensions.DependencyInjection.Abstractions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/Microsoft.Extensions.Logging.Abstractions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/System.Collections.Immutable.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/System.Diagnostics.DiagnosticSource.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/System.IO.Hashing.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/System.Reflection.Metadata.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/System.Runtime.CompilerServices.Unsafe.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/System.Text.Encodings.Web.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/ref/System.Text.Json.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/Unity.Scripting.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.AIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.AccessibilityModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.AdaptivePerformanceModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.AnimationWindowModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.AssetComplianceModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.BuildAnalysisModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.BuildProfileModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.BurstModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.ClothModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.ContentLoadModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.CoreBusinessMetricsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.CoreModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.DeviceSimulatorModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.DiagnosticsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.EditorToolbarModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.EmbreeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.GIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.GenericRemoteModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.GraphToolkitModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.GraphViewModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.GraphicsStateCollectionSerializerModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.GridAndSnapModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.GridModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.HierarchyModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.LightingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.MathematicsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.MediaModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.MultiplayerModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.Physics2DModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.PhysicsCore2DModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.PhysicsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.PlayModeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.PresetsUIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.ProjectAuditorModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.PropertiesModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.QuickInstallModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.QuickSearchModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.SafeModeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.SceneTemplateModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.SceneViewModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.ShaderBuildSettingsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.ShaderCompilationModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.ShaderFoundryModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.ShaderPreprocessorModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.SketchUpModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.SpriteMaskModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.SpriteShapeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.SubstanceModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.SyntaxTreeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.TerrainModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.TextCoreFontEngineModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.TextCoreTextEngineModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.TextRenderingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.TilemapModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.TimelineFoundationModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.TreeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.U2DModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.UIAutomationModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.UIBuilderModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.UIElementsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.UIElementsSamplesModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.UIToolkitAuthoringModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.UmbraModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.UnityConnectModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.VFXModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.VectorGraphicsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.VideoModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.XRModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEditor.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.ARModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.AudioModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.BurstModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.ClusterInputModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.ClusterRendererModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.ContentLoadModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.CrashReportingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.DSPGraphModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.GIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.GameCenterModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.GraphicsStateCollectionSerializerModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.GridModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.HotReloadModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.IMGUIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.IdentifiersModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.InputForUIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.InputLegacyModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.InputModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.InsightsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.JSONSerializeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.LocalizationModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.ManagedKernelModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.MarshallingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.MathematicsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.MultiplayerModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.PerformanceReportingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.Physics2DModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.PhysicsBackendPhysXModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.PhysicsCore2DModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.PhysicsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.PropertiesModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.RenderAs2DModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.ScriptingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.ShaderVariantAnalyticsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.SpriteMaskModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.SpriteShapeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.StreamingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.SubstanceModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.TLSModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.TextCoreFontEngineModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.TextCoreTextEngineModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.TextRenderingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.U2DRuntimeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.UIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.UnityAnalyticsCommonModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.UnityConnectModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.UnityConsentModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.UnityCurlModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.VFXModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.VirtualTexturingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Managed/UnityEngine/UnityEngine.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/Extensions/2.0.0/System.Runtime.InteropServices.WindowsRuntime.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/System.ComponentModel.Composition.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/System.Core.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/System.Data.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/System.Drawing.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/System.IO.Compression.FileSystem.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/System.Net.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/System.Numerics.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/System.Runtime.Serialization.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/System.ServiceModel.Web.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/System.Transactions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/System.Web.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/System.Windows.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/System.Xml.Linq.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/System.Xml.Serialization.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/System.Xml.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/System.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netfx/mscorlib.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/Microsoft.Win32.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.AppContext.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Buffers.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Collections.Concurrent.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Collections.NonGeneric.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Collections.Specialized.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Collections.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.ComponentModel.EventBasedAsync.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.ComponentModel.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.ComponentModel.TypeConverter.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.ComponentModel.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Console.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Data.Common.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Diagnostics.Contracts.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Diagnostics.Debug.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Diagnostics.FileVersionInfo.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Diagnostics.Process.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Diagnostics.StackTrace.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Diagnostics.TextWriterTraceListener.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Diagnostics.Tools.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Diagnostics.TraceSource.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Diagnostics.Tracing.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Drawing.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Dynamic.Runtime.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Globalization.Calendars.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Globalization.Extensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Globalization.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.IO.Compression.ZipFile.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.IO.Compression.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.IO.FileSystem.DriveInfo.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.IO.FileSystem.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.IO.FileSystem.Watcher.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.IO.FileSystem.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.IO.IsolatedStorage.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.IO.MemoryMappedFiles.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.IO.Pipes.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.IO.UnmanagedMemoryStream.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.IO.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Linq.Expressions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Linq.Parallel.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Linq.Queryable.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Linq.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Memory.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Net.Http.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Net.NameResolution.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Net.NetworkInformation.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Net.Ping.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Net.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Net.Requests.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Net.Security.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Net.Sockets.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Net.WebHeaderCollection.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Net.WebSockets.Client.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Net.WebSockets.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Numerics.Vectors.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.ObjectModel.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Reflection.DispatchProxy.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Reflection.Emit.ILGeneration.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Reflection.Emit.Lightweight.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Reflection.Emit.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Reflection.Extensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Reflection.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Reflection.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Resources.Reader.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Resources.ResourceManager.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Resources.Writer.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Runtime.CompilerServices.VisualC.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Runtime.Extensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Runtime.Handles.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Runtime.InteropServices.RuntimeInformation.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Runtime.InteropServices.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Runtime.Numerics.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Runtime.Serialization.Formatters.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Runtime.Serialization.Json.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Runtime.Serialization.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Runtime.Serialization.Xml.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Runtime.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Security.Claims.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Security.Cryptography.Algorithms.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Security.Cryptography.Csp.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Security.Cryptography.Encoding.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Security.Cryptography.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Security.Cryptography.X509Certificates.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Security.Principal.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Security.SecureString.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Text.Encoding.Extensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Text.Encoding.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Text.RegularExpressions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Threading.Overlapped.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Threading.Tasks.Extensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Threading.Tasks.Parallel.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Threading.Tasks.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Threading.Thread.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Threading.ThreadPool.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Threading.Timer.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Threading.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.ValueTuple.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Xml.ReaderWriter.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Xml.XDocument.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Xml.XPath.XDocument.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Xml.XPath.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Xml.XmlDocument.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Xml.XmlSerializer.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/NetStandard/ref/2.1.0/netstandard.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Unity.InternalAPIEngineBridge.004.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.Editor.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.Analytics.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
+-analyzer:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/analyzers/dotnet/roslyn4.0/cs/Microsoft.Extensions.Logging.Generators.dll"
+-analyzer:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/BCLExtensions/TargetingPacks/netstandard2.1/analyzers/dotnet/roslyn4.0/cs/System.Text.Json.SourceGeneration.dll"
+-analyzer:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Tools/BuildPipeline/Unity.Analyzers.Common/Unity.Analyzers.Common.dll"
+-analyzer:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Tools/BuildPipeline/Unity.Analyzers.LongLiving/Unity.Analyzers.LongLiving.dll"
+-analyzer:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Tools/BuildPipeline/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
+-analyzer:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Tools/BuildPipeline/Unity.SourceGenerators/Unity.SourceGenerators.dll"
+-analyzer:"C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/Tools/BuildPipeline/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll"
+"Assets/HORDAX/Scripts/Camera/RunnerCamera.cs"
+"Assets/HORDAX/Scripts/Combat/Bullet.cs"
+"Assets/HORDAX/Scripts/Combat/CombatFx.cs"
+"Assets/HORDAX/Scripts/Combat/CombatFxPool.cs"
+"Assets/HORDAX/Scripts/Combat/ShootableTarget.cs"
+"Assets/HORDAX/Scripts/Combat/WeaponController.cs"
+"Assets/HORDAX/Scripts/Core/GameManager.cs"
+"Assets/HORDAX/Scripts/Core/GameSession.cs"
+"Assets/HORDAX/Scripts/Core/GameState.cs"
+"Assets/HORDAX/Scripts/Core/ProgressionService.cs"
+"Assets/HORDAX/Scripts/Data/CampaignDefinition.cs"
+"Assets/HORDAX/Scripts/Data/EnemyData.cs"
+"Assets/HORDAX/Scripts/Data/EnemyRank.cs"
+"Assets/HORDAX/Scripts/Data/LevelDefinition.cs"
+"Assets/HORDAX/Scripts/Data/PermanentUpgradeDefinition.cs"
+"Assets/HORDAX/Scripts/Data/PermanentUpgradeType.cs"
+"Assets/HORDAX/Scripts/Data/WeaponArchetype.cs"
+"Assets/HORDAX/Scripts/Data/WeaponData.cs"
+"Assets/HORDAX/Scripts/Data/WeaponModifierData.cs"
+"Assets/HORDAX/Scripts/Data/WeaponRarity.cs"
+"Assets/HORDAX/Scripts/Data/WeaponUnlockDefinition.cs"
+"Assets/HORDAX/Scripts/Enemies/EnemyAgent.cs"
+"Assets/HORDAX/Scripts/Enemies/EnemyPool.cs"
+"Assets/HORDAX/Scripts/Enemies/HordeSpawner.cs"
+"Assets/HORDAX/Scripts/Player/PlayerHealth.cs"
+"Assets/HORDAX/Scripts/Player/RunnerController.cs"
+"Assets/HORDAX/Scripts/Prototype/PrototypeArmoryCatalog.cs"
+"Assets/HORDAX/Scripts/Prototype/PrototypeBootstrap.cs"
+"Assets/HORDAX/Scripts/Prototype/PrototypeCampaignFactory.cs"
+"Assets/HORDAX/Scripts/Prototype/PrototypeMaterials.cs"
+"Assets/HORDAX/Scripts/Prototype/PrototypeUpgradeCatalog.cs"
+"Assets/HORDAX/Scripts/Prototype/PrototypeWeaponView.cs"
+"Assets/HORDAX/Scripts/UI/HudController.cs"
+"Assets/HORDAX/Scripts/UI/MetaMenuController.cs"
+"Assets/HORDAX/Scripts/World/DamageGate.cs"
+"Assets/HORDAX/Scripts/World/FinishZone.cs"
+"Assets/HORDAX/Scripts/World/HazardZone.cs"
+"Assets/HORDAX/Scripts/World/HealPickup.cs"
+"Assets/HORDAX/Scripts/World/RewardPickup.cs"
+"Assets/HORDAX/Scripts/World/TrackLayout.cs"
+"Assets/HORDAX/Scripts/World/UpgradePickup.cs"
+"Assets/HORDAX/Scripts/World/WeaponPickup.cs"
+-langversion:9.0
+/deterministic
+/optimize+
+/debug:portable
+/nologo
+/RuntimeMetadataVersion:v4.0.30319
+/nowarn:0169
+/nowarn:0649
+/nowarn:0282
+/nowarn:1701
+/nowarn:1702
+/utf8output
+/preferreduilang:en-US
+/additionalfile:"Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.UnityAdditionalFile.txt"
+##### Custom Environment Variables
+DOTNET_HOST_PATH=C:\Program Files\Unity\Hub\Editor\6000.6.1f1-x86_64\Editor\Data\DotNetSdk\dotnet.exe
+DOTNET_MULTILEVEL_LOOKUP=0
+##### ExitCode
+1
+##### Output
+Assets\HORDAX\Scripts\Core\ProgressionService.cs(65,43): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\HORDAX\Scripts\UI\MetaMenuController.cs(41,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\HORDAX\Scripts\Enemies\HordeSpawner.cs(70,42): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\HORDAX\Scripts\Enemies\HordeSpawner.cs(71,20): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\HORDAX\Scripts\Prototype\PrototypeBootstrap.cs(24,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\HORDAX\Scripts\Enemies\EnemyAgent.cs(87,38): error CS0619: 'Object.GetInstanceID()' is obsolete: 'Use GetEntityId instead.'
+
+Assets\HORDAX\Scripts\Enemies\EnemyAgent.cs(110,42): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\HORDAX\Scripts\Prototype\PrototypeBootstrap.cs(292,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\HORDAX\Scripts\UI\HudController.cs(318,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+*** Tundra build failed (19.16 seconds), 4 items updated, 247 evaluated## Script Compilation Error for: Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll (+2 others)
+## CmdLine: "C:\Program Files\Unity\Hub\Editor\6000.6.1f1-x86_64\Editor\Data\DotNetSdk\dotnet.exe" exec "C:/Program Files/Unity/Hub/Editor/6000.6.1f1-x86_64/Editor/Data/DotNetSdk/sdk/8.0.318/Roslyn/bincore/csc.dll" /nostdlib /noconfig /shared "@Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.rsp" "@Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.rsp2"
+## Output:
+Assets\HORDAX\Scripts\Core\ProgressionService.cs(65,43): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\HORDAX\Scripts\UI\MetaMenuController.cs(41,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\HORDAX\Scripts\Enemies\HordeSpawner.cs(70,42): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\HORDAX\Scripts\Enemies\HordeSpawner.cs(71,20): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\HORDAX\Scripts\Prototype\PrototypeBootstrap.cs(24,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\HORDAX\Scripts\Enemies\EnemyAgent.cs(87,38): error CS0619: 'Object.GetInstanceID()' is obsolete: 'Use GetEntityId instead.'
+Assets\HORDAX\Scripts\Enemies\EnemyAgent.cs(110,42): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\HORDAX\Scripts\Prototype\PrototypeBootstrap.cs(292,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\HORDAX\Scripts\UI\HudController.cs(318,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+
+Total cache size 3352940
+Total cache size after purge 3352940, took 00:00:00.3561772
+Assets\HORDAX\Scripts\Core\ProgressionService.cs(65,43): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\HORDAX\Scripts\UI\MetaMenuController.cs(41,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\HORDAX\Scripts\Enemies\HordeSpawner.cs(70,42): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\HORDAX\Scripts\Enemies\HordeSpawner.cs(71,20): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\HORDAX\Scripts\Prototype\PrototypeBootstrap.cs(24,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\HORDAX\Scripts\Enemies\EnemyAgent.cs(87,38): error CS0619: 'Object.GetInstanceID()' is obsolete: 'Use GetEntityId instead.'
+Assets\HORDAX\Scripts\Enemies\EnemyAgent.cs(110,42): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\HORDAX\Scripts\Prototype\PrototypeBootstrap.cs(292,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\HORDAX\Scripts\UI\HudController.cs(318,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Importing 'GUID: 0000000000000000b000000000000000 - Path: ProjectSettings/EditorBuildSettings.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 0000000000000000b000000000000000' -> (Import Result ID: 'f594a42ced62a8e3aa30b32df92fc80c') in 0.180 seconds [static dependencies only]. Details - ImportResultOutputID=0a89a5c5f492143e0fa186859e17ba6f DependenciesID=94a6017707ffe434014d4a5112152437 StaticDependenciesID=1247f036b627c056822e8e19debaefbf 
+
+Asset Pipeline Refresh (id=e8871c75915af0140a338e27f516f792): Total: 43.831 seconds - Initiated by RefreshV2(AllowForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=1 (actual=1, local cache=0, cache server=0)
+		Asset DB Process Time: managed=3 ms, native=1988 ms
+		Asset DB Callback time: managed=110 ms, native=243 ms
+		Scripting: domain reloads=0, domain reload time=0 ms, compile time=41485 ms, other=0 ms
+		Project Asset Count: scripts=136, non-scripts=50
+		Asset File Changes: new=3, changed=23, moved=0, deleted=2
+		Scan Filter Count: 0
+	InvokePackagesCallback: 3.234ms
+	ApplyChangesToAssetFolders: 0.086ms
+	Scan: 705.726ms
+	Collect global state as custom dependencies: 79.694ms
+	OnSourceAssetsModified: 3.724ms
+	CategorizeScriptCompilationAssets: 0.593ms
+	ProcessAssetsWithTransientArtifactChanges: 369.599ms
+	CategorizeAssets: 0.419ms
+	CompileScripts: 41484.551ms
+	ImportOutOfDateAssets: 479.199ms (0.093ms without children)
+		ImportManagerImport: 477.670ms (1.926ms without children)
+		UnloadImportedAssets: 0.176ms
+		ImportSchedulerStart: 1.213ms
+	PostProcessAllAssets: 343.360ms
+		PostProcessCallbackCreateDeferredMaterials 82.175ms
+		UnityScenesPostprocess 50.765ms
+		PostprocessAssetsUpdateCachedIcon 27.373ms
+		VersionControlSettings.HiddenFilePostprocess 0.323ms
+		ShaderAssetModifiedCallback 0.181ms
+		RaytracingShaderImportPostprocess 0.050ms
+		MonoPostProcessAllAssets: 102.016ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 67.007ms
+			AssetChangedListener.OnPostprocessAllAssets 12.957ms
+			AssetPostprocessor.OnPostprocessAllAssets 8.923ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 2.476ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 1.674ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 1.528ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 1.235ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.989ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.926ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 0.683ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.562ms
+			AssetEvents.OnPostprocessAllAssets 0.519ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.336ms
+			ThemePostprocessor.OnPostprocessAllAssets 0.291ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.259ms
+			SyncVS.PostprocessSyncProject 0.211ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 0.060ms
+	PostAssetChangesProfiler: 5.729ms
+	PersistCurrentRevisions: 0.135ms
+	Untracked: 272.411ms
+
+[Licensing::Client] Successfully resolved entitlement details
+Asset Pipeline Refresh (id=999b7290238971b409e8a56a571f832b): Total: 0.015 seconds - Initiated by RefreshV2(AllowForceSynchronousImport)
+Asset Pipeline Refresh (id=4869bfa2f26cfbd4da385ff0cc434fe1): Total: 0.008 seconds - Initiated by RefreshV2(AllowForceSynchronousImport)
+
+---- ASSET DATABASE / PACKAGE HINTS ----
+{
+  "dependencies": {
+    "com.unity.modules.jsonserialize": "1.0.0",
+    "com.unity.ugui": "2.0.0"
+  }
+}
+
+---- RECENT C# FILES ----
+
+FullName                                                                                                  LastWriteTime
+--------                                                                                                  -------------
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\World\TrackLayout.cs                  18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\UI\MetaMenuController.cs              18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\UI\HudController.cs                   18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Prototype\PrototypeWeaponView.cs      18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Prototype\PrototypeMaterials.cs       18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Prototype\PrototypeBootstrap.cs       18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Prototype\PrototypeArmoryCatalog.cs   18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Player\RunnerController.cs            18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Player\PlayerHealth.cs                18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Enemies\HordeSpawner.cs               18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Enemies\EnemyPool.cs                  18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Enemies\EnemyAgent.cs                 18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Data\WeaponData.cs                    18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Core\ProgressionService.cs            18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Core\GameManager.cs                   18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Combat\WeaponController.cs            18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Combat\CombatFxPool.cs                18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Combat\Bullet.cs                      18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Camera\RunnerCamera.cs                18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\RemoteAutoSync.cs                      18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\ProjectValidator.cs                    18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\AutomationCapture.cs                   18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\PrototypeSceneGenerator.cs             18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Editor\FrontEndSceneGenerator.cs              18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\World\FinishZone.cs                   18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\World\HazardZone.cs                   18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\World\RewardPickup.cs                 18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\World\WeaponPickup.cs                 18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\World\HealPickup.cs                   18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\World\DamageGate.cs                   18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Prototype\PrototypeCampaignFactory.cs 18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Prototype\PrototypeUpgradeCatalog.cs  18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Data\WeaponUnlockDefinition.cs        18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Data\WeaponModifierData.cs            18/09/2026...
+C:\Users\TONECOS\Documents\github\HORDAX-game\Assets\HORDAX\Scripts\Data\WeaponRarity.cs                  18/09/2026...
+
+
+
