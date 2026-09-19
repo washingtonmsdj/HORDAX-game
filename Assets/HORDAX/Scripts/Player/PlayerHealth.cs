@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using HORDAX.Core;
 
@@ -8,6 +9,8 @@ namespace HORDAX.Player
         [SerializeField] private float maxHealth = 100f;
 
         private float baseMaxHealth;
+
+        public event Action<float> Damaged;
 
         public float MaxHealth => maxHealth;
         public float CurrentHealth { get; private set; }
@@ -31,6 +34,8 @@ namespace HORDAX.Player
             if (amount <= 0f || CurrentHealth <= 0f) return;
 
             CurrentHealth = Mathf.Max(0f, CurrentHealth - amount);
+            Damaged?.Invoke(amount);
+
             if (CurrentHealth <= 0f && GameManager.Instance != null)
                 GameManager.Instance.Lose();
         }
