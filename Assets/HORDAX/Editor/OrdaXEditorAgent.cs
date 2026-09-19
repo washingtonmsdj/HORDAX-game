@@ -16,7 +16,7 @@ namespace HORDAX.EditorTools
     [InitializeOnLoad]
     public static class OrdaXEditorAgent
     {
-        private const string ProtocolVersion = "1";
+        private const string ProtocolVersion = "3";
         private const string PrototypeScenePath = "Assets/HORDAX/Scenes/Prototype.unity";
         private const string CaptureActiveKey = "HORDAX_ORDAX_AGENT_CAPTURE_ACTIVE";
         private const string CaptureExitPendingKey = "HORDAX_ORDAX_AGENT_CAPTURE_EXIT_PENDING";
@@ -187,6 +187,10 @@ namespace HORDAX.EditorTools
                         WriteResponse(command, true, "Unity Editor companion ready");
                         break;
 
+                    case "refresh":
+                        RefreshAssets(command);
+                        break;
+
                     case "validate":
                         Validate(command);
                         break;
@@ -238,6 +242,21 @@ namespace HORDAX.EditorTools
                 else
                     Debug.LogException(error);
             }
+        }
+
+        private static void RefreshAssets(AgentCommand command)
+        {
+            if (EditorApplication.isCompiling || EditorApplication.isUpdating)
+            {
+                WriteResponse(command, false, "Unity Editor is compiling or importing.");
+                return;
+            }
+
+            // ForceSynchronousImport can trigger a domain reload. Persist the ACK
+            // first; the OrdaX controller waits for the next fresh presence after
+            // the refresh cycle before declaring the Editor settled.
+            WriteResponse(command, true, "Asset refresh requested.");
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
         }
 
         private static void Validate(AgentCommand command)
