@@ -173,6 +173,7 @@ namespace HORDAX.EditorTools
                 activeEnemies = enemies.Length,
                 activeElites = elites,
                 activeBosses = bosses,
+                enemyBreaches = GameManager.Instance != null ? GameManager.Instance.EnemyBreaches : 0,
                 arsenalLaneCenterX = TrackLayout.ArsenalCenterX,
                 hordeLaneCenterX = TrackLayout.HordeCenterX,
                 laneHalfWidth = TrackLayout.LaneHalfWidth
@@ -194,6 +195,7 @@ namespace HORDAX.EditorTools
             public int activeEnemies;
             public int activeElites;
             public int activeBosses;
+            public int enemyBreaches;
             public float arsenalLaneCenterX;
             public float hordeLaneCenterX;
             public float laneHalfWidth;
