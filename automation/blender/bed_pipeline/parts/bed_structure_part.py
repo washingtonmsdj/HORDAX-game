@@ -31,35 +31,6 @@ REAR_POST_H=TOTAL_H
 RAIL_Z=0.37
 
 
-def _tapered_square_post(collection,name,role,location,height,mat,bottom=0.072,top=0.055):
-    z0=-height/2
-    z1=height/2
-    verts=[
-        (-bottom/2,-bottom/2,z0),(bottom/2,-bottom/2,z0),
-        (bottom/2,bottom/2,z0),(-bottom/2,bottom/2,z0),
-        (-top/2,-top/2,z1),(top/2,-top/2,z1),
-        (top/2,top/2,z1),(-top/2,top/2,z1),
-    ]
-    faces=[(0,1,2,3),(4,7,6,5),(0,4,5,1),(1,5,6,2),(2,6,7,3),(3,7,4,0)]
-    mesh=bpy.data.meshes.new(name+"_Mesh")
-    mesh.from_pydata(verts,[],faces)
-    mesh.update()
-    obj=bpy.data.objects.new(name,mesh)
-    obj.location=location
-    collection.objects.link(obj)
-    obj.data.materials.append(mat)
-    bev=obj.modifiers.new("Soft wood edges","BEVEL")
-    bev.width=0.009
-    bev.segments=4
-    obj["ordax_asset"]="single_bed_reference"
-    obj["ordax_component"]="bed_structure"
-    obj["ordax_role"]=role
-    obj["ordax_object_id"]=f"single_bed_reference:bed_structure:{role}:{name}"
-    obj["ordax_standard_version"]=1
-    obj["ordax_is_bed_leg"]=True
-    return obj
-
-
 def build(*,export=True):
     col=ensure_collection(COLLECTION,clear=True)
     walnut=wood_material("ORDAX_MAT_Walnut")
@@ -72,19 +43,23 @@ def build(*,export=True):
 
     # FRONT: two short legs.
     for idx,x in enumerate((-0.46,0.46)):
-        _tapered_square_post(
-            col,f"ORDAX_PART_Bed_FrontLeg_{idx}","front_leg",
-            (x,-0.93,FRONT_LEG_H/2),FRONT_LEG_H,dark,
-            bottom=0.075,top=0.055,
+        leg=add_cube(
+            col,f"PART_Bed_FrontLeg_{idx}","bed_structure","front_leg",
+            (x,-0.93,FRONT_LEG_H/2),(0.070,0.070,FRONT_LEG_H),
+            dark,bevel=0.010,segments=4,
         )
+        leg["ordax_is_bed_leg"]=True
+        leg["ordax_object_id"]=f"single_bed_reference:bed_structure:front_leg:{idx}"
 
-    # REAR: exactly two legs, each continues upward as the headboard post.
+    # REAR: exactly two legs, each is also the headboard post.
     for idx,x in enumerate((-0.515,0.515)):
-        _tapered_square_post(
-            col,f"ORDAX_PART_Bed_RearPostLeg_{idx}","rear_post_leg",
-            (x,0.985,REAR_POST_H/2),REAR_POST_H,walnut,
-            bottom=0.075,top=0.060,
+        leg=add_cube(
+            col,f"PART_Bed_RearPostLeg_{idx}","bed_structure","rear_post_leg",
+            (x,0.985,REAR_POST_H/2),(0.070,0.080,REAR_POST_H),
+            walnut,bevel=0.010,segments=4,
         )
+        leg["ordax_is_bed_leg"]=True
+        leg["ordax_object_id"]=f"single_bed_reference:bed_structure:rear_post_leg:{idx}"
 
     # Main rigid bed frame.
     add_cube(col,"PART_Bed_Left_Rail","bed_structure","left_rail",
@@ -121,7 +96,7 @@ def build(*,export=True):
         panel["ordax_object_id"]=f"single_bed_reference:bed_structure:headboard_channel:{index}"
 
     report=validate_bed_structure(
-        col,width=1.09,length=FRAME_L,height=TOTAL_H,channels=CHANNELS
+        col,width=1.065,length=FRAME_L,height=TOTAL_H,channels=CHANNELS
     )
     if export:
         export_collection(col,PART_ID,report,metadata={
