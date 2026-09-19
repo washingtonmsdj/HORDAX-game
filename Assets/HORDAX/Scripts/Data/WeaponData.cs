@@ -43,5 +43,38 @@ namespace HORDAX.Data
         public IReadOnlyList<WeaponModifierData> Modifiers => modifiers ?? (modifiers = new List<WeaponModifierData>());
         public GameObject VisualPrefab => visualPrefab;
         public GameObject BulletPrefab => bulletPrefab;
+
+        public void ConfigureRuntime(
+            string id,
+            string label,
+            WeaponArchetype type,
+            WeaponRarity weaponRarity,
+            float baseDamage,
+            float roundsPerSecond,
+            float weaponRange,
+            float projectileSpeed,
+            int pellets,
+            float spread,
+            float recoil,
+            float bulletScale,
+            GameObject visual = null,
+            GameObject projectile = null)
+        {
+            weaponId = string.IsNullOrWhiteSpace(id) ? type.ToString().ToLowerInvariant() : id;
+            displayName = string.IsNullOrWhiteSpace(label) ? type.ToString() : label;
+            archetype = type;
+            rarity = weaponRarity;
+            damage = Mathf.Max(0.1f, baseDamage);
+            fireRate = Mathf.Max(0.1f, roundsPerSecond);
+            range = Mathf.Max(1f, weaponRange);
+            bulletSpeed = Mathf.Max(1f, projectileSpeed);
+            projectilesPerShot = Mathf.Max(1, pellets);
+            spreadDegrees = Mathf.Max(0f, spread);
+            recoilKick = Mathf.Max(0f, recoil);
+            projectileScale = Mathf.Max(0.1f, bulletScale);
+            visualPrefab = visual;
+            bulletPrefab = projectile;
+            modifiers = modifiers ?? new List<WeaponModifierData>();
+        }
     }
 }
