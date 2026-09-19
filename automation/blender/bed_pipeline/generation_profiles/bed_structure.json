@@ -3,7 +3,7 @@
   "component": "bed_structure",
   "script_path": "automation/blender/bed_pipeline/parts/bed_structure_part.py",
   "label": "bed-structure-ordax-060",
-  "save_target_path": "Artifacts/Blender/bed_structure_generation_pass_060.blend",
+  "save_target_path": "Artifacts/Blender/bed_structure_generation_pass_061_validated.blend",
   "max_objects": 180,
   "capture": true,
   "capture_required": true,
@@ -57,5 +57,6 @@
     "viewport_capture",
     "managed_checkpoint",
     "final_blend_save"
-  ]
+  ],
+  "reset_scene": true
 }
