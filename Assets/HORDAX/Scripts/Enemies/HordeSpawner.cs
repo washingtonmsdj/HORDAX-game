@@ -21,7 +21,8 @@ namespace HORDAX.Enemies
         [SerializeField] private float laneCenterX;
         [SerializeField] private float laneHalfWidth = 2.75f;
         [SerializeField] private bool constrainToLane;
-        [SerializeField, Min(1)] private int spawnPerFrame = 24;
+        [SerializeField, Min(1)] private int spawnPerBatch = 6;
+        [SerializeField, Min(0.01f)] private float spawnInterval = 0.045f;
         [SerializeField] private EnemyData enemyData;
         [SerializeField] private GameObject enemyPrefab;
 
@@ -29,6 +30,7 @@ namespace HORDAX.Enemies
         private EnemyPool pool;
         private bool activated;
         private int spawnedCount;
+        private float spawnTimer;
 
         public void Configure(
             RunnerController runner,
@@ -83,14 +85,19 @@ namespace HORDAX.Enemies
             {
                 if (player.transform.position.z < transform.position.z - activationDistance) return;
                 activated = true;
+                spawnTimer = 0f;
             }
 
+            spawnTimer -= Time.deltaTime;
+            if (spawnTimer > 0f) return;
+
             SpawnBatch();
+            spawnTimer = spawnInterval;
         }
 
         private void SpawnBatch()
         {
-            int batchEnd = Mathf.Min(count, spawnedCount + Mathf.Max(1, spawnPerFrame));
+            int batchEnd = Mathf.Min(count, spawnedCount + Mathf.Max(1, spawnPerBatch));
             for (; spawnedCount < batchEnd; spawnedCount++)
                 SpawnOne(spawnedCount);
         }
