@@ -1,0 +1,54 @@
+{
+  "asset": "single_bed_reference",
+  "standard_version": 1,
+  "units": "METERS",
+  "origin": [
+    0,
+    -10,
+    0
+  ],
+  "dimensions": {
+    "mattress_width": 0.88,
+    "mattress_length": 1.88,
+    "mattress_height": 0.3,
+    "frame_width": 1.02,
+    "frame_length": 2.02,
+    "headboard_height": 2.1,
+    "headboard_channels": 8
+  },
+  "tolerances": {
+    "dimension_relative": 0.04,
+    "penetration_m": 0.008,
+    "contact_clearance_m": 0.003
+  },
+  "components": [
+    {
+      "id": "frame",
+      "collection": "ORDAX_BED_FRAME",
+      "module": "frame.py"
+    },
+    {
+      "id": "mattress",
+      "collection": "ORDAX_BED_MATTRESS",
+      "module": "mattress.py"
+    },
+    {
+      "id": "pillows",
+      "collection": "ORDAX_BED_PILLOWS",
+      "module": "pillows.py"
+    },
+    {
+      "id": "bedding",
+      "collection": "ORDAX_BED_BEDDING",
+      "module": "bedding.py"
+    }
+  ],
+  "build_order": [
+    "frame",
+    "mattress",
+    "pillows",
+    "bedding",
+    "validate"
+  ],
+  "artifact": "Artifacts/Blender/ordax_bed_pipeline.blend"
+}
