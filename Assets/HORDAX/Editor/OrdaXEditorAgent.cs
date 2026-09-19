@@ -22,6 +22,8 @@ namespace HORDAX.EditorTools
         private const string CaptureWidthKey = "HORDAX_ORDAX_AGENT_CAPTURE_WIDTH";
         private const string CaptureHeightKey = "HORDAX_ORDAX_AGENT_CAPTURE_HEIGHT";
         private const string CaptureWarmupKey = "HORDAX_ORDAX_AGENT_CAPTURE_WARMUP";
+        private const string CaptureWarmupSecondsKey = "HORDAX_ORDAX_AGENT_CAPTURE_WARMUP_SECONDS";
+        private const string CaptureStartGameTimeKey = "HORDAX_ORDAX_AGENT_CAPTURE_START_GAME_TIME";
         private const string CaptureFrameKey = "HORDAX_ORDAX_AGENT_CAPTURE_FRAME";
         private const string CaptureTimeScaleKey = "HORDAX_ORDAX_AGENT_CAPTURE_TIME_SCALE";
 
@@ -44,6 +46,7 @@ namespace HORDAX.EditorTools
             public int width = 1280;
             public int height = 720;
             public int warmupFrames = 120;
+            public float warmupSeconds = 0f;
             public float timeScale = 1f;
         }
 
@@ -279,6 +282,8 @@ namespace HORDAX.EditorTools
             SessionState.SetInt(CaptureWidthKey, Mathf.Clamp(command.width <= 0 ? 1280 : command.width, 320, 3840));
             SessionState.SetInt(CaptureHeightKey, Mathf.Clamp(command.height <= 0 ? 720 : command.height, 180, 2160));
             SessionState.SetInt(CaptureWarmupKey, Mathf.Clamp(command.warmupFrames <= 0 ? 120 : command.warmupFrames, 1, 1200));
+            SessionState.SetFloat(CaptureWarmupSecondsKey, Mathf.Clamp(command.warmupSeconds, 0f, 180f));
+            SessionState.SetFloat(CaptureStartGameTimeKey, -1f);
             SessionState.SetInt(CaptureFrameKey, 0);
             SessionState.SetFloat(CaptureTimeScaleKey, Mathf.Clamp(command.timeScale <= 0f ? 1f : command.timeScale, 0.25f, 8f));
             SessionState.SetBool(CaptureExitPendingKey, false);
@@ -308,12 +313,28 @@ namespace HORDAX.EditorTools
 
             Time.timeScale = SessionState.GetFloat(CaptureTimeScaleKey, 1f);
 
-            int frame = SessionState.GetInt(CaptureFrameKey, 0) + 1;
-            SessionState.SetInt(CaptureFrameKey, frame);
+            float startGameTime = SessionState.GetFloat(CaptureStartGameTimeKey, -1f);
+            if (startGameTime < 0f)
+            {
+                startGameTime = Time.time;
+                SessionState.SetFloat(CaptureStartGameTimeKey, startGameTime);
+            }
 
-            int warmup = SessionState.GetInt(CaptureWarmupKey, 120);
-            if (frame < warmup)
-                return;
+            float warmupSeconds = SessionState.GetFloat(CaptureWarmupSecondsKey, 0f);
+            if (warmupSeconds > 0f)
+            {
+                if (Time.time - startGameTime < warmupSeconds)
+                    return;
+            }
+            else
+            {
+                int frame = SessionState.GetInt(CaptureFrameKey, 0) + 1;
+                SessionState.SetInt(CaptureFrameKey, frame);
+
+                int warmup = SessionState.GetInt(CaptureWarmupKey, 120);
+                if (frame < warmup)
+                    return;
+            }
 
             try
             {
