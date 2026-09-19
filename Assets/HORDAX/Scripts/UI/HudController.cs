@@ -54,7 +54,8 @@ namespace HORDAX.UI
             statsText.text =
                 $"HP {Mathf.CeilToInt(health.CurrentHealth)}   {weapon.DisplayName} [{weapon.Rarity}] LV {weapon.UpgradeLevel}   " +
                 $"DMG {weapon.Damage:0.#}   ROF {weapon.FireRate:0.#}   x{weapon.ProjectilesPerShot}\n" +
-                $"KILLS {GameManager.Instance.EnemyKills}   BOSS {GameManager.Instance.BossKills}/{GameManager.Instance.RequiredBossKills}   " +
+                $"KILLS {GameManager.Instance.EnemyKills}   LEAKS {GameManager.Instance.EnemyBreaches}   " +
+                $"BOSS {GameManager.Instance.BossKills}/{GameManager.Instance.RequiredBossKills}   " +
                 $"COINS {GameManager.Instance.RunCoins}   SCORE {GameManager.Instance.Score}";
 
             bool bossEncounter = GameManager.Instance.TryGetActiveBossBarrier(out _);
