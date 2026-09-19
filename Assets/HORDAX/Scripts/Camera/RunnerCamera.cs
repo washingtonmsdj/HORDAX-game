@@ -20,6 +20,7 @@ namespace HORDAX.CameraSystem
         private float shakeAmplitude;
         private float shakeRemaining;
         private float shakeDuration;
+        private float bossBlend;
 
         public static RunnerCamera Instance { get; private set; }
 
@@ -68,15 +69,23 @@ namespace HORDAX.CameraSystem
             bool bossEncounter = GameManager.Instance != null &&
                 GameManager.Instance.TryGetActiveBossBarrier(out _);
 
+            bossBlend = Mathf.MoveTowards(
+                bossBlend,
+                bossEncounter ? 1f : 0f,
+                Time.deltaTime * 2.4f);
+
             Vector3 dynamicOffset = offset;
             float dynamicLookAhead = lookAhead;
 
-            if (bossEncounter)
+            if (bossBlend > 0f)
             {
-                dynamicOffset.y += bossZoomOut * 0.55f;
-                dynamicOffset.z -= bossZoomOut;
-                dynamicLookAhead += bossLookAheadBonus;
-                focus.x = Mathf.Lerp(focus.x, TrackLayout.HordeCenterX, 0.22f);
+                dynamicOffset.y += bossZoomOut * 0.55f * bossBlend;
+                dynamicOffset.z -= bossZoomOut * bossBlend;
+                dynamicLookAhead += bossLookAheadBonus * bossBlend;
+                focus.x = Mathf.Lerp(
+                    focus.x,
+                    TrackLayout.HordeCenterX,
+                    0.22f * bossBlend);
             }
 
             Vector3 desired = focus + dynamicOffset;
