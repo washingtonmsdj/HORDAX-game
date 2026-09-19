@@ -126,8 +126,8 @@ namespace HORDAX.Combat
                     displayName = "SMG";
                     damage = 4f;
                     fireRate = 18f;
-                    range = 31f;
-                    bulletSpeed = 52f;
+                    range = 44f;
+                    bulletSpeed = 70f;
                     projectilesPerShot = 1;
                     spreadDegrees = 1.2f;
                     recoilKick = 0.035f;
@@ -137,8 +137,8 @@ namespace HORDAX.Combat
                     displayName = "SHOTGUN";
                     damage = 3.5f;
                     fireRate = 4.2f;
-                    range = 24f;
-                    bulletSpeed = 42f;
+                    range = 36f;
+                    bulletSpeed = 58f;
                     projectilesPerShot = 5;
                     spreadDegrees = 5.5f;
                     recoilKick = 0.13f;
@@ -148,8 +148,8 @@ namespace HORDAX.Combat
                     displayName = "MINIGUN";
                     damage = 4.5f;
                     fireRate = 24f;
-                    range = 38f;
-                    bulletSpeed = 58f;
+                    range = 52f;
+                    bulletSpeed = 78f;
                     projectilesPerShot = 1;
                     spreadDegrees = 1.5f;
                     recoilKick = 0.045f;
@@ -159,8 +159,8 @@ namespace HORDAX.Combat
                     displayName = "RIFLE";
                     damage = 5f;
                     fireRate = 12f;
-                    range = 34f;
-                    bulletSpeed = 45f;
+                    range = 46f;
+                    bulletSpeed = 60f;
                     projectilesPerShot = 1;
                     spreadDegrees = 0.4f;
                     recoilKick = 0.055f;
