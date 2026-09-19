@@ -107,7 +107,7 @@ namespace HORDAX.Enemies
 
         private void Start()
         {
-            if (player == null) player = FindFirstObjectByType<RunnerController>();
+            if (player == null) player = FindAnyObjectByType<RunnerController>();
             if (player != null && playerHealth == null) playerHealth = player.GetComponent<PlayerHealth>();
             if (health <= 0f) health = maxHealth;
             if (baseScale == Vector3.zero) baseScale = transform.localScale;
