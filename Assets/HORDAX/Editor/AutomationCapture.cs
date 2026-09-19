@@ -5,6 +5,7 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using HORDAX.Combat;
 using HORDAX.Core;
 using HORDAX.Data;
 using HORDAX.Enemies;
@@ -152,6 +153,8 @@ namespace HORDAX.EditorTools
         private static void WriteSnapshot(string screenshotPath, Camera camera)
         {
             RunnerController player = UnityEngine.Object.FindFirstObjectByType<RunnerController>();
+            WeaponController weapon = player != null ? player.GetComponent<WeaponController>() : null;
+            EnemyAgent boss = EnemyAgent.ActiveBoss;
             EnemyAgent[] enemies = UnityEngine.Object.FindObjectsByType<EnemyAgent>(FindObjectsSortMode.None);
 
             int elites = 0;
@@ -174,6 +177,11 @@ namespace HORDAX.EditorTools
                 activeElites = elites,
                 activeBosses = bosses,
                 enemyBreaches = GameManager.Instance != null ? GameManager.Instance.EnemyBreaches : 0,
+                bossHealthNormalized = boss != null ? boss.HealthNormalized : 0f,
+                weaponName = weapon != null ? weapon.DisplayName : string.Empty,
+                weaponLevel = weapon != null ? weapon.UpgradeLevel : 0,
+                weaponDamage = weapon != null ? weapon.Damage : 0f,
+                weaponFireRate = weapon != null ? weapon.FireRate : 0f,
                 arsenalLaneCenterX = TrackLayout.ArsenalCenterX,
                 hordeLaneCenterX = TrackLayout.HordeCenterX,
                 laneHalfWidth = TrackLayout.LaneHalfWidth
@@ -196,6 +204,11 @@ namespace HORDAX.EditorTools
             public int activeElites;
             public int activeBosses;
             public int enemyBreaches;
+            public float bossHealthNormalized;
+            public string weaponName;
+            public int weaponLevel;
+            public float weaponDamage;
+            public float weaponFireRate;
             public float arsenalLaneCenterX;
             public float hordeLaneCenterX;
             public float laneHalfWidth;
