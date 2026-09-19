@@ -30,6 +30,7 @@ import pillow_part
 import fitted_sheet_part
 import cloth_part
 
+SOURCE_SCENE="ORDAX_BED_PARTS_SOURCE"
 REVIEW_SCENE="ORDAX_BED_PARTS_REVIEW"
 STAGE_COLLECTION="ORDAX_BED_PARTS_STAGE"
 
@@ -63,6 +64,8 @@ def _reset_part_source_collections():
 
 
 def build_parts():
+    source=bpy.data.scenes.get(SOURCE_SCENE) or bpy.data.scenes.new(SOURCE_SCENE)
+    bpy.context.window.scene=source
     _reset_part_source_collections()
     reports={}
     collections={}
@@ -80,11 +83,17 @@ def build_parts():
     return collections,reports
 
 
-def _clear_scene(scene):
-    for obj in list(scene.objects):
-        bpy.data.objects.remove(obj,do_unlink=True)
-    for child in list(scene.collection.children):
-        scene.collection.children.unlink(child)
+def _clear_review_stage(scene):
+    # Never delete source objects from bpy.data: collection instances in the
+    # review scene reference them. Only remove the previous review-stage data.
+    old=bpy.data.collections.get(STAGE_COLLECTION)
+    if old is not None:
+        for obj in list(old.objects):
+            bpy.data.objects.remove(obj,do_unlink=True)
+        for parent_scene in bpy.data.scenes:
+            if old.name in parent_scene.collection.children:
+                parent_scene.collection.children.unlink(old)
+        bpy.data.collections.remove(old)
 
 
 def _label(collection,text,location):
@@ -101,7 +110,7 @@ def _label(collection,text,location):
 
 def build_review_scene(collections):
     scene=bpy.data.scenes.get(REVIEW_SCENE) or bpy.data.scenes.new(REVIEW_SCENE)
-    _clear_scene(scene)
+    _clear_review_stage(scene)
 
     stage=bpy.data.collections.new(STAGE_COLLECTION)
     scene.collection.children.link(stage)
