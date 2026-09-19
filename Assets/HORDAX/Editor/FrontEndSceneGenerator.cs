@@ -17,6 +17,12 @@ namespace HORDAX.EditorTools
         [MenuItem("HORDAX/Open Front End")]
         public static void OpenFromMenu()
         {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                Debug.LogWarning("Stop Play Mode before opening the HORDAX front end.");
+                return;
+            }
+
             if (!File.Exists(ScenePath))
                 GenerateScene();
 
@@ -24,9 +30,21 @@ namespace HORDAX.EditorTools
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
         }
 
+        [MenuItem("HORDAX/Open Front End", true)]
+        private static bool ValidateOpenFromMenu()
+        {
+            return !EditorApplication.isPlayingOrWillChangePlaymode;
+        }
+
         [MenuItem("HORDAX/Generate Front End Scene")]
         public static void GenerateFromMenu()
         {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                Debug.LogWarning("Stop Play Mode before generating the HORDAX front end.");
+                return;
+            }
+
             if (File.Exists(ScenePath))
             {
                 bool confirmed = EditorUtility.DisplayDialog(
@@ -42,8 +60,20 @@ namespace HORDAX.EditorTools
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
         }
 
+        [MenuItem("HORDAX/Generate Front End Scene", true)]
+        private static bool ValidateGenerateFromMenu()
+        {
+            return !EditorApplication.isPlayingOrWillChangePlaymode;
+        }
+
         private static void GenerateScene()
         {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                Debug.LogWarning("HORDAX scene generation is unavailable during Play Mode.");
+                return;
+            }
+
             if (!Directory.Exists(SceneFolder))
                 Directory.CreateDirectory(SceneFolder);
 
