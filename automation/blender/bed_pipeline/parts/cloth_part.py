@@ -51,14 +51,14 @@ SPECS={
 }
 
 
-def _add_proxy_cube(col,name,role,location,dimensions,*,bevel=0.0,friction=14.0):
+def _add_proxy_cube(\n    col,name,role,location,dimensions,*,bevel=0.0,friction=14.0,\n    collision_thickness=0.008,\n):
     obj=add_cube(
         col,name,"proxy",role,location,dimensions,None,
         bevel=bevel,segments=6 if bevel else 4,
     )
     obj["ordax_proxy_only"]=True
     obj.hide_render=True
-    add_collision(obj,thickness=0.004,friction=friction)
+    add_collision(obj,thickness=collision_thickness,friction=friction)
     return obj
 
 
