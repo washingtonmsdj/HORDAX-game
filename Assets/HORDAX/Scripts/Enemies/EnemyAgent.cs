@@ -82,14 +82,21 @@ namespace HORDAX.Enemies
             cachedDirection = Vector3.zero;
             RefreshSteering();
 
-            if (rank == EnemyRank.Boss && GameManager.Instance != null)
+            if (rank == EnemyRank.Boss)
             {
                 ActiveBoss = this;
-                bossBarrierOwnerId = nextBossBarrierOwnerId++;
-                if (nextBossBarrierOwnerId == int.MaxValue)
-                    nextBossBarrierOwnerId = 1;
-                float barrierOffset = Mathf.Max(6f, transform.localScale.z * 2.5f);
-                GameManager.Instance.RegisterBossBarrier(bossBarrierOwnerId, transform.position.z - barrierOffset);
+
+                if (GameManager.Instance != null)
+                {
+                    bossBarrierOwnerId = nextBossBarrierOwnerId++;
+                    if (nextBossBarrierOwnerId == int.MaxValue)
+                        nextBossBarrierOwnerId = 1;
+
+                    float barrierOffset = Mathf.Max(6f, transform.localScale.z * 2.5f);
+                    GameManager.Instance.RegisterBossBarrier(
+                        bossBarrierOwnerId,
+                        transform.position.z - barrierOffset);
+                }
             }
         }
 
