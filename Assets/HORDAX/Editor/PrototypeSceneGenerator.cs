@@ -23,6 +23,12 @@ namespace HORDAX.EditorTools
         [MenuItem("HORDAX/Open Prototype Scene")]
         public static void OpenFromMenu()
         {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                Debug.LogWarning("Stop Play Mode before opening the HORDAX prototype scene.");
+                return;
+            }
+
             if (!File.Exists(ScenePath))
                 GenerateScene(false, false);
 
@@ -30,9 +36,21 @@ namespace HORDAX.EditorTools
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
         }
 
+        [MenuItem("HORDAX/Open Prototype Scene", true)]
+        private static bool ValidateOpenFromMenu()
+        {
+            return !EditorApplication.isPlayingOrWillChangePlaymode;
+        }
+
         [MenuItem("HORDAX/Regenerate Prototype Scene (Destructive)")]
         public static void RegenerateFromMenu()
         {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                Debug.LogWarning("Stop Play Mode before regenerating the HORDAX prototype scene.");
+                return;
+            }
+
             bool confirmed = EditorUtility.DisplayDialog(
                 "Regenerate HORDAX Prototype",
                 "This replaces Assets/HORDAX/Scenes/Prototype.unity. Any manual edits made directly to that scene will be lost. Continue?",
@@ -43,9 +61,15 @@ namespace HORDAX.EditorTools
             GenerateScene(true, true);
         }
 
+        [MenuItem("HORDAX/Regenerate Prototype Scene (Destructive)", true)]
+        private static bool ValidateRegenerateFromMenu()
+        {
+            return !EditorApplication.isPlayingOrWillChangePlaymode;
+        }
+
         private static void EnsurePrototypeScene()
         {
-            if (Application.isBatchMode) return;
+            if (Application.isBatchMode || EditorApplication.isPlayingOrWillChangePlaymode) return;
 
             if (!File.Exists(ScenePath))
                 GenerateScene(false, false);
@@ -55,6 +79,12 @@ namespace HORDAX.EditorTools
 
         private static void GenerateScene(bool overwrite, bool openAfter)
         {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                Debug.LogWarning("HORDAX scene generation is unavailable during Play Mode.");
+                return;
+            }
+
             if (!Directory.Exists(SceneFolder)) Directory.CreateDirectory(SceneFolder);
             if (File.Exists(ScenePath) && !overwrite)
             {
