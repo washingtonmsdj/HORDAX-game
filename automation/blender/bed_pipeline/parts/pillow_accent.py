@@ -1,0 +1,1 @@
+from pillow_part import build\nif __name__=="__main__":\n    print("PART_REPORT",build("pillow_accent",export=True)[1])\n
