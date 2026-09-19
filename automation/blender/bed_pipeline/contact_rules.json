@@ -1,0 +1,104 @@
+{
+  "version": 1,
+  "default_policy": "FORBID_INTERSECTION",
+  "policies": {
+    "FORBID_INTERSECTION": {
+      "mesh_overlap_allowed": false,
+      "description": "Any evaluated mesh intersection is a validation error."
+    },
+    "ALLOW_STRUCTURAL_JOIN": {
+      "mesh_overlap_allowed": true,
+      "description": "Only for explicitly declared furniture joints hidden inside rigid construction."
+    },
+    "TOUCH_ONLY": {
+      "mesh_overlap_allowed": false,
+      "min_clearance_m": 0,
+      "max_clearance_m": 0.012,
+      "description": "Surfaces may touch but may not cross."
+    }
+  },
+  "allowed_pairs": [
+    [
+      "frame:leg",
+      "frame:left_rail",
+      "ALLOW_STRUCTURAL_JOIN"
+    ],
+    [
+      "frame:leg",
+      "frame:right_rail",
+      "ALLOW_STRUCTURAL_JOIN"
+    ],
+    [
+      "frame:leg",
+      "frame:foot_rail",
+      "ALLOW_STRUCTURAL_JOIN"
+    ],
+    [
+      "frame:support",
+      "frame:left_rail",
+      "ALLOW_STRUCTURAL_JOIN"
+    ],
+    [
+      "frame:support",
+      "frame:right_rail",
+      "ALLOW_STRUCTURAL_JOIN"
+    ]
+  ],
+  "assembly_pairs": [
+    [
+      "mattress:mattress",
+      "frame:support",
+      "TOUCH_ONLY"
+    ],
+    [
+      "mattress:mattress",
+      "frame:left_rail",
+      "FORBID_INTERSECTION"
+    ],
+    [
+      "mattress:mattress",
+      "frame:right_rail",
+      "FORBID_INTERSECTION"
+    ],
+    [
+      "mattress:mattress",
+      "frame:foot_rail",
+      "FORBID_INTERSECTION"
+    ],
+    [
+      "mattress:mattress",
+      "headboard:headboard_channel",
+      "FORBID_INTERSECTION"
+    ],
+    [
+      "pillows:*",
+      "pillows:*",
+      "FORBID_INTERSECTION"
+    ],
+    [
+      "pillows:*",
+      "headboard:*",
+      "FORBID_INTERSECTION"
+    ],
+    [
+      "pillows:*",
+      "mattress:mattress",
+      "FORBID_INTERSECTION"
+    ],
+    [
+      "bedding:*",
+      "mattress:mattress",
+      "FORBID_INTERSECTION"
+    ],
+    [
+      "bedding:*",
+      "pillows:*",
+      "FORBID_INTERSECTION"
+    ],
+    [
+      "bedding:*",
+      "frame:*",
+      "FORBID_INTERSECTION"
+    ]
+  ]
+}
