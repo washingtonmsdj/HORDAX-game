@@ -49,7 +49,7 @@ namespace HORDAX.UI
 
             statsText.text =
                 $"HP {Mathf.CeilToInt(health.CurrentHealth)}   {weapon.DisplayName} [{weapon.Rarity}] LV {weapon.UpgradeLevel}   " +
-                $"DMG {weapon.Damage:0.#}   ROF {weapon.FireRate:0.#}   x{weapon.ProjectilesPerShot}   " +
+                $"DMG {weapon.Damage:0.#}   ROF {weapon.FireRate:0.#}   x{weapon.ProjectilesPerShot}\n" +
                 $"KILLS {GameManager.Instance.EnemyKills}   BOSS {GameManager.Instance.BossKills}/{GameManager.Instance.RequiredBossKills}   " +
                 $"COINS {GameManager.Instance.RunCoins}   SCORE {GameManager.Instance.Score}";
 
@@ -144,13 +144,25 @@ namespace HORDAX.UI
 
             Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
 
-            statsText = CreateText("Stats", transform, font, 29, TextAnchor.UpperLeft);
+            GameObject topPanel = new GameObject("Top HUD Panel", typeof(RectTransform), typeof(Image));
+            topPanel.transform.SetParent(transform, false);
+            RectTransform topPanelRect = topPanel.GetComponent<RectTransform>();
+            topPanelRect.anchorMin = new Vector2(0f, 1f);
+            topPanelRect.anchorMax = new Vector2(1f, 1f);
+            topPanelRect.pivot = new Vector2(0.5f, 1f);
+            topPanelRect.anchoredPosition = Vector2.zero;
+            topPanelRect.sizeDelta = new Vector2(0f, 148f);
+            topPanel.GetComponent<Image>().color = new Color(0.025f, 0.035f, 0.055f, 0.82f);
+
+            statsText = CreateText("Stats", topPanel.transform, font, 27, TextAnchor.UpperLeft);
             RectTransform statsRect = statsText.rectTransform;
             statsRect.anchorMin = new Vector2(0f, 1f);
             statsRect.anchorMax = new Vector2(0f, 1f);
             statsRect.pivot = new Vector2(0f, 1f);
-            statsRect.anchoredPosition = new Vector2(40f, -35f);
-            statsRect.sizeDelta = new Vector2(1840f, 60f);
+            statsRect.anchoredPosition = new Vector2(40f, -22f);
+            statsRect.sizeDelta = new Vector2(1840f, 92f);
+            statsText.horizontalOverflow = HorizontalWrapMode.Overflow;
+            statsText.verticalOverflow = VerticalWrapMode.Overflow;
 
             statusText = CreateText("Status", transform, font, 62, TextAnchor.MiddleCenter);
             RectTransform statusRect = statusText.rectTransform;
@@ -159,11 +171,24 @@ namespace HORDAX.UI
             statusRect.offsetMin = new Vector2(0f, 140f);
             statusRect.offsetMax = Vector2.zero;
 
-            healthFill = CreateBar("Health", new Vector2(40f, -95f), new Vector2(520f, 30f));
+            healthFill = CreateBar("Health", new Vector2(40f, -112f), new Vector2(520f, 24f));
+            healthFill.color = new Color(0.24f, 0.92f, 0.46f, 1f);
+
             progressFill = CreateBar("Progress", new Vector2(0f, 28f), new Vector2(760f, 18f), true);
+            progressFill.color = new Color(0.20f, 0.78f, 1f, 1f);
+
+            GameObject resultBackdrop = new GameObject("Result Backdrop", typeof(RectTransform), typeof(Image));
+            resultBackdrop.transform.SetParent(transform, false);
+            RectTransform backdropRect = resultBackdrop.GetComponent<RectTransform>();
+            backdropRect.anchorMin = new Vector2(0.5f, 0.5f);
+            backdropRect.anchorMax = new Vector2(0.5f, 0.5f);
+            backdropRect.pivot = new Vector2(0.5f, 0.5f);
+            backdropRect.anchoredPosition = new Vector2(0f, 20f);
+            backdropRect.sizeDelta = new Vector2(1120f, 470f);
+            resultBackdrop.GetComponent<Image>().color = new Color(0.02f, 0.03f, 0.05f, 0.90f);
 
             resultControls = new GameObject("Result Controls", typeof(RectTransform));
-            resultControls.transform.SetParent(transform, false);
+            resultControls.transform.SetParent(resultBackdrop.transform, false);
             RectTransform resultRect = resultControls.GetComponent<RectTransform>();
             resultRect.anchorMin = new Vector2(0.5f, 0.5f);
             resultRect.anchorMax = new Vector2(0.5f, 0.5f);
@@ -175,7 +200,8 @@ namespace HORDAX.UI
             CreateButton("Menu", resultControls.transform, Vector2.zero, "MENU", BackToMenu);
             nextButton = CreateButton("Next", resultControls.transform, new Vector2(300f, 0f), "NEXT", NextLevel);
 
-            resultControls.SetActive(false);
+            resultBackdrop.SetActive(false);
+            resultControls = resultBackdrop;
         }
 
         private static void EnsureEventSystem()
@@ -232,6 +258,12 @@ namespace HORDAX.UI
             text.alignment = anchor;
             text.color = Color.white;
             text.raycastTarget = false;
+
+            Outline outline = go.AddComponent<Outline>();
+            outline.effectColor = new Color(0f, 0f, 0f, 0.82f);
+            outline.effectDistance = new Vector2(1.5f, -1.5f);
+            outline.useGraphicAlpha = true;
+
             return text;
         }
 
