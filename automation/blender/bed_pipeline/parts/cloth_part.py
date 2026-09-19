@@ -51,7 +51,10 @@ SPECS={
 }
 
 
-def _add_proxy_cube(\n    col,name,role,location,dimensions,*,bevel=0.0,friction=14.0,\n    collision_thickness=0.008,\n):
+def _add_proxy_cube(
+    col,name,role,location,dimensions,*,bevel=0.0,friction=14.0,
+    collision_thickness=0.008,
+):
     obj=add_cube(
         col,name,"proxy",role,location,dimensions,None,
         bevel=bevel,segments=6 if bevel else 4,
@@ -60,8 +63,6 @@ def _add_proxy_cube(\n    col,name,role,location,dimensions,*,bevel=0.0,friction
     obj.hide_render=True
     add_collision(obj,thickness=collision_thickness,friction=friction)
     return obj
-
-
 def _proxy():
     """Create only the rigid surfaces that can influence bedding drape.
 
@@ -76,6 +77,7 @@ def _proxy():
     mattress=_add_proxy_cube(
         col,"PART_Cloth_Proxy_Mattress","proxy_mattress",
         (0,0,MH/2),(MW,ML,MH),bevel=0.06,friction=16.0,
+        collision_thickness=0.005,
     )
 
     # Structure immediately outside/below the mattress. The real mattress sits
@@ -99,6 +101,7 @@ def _proxy():
     floor=_add_proxy_cube(
         col,"PART_Cloth_Proxy_Floor","proxy_floor",
         (0,0,-0.32),(3.0,3.2,0.05),friction=12.0,
+        collision_thickness=0.004,
     )
 
     return col,{
