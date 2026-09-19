@@ -1,0 +1,36 @@
+{
+  "standard": "ordax.blender.asset-generation",
+  "version": 1,
+  "units": "METERS",
+  "up_axis": "+Z",
+  "required_object_properties": [
+    "ordax_asset",
+    "ordax_component",
+    "ordax_role"
+  ],
+  "phases": [
+    "reference_contract",
+    "components",
+    "rigid_assembly",
+    "deformables",
+    "validation",
+    "materials",
+    "reference_compare",
+    "artifact_save"
+  ],
+  "quality_gates": {
+    "applied_scale_tolerance": 0.001,
+    "penetration_tolerance_m": 0.008,
+    "contact_clearance_m": 0.003,
+    "dimension_relative_tolerance": 0.04,
+    "critical_validation_must_pass": true
+  },
+  "rules": {
+    "monolithic_generation": false,
+    "stable_names": true,
+    "separate_component_collections": true,
+    "cloth_requires_collision": true,
+    "unrelated_scene_deletion": false,
+    "validation_report_scene_property": "ordax_validation_report"
+  }
+}
