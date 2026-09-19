@@ -29,15 +29,15 @@ PREVIEW_PATH = ARTIFACT_ROOT / "boat_blockout_preview.png"
 # X = boat length, Y = beam, Z = vertical.
 # Values were chosen from the supplied orthographic/3-quarter reference.
 STATIONS = [
-    (-1.60, 0.055, 0.64, -0.02),
-    (-1.38, 0.155, 0.565, -0.18),
-    (-1.05, 0.285, 0.505, -0.31),
-    (-0.62, 0.405, 0.465, -0.39),
-    ( 0.00, 0.475, 0.445, -0.43),
-    ( 0.62, 0.405, 0.465, -0.39),
-    ( 1.05, 0.285, 0.505, -0.31),
-    ( 1.38, 0.155, 0.565, -0.18),
-    ( 1.60, 0.055, 0.64, -0.02),
+    (-1.60, 0.055, 0.56,  0.02),
+    (-1.38, 0.155, 0.49, -0.06),
+    (-1.05, 0.285, 0.41, -0.14),
+    (-0.62, 0.405, 0.34, -0.22),
+    ( 0.00, 0.475, 0.31, -0.27),
+    ( 0.62, 0.405, 0.34, -0.22),
+    ( 1.05, 0.285, 0.41, -0.14),
+    ( 1.38, 0.155, 0.49, -0.06),
+    ( 1.60, 0.055, 0.56,  0.02),
 ]
 
 CROSS_SAMPLES = 17
@@ -272,7 +272,7 @@ def _make_structure(col, wood):
     for idx, x in enumerate((-0.66, 0.0, 0.66), start=1):
         s = _interp_station(x)
         half = s[1] * 0.84
-        z = 0.305 if idx != 2 else 0.295
+        z = 0.185 if idx != 2 else 0.175
         beam = _cube(
             col,
             f"ORDAX_BOAT_Thwart_{idx:02d}",
@@ -288,7 +288,7 @@ def _make_structure(col, wood):
         board = _cube(
             col,
             f"ORDAX_BOAT_FloorBoard_{idx:02d}",
-            (0, y, -0.285),
+            (0, y, -0.205),
             (2.18, 0.095, 0.035),
             wood,
             bevel=0.006,
@@ -301,7 +301,7 @@ def _make_posts_and_rope_proxy(col, wood, rope):
         post = _cube(
             col,
             f"ORDAX_BOAT_{label}_Post",
-            (x, 0, 0.68),
+            (x, 0, 0.60),
             (0.13, 0.13, 0.48),
             wood,
             bevel=0.02,
@@ -315,7 +315,7 @@ def _make_posts_and_rope_proxy(col, wood, rope):
                 minor_radius=0.018,
                 major_segments=36,
                 minor_segments=8,
-                location=(x, 0, 0.66 + n * 0.038),
+                location=(x, 0, 0.58 + n * 0.038),
             )
             torus = bpy.context.object
             torus.name = f"ORDAX_BOAT_{label}_RopeCoil_{n+1:02d}"
@@ -330,9 +330,9 @@ def _make_posts_and_rope_proxy(col, wood, rope):
             col,
             f"ORDAX_BOAT_{label}_RopeTail",
             [
-                (x, 0.05, 0.72),
-                (x + 0.03 * direction, 0.07, 0.43),
-                (x + 0.04 * direction, 0.09, 0.08),
+                (x, 0.05, 0.64),
+                (x + 0.03 * direction, 0.07, 0.35),
+                (x + 0.04 * direction, 0.09, 0.02),
             ],
             0.018,
             rope,
@@ -387,7 +387,7 @@ def _setup_camera_and_light(col):
     cam = bpy.context.object
     cam.name = "ORDAX_BOAT_Camera_3Q"
     cam.data.lens = 58
-    _look_at(cam, (0.10, 0, 0.06))
+    _look_at(cam, (0.10, 0, 0.02))
     scene.camera = cam
     for owner in list(cam.users_collection):
         owner.objects.unlink(cam)
@@ -404,7 +404,7 @@ def _setup_camera_and_light(col):
         light.data.energy = energy
         light.data.shape = "DISK"
         light.data.size = size
-        _look_at(light, (0, 0, 0.05))
+        _look_at(light, (0, 0, 0.02))
         for owner in list(light.users_collection):
             owner.objects.unlink(light)
         col.objects.link(light)
@@ -413,7 +413,7 @@ def _setup_camera_and_light(col):
     ground_mat = bpy.data.materials.get("ORDAX_BOAT_MAT_Ground") or bpy.data.materials.new("ORDAX_BOAT_MAT_Ground")
     ground_mat.diffuse_color = (0.012, 0.012, 0.014, 1)
     ground_mat.roughness = 0.72
-    ground = _cube(col, "ORDAX_BOAT_Ground", (0, 0, -0.49), (6.8, 5.0, 0.05), ground_mat, bevel=0)
+    ground = _cube(col, "ORDAX_BOAT_Ground", (0, 0, -0.34), (6.8, 5.0, 0.05), ground_mat, bevel=0)
     ground["ordax_role"] = "presentation_ground"
 
     # Make Blender Live viewport capture use this deterministic camera.
@@ -465,6 +465,23 @@ def _validate(col):
     hull = bpy.data.objects.get("ORDAX_BOAT_Hull")
     if hull is None:
         errors.append("missing hull")
+    else:
+        depsgraph = bpy.context.evaluated_depsgraph_get()
+        evaluated_hull = hull.evaluated_get(depsgraph)
+        hull_points = [
+            evaluated_hull.matrix_world @ Vector(corner)
+            for corner in evaluated_hull.bound_box
+        ]
+        hull_dims = [
+            max(p[i] for p in hull_points) - min(p[i] for p in hull_points)
+            for i in range(3)
+        ]
+        if not (3.10 <= hull_dims[0] <= 3.30):
+            errors.append(f"hull length out of expected range: {hull_dims[0]:.3f}m")
+        if not (0.90 <= hull_dims[1] <= 1.02):
+            errors.append(f"hull beam out of expected range: {hull_dims[1]:.3f}m")
+        if not (0.50 <= hull_dims[2] <= 0.70):
+            errors.append(f"hull depth out of expected range: {hull_dims[2]:.3f}m")
     if len([o for o in model_objects if o.get("ordax_role") == "rib"]) != 7:
         errors.append("expected 7 ribs")
     if len([o for o in model_objects if o.get("ordax_role") == "thwart"]) != 3:
