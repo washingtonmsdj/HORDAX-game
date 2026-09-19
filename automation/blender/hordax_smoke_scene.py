@@ -172,7 +172,10 @@ rim.data.size = 8
 look_at(rim, (2, 22, 1))
 
 scene = bpy.context.scene
-scene.render.engine = "BLENDER_EEVEE_NEXT"
+try:
+    scene.render.engine = "BLENDER_EEVEE"
+except TypeError:
+    scene.render.engine = "BLENDER_EEVEE_NEXT"
 scene.render.resolution_x = 1280
 scene.render.resolution_y = 720
 scene.render.resolution_percentage = 100
