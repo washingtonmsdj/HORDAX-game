@@ -451,37 +451,38 @@ def _validate(col):
         and obj.type in {"MESH", "CURVE"}
         and obj.get("ordax_role") != "presentation_ground"
     ]
-    mins, maxs, dims = _bounds(model_objects)
+
+    # Evaluated curve bounds are useful diagnostics but are not a reliable
+    # dimensional acceptance metric for NURBS/bevel objects in Blender 5.x.
+    # Fidelity is judged from deterministic multi-view renders. Dimensions are
+    # therefore anchored to the source hull mesh itself.
+    diagnostic_mins, diagnostic_maxs, diagnostic_dims = _bounds(model_objects)
 
     errors = []
-    # Allow rope/rivet/post landmarks to extend slightly beyond hull dimensions.
-    if not (3.10 <= dims[0] <= 3.50):
-        errors.append(f"overall length out of expected range: {dims[0]:.3f}m")
-    if not (0.88 <= dims[1] <= 1.10):
-        errors.append(f"overall beam out of expected range: {dims[1]:.3f}m")
-    if not (0.85 <= dims[2] <= 1.35):
-        errors.append(f"overall height out of expected range: {dims[2]:.3f}m")
-
+    hull_dims = None
+    hull_bounds_min = None
+    hull_bounds_max = None
     hull = bpy.data.objects.get("ORDAX_BOAT_Hull")
     if hull is None:
         errors.append("missing hull")
+    elif hull.type != "MESH" or not hull.data.vertices:
+        errors.append("hull is not a valid source mesh")
     else:
-        depsgraph = bpy.context.evaluated_depsgraph_get()
-        evaluated_hull = hull.evaluated_get(depsgraph)
-        hull_points = [
-            evaluated_hull.matrix_world @ Vector(corner)
-            for corner in evaluated_hull.bound_box
-        ]
+        hull_points = [hull.matrix_world @ vertex.co for vertex in hull.data.vertices]
+        hull_bounds_min = [min(p[i] for p in hull_points) for i in range(3)]
+        hull_bounds_max = [max(p[i] for p in hull_points) for i in range(3)]
         hull_dims = [
-            max(p[i] for p in hull_points) - min(p[i] for p in hull_points)
+            hull_bounds_max[i] - hull_bounds_min[i]
             for i in range(3)
         ]
-        if not (3.10 <= hull_dims[0] <= 3.30):
+        if not (3.18 <= hull_dims[0] <= 3.22):
             errors.append(f"hull length out of expected range: {hull_dims[0]:.3f}m")
-        if not (0.90 <= hull_dims[1] <= 1.02):
+        if not (0.94 <= hull_dims[1] <= 0.96):
             errors.append(f"hull beam out of expected range: {hull_dims[1]:.3f}m")
-        if not (0.50 <= hull_dims[2] <= 0.70):
-            errors.append(f"hull depth out of expected range: {hull_dims[2]:.3f}m")
+        # This is the full raised-tip-to-keel envelope, not the amidships
+        # section depth. The reference intentionally has raised bow/stern.
+        if not (0.80 <= hull_dims[2] <= 0.86):
+            errors.append(f"hull vertical envelope out of expected range: {hull_dims[2]:.3f}m")
     if len([o for o in model_objects if o.get("ordax_role") == "rib"]) != 7:
         errors.append("expected 7 ribs")
     if len([o for o in model_objects if o.get("ordax_role") == "thwart"]) != 3:
@@ -492,9 +493,12 @@ def _validate(col):
         "pass": "boat_blockout_pass",
         "ok": not errors,
         "errors": errors,
-        "bounds_min": [round(v, 5) for v in mins],
-        "bounds_max": [round(v, 5) for v in maxs],
-        "dimensions": [round(v, 5) for v in dims],
+        "diagnostic_evaluated_bounds_min": [round(v, 5) for v in diagnostic_mins],
+        "diagnostic_evaluated_bounds_max": [round(v, 5) for v in diagnostic_maxs],
+        "diagnostic_evaluated_dimensions": [round(v, 5) for v in diagnostic_dims],
+        "hull_bounds_min": [round(v, 5) for v in hull_bounds_min] if hull_bounds_min else None,
+        "hull_bounds_max": [round(v, 5) for v in hull_bounds_max] if hull_bounds_max else None,
+        "hull_dimensions": [round(v, 5) for v in hull_dims] if hull_dims else None,
         "object_count": len(model_objects),
         "roles": {
             role: len([o for o in model_objects if o.get("ordax_role") == role])
