@@ -21,7 +21,7 @@ namespace HORDAX.Prototype
 
         private void Awake()
         {
-            if (FindObjectOfType<RunnerController>() != null) return;
+            if (FindFirstObjectByType<RunnerController>() != null) return;
 
             if (GameSession.SelectedLevel != null)
                 levelDefinition = GameSession.SelectedLevel;
@@ -135,7 +135,11 @@ namespace HORDAX.Prototype
 
             ProgressionService progression = ProgressionService.GetOrCreate();
             WeaponUnlockDefinition equipped = PrototypeArmoryCatalog.GetById(progression.EquippedWeaponId);
-            if (equipped != null)
+            if (equipped == null) return;
+
+            if (equipped.WeaponData != null)
+                playerWeapon.ApplyDefinition(equipped.WeaponData);
+            else
                 playerWeapon.ApplyPrototype(equipped.PrototypeWeapon);
         }
 
@@ -160,7 +164,7 @@ namespace HORDAX.Prototype
 
         private void BuildEnemyPool()
         {
-            if (FindObjectOfType<EnemyPool>() != null) return;
+            if (FindFirstObjectByType<EnemyPool>() != null) return;
             GameObject poolObject = new GameObject("ENEMY POOL - Replace enemy prefabs later");
             poolObject.AddComponent<EnemyPool>();
         }
@@ -299,7 +303,12 @@ namespace HORDAX.Prototype
         {
             CreateHorde("Wave 01", 30f, 30, 6, 5f, 3.1f, 7f);
             CreateGate("Gate 50", 54f, 50f);
-            CreateWeaponPickup("SMG Pickup", 62f, null, WeaponArchetype.SMG, "SMG");
+            CreateWeaponPickup(
+                "SMG Pickup",
+                62f,
+                PrototypeArmoryCatalog.GetById("smg")?.WeaponData,
+                WeaponArchetype.SMG,
+                "SMG");
 
             CreateHorde("Wave 02", 88f, 48, 8, 8f, 3.45f, 8f);
             CreateHorde("Elite Squad", 116f, 4, 4, 26f, 3.8f, 12f, null, EnemyRank.Elite, 8, 90, 1.35f);
@@ -308,10 +317,20 @@ namespace HORDAX.Prototype
 
             CreateHorde("Wave 03", 166f, 72, 9, 11f, 3.8f, 9f);
             CreateGate("Gate 230", 196f, 230f);
-            CreateWeaponPickup("Shotgun Pickup", 203f, null, WeaponArchetype.Shotgun, "SHOTGUN");
+            CreateWeaponPickup(
+                "Shotgun Pickup",
+                203f,
+                PrototypeArmoryCatalog.GetById("shotgun")?.WeaponData,
+                WeaponArchetype.Shotgun,
+                "SHOTGUN");
 
             CreateHorde("Wave 04", 228f, 96, 10, 14f, 4.0f, 10f);
-            CreateWeaponPickup("Minigun Pickup", 252f, null, WeaponArchetype.Minigun, "MINIGUN");
+            CreateWeaponPickup(
+                "Minigun Pickup",
+                252f,
+                PrototypeArmoryCatalog.GetById("minigun")?.WeaponData,
+                WeaponArchetype.Minigun,
+                "MINIGUN");
             CreateHorde("BLOCK BOSS", 276f, 1, 1, 450f, 2.6f, 25f, null, EnemyRank.Boss, 125, 1500, 2.5f);
 
             CreateFinish(finishZ);
