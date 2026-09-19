@@ -173,6 +173,7 @@ namespace HORDAX.Enemies
             if (breachedPlayerLine) return;
             breachedPlayerLine = true;
 
+            GameManager.Instance?.RegisterEnemyBreach();
             playerHealth?.Damage(contactDamage);
             RunnerCamera.Instance?.Shake(rank == EnemyRank.Elite ? 0.16f : 0.08f, 0.10f);
             CombatFxPool.Instance?.PlayDeath(
