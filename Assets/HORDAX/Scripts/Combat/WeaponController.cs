@@ -52,6 +52,17 @@ namespace HORDAX.Combat
         public float SpreadDegrees => spreadDegrees;
         public float RecoilKick => recoilKick;
         public int UpgradeLevel => upgradeLevel;
+        public int ReservedTargetCount => reservedDamageByTarget.Count;
+        public float ReservedDamageTotal
+        {
+            get
+            {
+                float total = 0f;
+                foreach (KeyValuePair<ShootableTarget, float> pair in reservedDamageByTarget)
+                    total += Mathf.Max(0f, pair.Value);
+                return total;
+            }
+        }
         public WeaponData Definition => weaponData;
 
         public bool TryGetAimPoint(out Vector3 point)
