@@ -38,7 +38,7 @@ namespace HORDAX.UI
 
         private void BuildEventSystem()
         {
-            if (FindObjectOfType<EventSystem>() != null) return;
+            if (FindAnyObjectByType<EventSystem>() != null) return;
 
             GameObject eventSystem = new GameObject("EventSystem");
             eventSystem.AddComponent<EventSystem>();

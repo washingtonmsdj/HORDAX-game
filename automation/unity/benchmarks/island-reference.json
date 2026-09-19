@@ -1,0 +1,99 @@
+{
+  "id": "island-reference-v1",
+  "purpose": "Compare OrdaX MCP Unity scene generation against a reference-driven agent workflow.",
+  "reference": {
+    "description": "Near-top-down tropical scene with two mirrored crescent/bean islands separated by a turquoise channel; ivory beaches, dense dark-green trees and coastal rocks.",
+    "source": "user-provided benchmark screenshot",
+    "approximate_palette": [
+      {
+        "role": "shallow_water",
+        "rgb": [
+          146,
+          197,
+          187
+        ],
+        "coverage": 0.3
+      },
+      {
+        "role": "sand_highlight",
+        "rgb": [
+          223,
+          219,
+          202
+        ],
+        "coverage": 0.2
+      },
+      {
+        "role": "deep_water",
+        "rgb": [
+          10,
+          78,
+          110
+        ],
+        "coverage": 0.19
+      },
+      {
+        "role": "turquoise_water",
+        "rgb": [
+          30,
+          156,
+          162
+        ],
+        "coverage": 0.13
+      },
+      {
+        "role": "vegetation_mid",
+        "rgb": [
+          125,
+          126,
+          103
+        ],
+        "coverage": 0.09
+      },
+      {
+        "role": "vegetation_dark",
+        "rgb": [
+          70,
+          68,
+          34
+        ],
+        "coverage": 0.09
+      }
+    ]
+  },
+  "required_features": [
+    "two distinct islands",
+    "clear central water channel",
+    "concave inner beaches facing the channel",
+    "ivory/light sand edge",
+    "dense vegetation weighted toward outer island mass",
+    "coastal rocks",
+    "deep and shallow turquoise water separation",
+    "soft directional lighting",
+    "reference comparison camera",
+    "explorable WASD/QE camera"
+  ],
+  "gates": {
+    "compile": true,
+    "scene_saved": true,
+    "preview_rendered": true,
+    "physics_audit": true,
+    "no_external_asset_required_for_baseline": true,
+    "deterministic_generation": true
+  },
+  "outputs": {
+    "scene": "Assets/HORDAX/Scenes/Benchmarks/IslandReferenceBenchmark.unity",
+    "preview": "Artifacts/Unity/IslandReferenceBenchmark/island-reference.png",
+    "metrics": "Artifacts/Unity/IslandReferenceBenchmark/island-reference.json"
+  },
+  "variants": [
+    {
+      "id": "procedural-baseline",
+      "requires_asset_pack": false
+    },
+    {
+      "id": "pure-nature-2-islands",
+      "requires_asset_pack": true
+    }
+  ]
+}

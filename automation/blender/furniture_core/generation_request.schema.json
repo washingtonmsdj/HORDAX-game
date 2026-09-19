@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ordax.furniture.generation-request.v1",
+  "title": "OrdaX Furniture Generation Request",
+  "type": "object",
+  "required": [
+    "family",
+    "variant",
+    "units",
+    "reference_dimensions",
+    "quality_gates"
+  ],
+  "properties": {
+    "family": {
+      "type": "string"
+    },
+    "variant": {
+      "type": "string"
+    },
+    "units": {
+      "const": "METERS"
+    },
+    "reference_images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "reference_dimensions": {
+      "type": "object"
+    },
+    "required_parts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "optional_provider": {
+      "enum": [
+        "none",
+        "higgsfield",
+        "manual",
+        "other"
+      ]
+    },
+    "quality_gates": {
+      "type": "object",
+      "required": [
+        "forbid_unapproved_intersections",
+        "validate_proportions",
+        "isolate_parts_first"
+      ],
+      "properties": {
+        "forbid_unapproved_intersections": {
+          "const": true
+        },
+        "validate_proportions": {
+          "const": true
+        },
+        "isolate_parts_first": {
+          "const": true
+        }
+      }
+    }
+  }
+}

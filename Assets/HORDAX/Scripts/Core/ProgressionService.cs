@@ -62,7 +62,7 @@ namespace HORDAX.Core
         {
             if (Instance != null) return Instance;
 
-            ProgressionService existing = FindObjectOfType<ProgressionService>();
+            ProgressionService existing = FindAnyObjectByType<ProgressionService>();
             if (existing != null) return existing;
 
             GameObject go = new GameObject("HORDAX Progression");

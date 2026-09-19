@@ -9,6 +9,7 @@ namespace HORDAX.Prototype
         private WeaponController weapon;
         private Transform visual;
         private Vector3 baseLocalPosition;
+        private Quaternion baseLocalRotation;
         private Vector3 targetScale;
         private float recoil;
 
@@ -25,6 +26,7 @@ namespace HORDAX.Prototype
             if (visual == null || weapon == null) return;
 
             baseLocalPosition = visual.localPosition;
+            baseLocalRotation = visual.localRotation;
             weapon.ShotFired += OnShot;
             weapon.WeaponChanged += Refresh;
             Refresh();
@@ -44,6 +46,22 @@ namespace HORDAX.Prototype
             recoil = Mathf.MoveTowards(recoil, 0f, Time.deltaTime * 2.8f);
             visual.localPosition = baseLocalPosition + Vector3.back * recoil;
             visual.localScale = Vector3.Lerp(visual.localScale, targetScale, 12f * Time.deltaTime);
+
+            Quaternion desiredRotation = baseLocalRotation;
+            if (weapon.TryGetAimPoint(out Vector3 aimPoint) && visual.parent != null)
+            {
+                Vector3 worldDirection = aimPoint - visual.position;
+                if (worldDirection.sqrMagnitude > 0.001f)
+                {
+                    Vector3 localDirection = visual.parent.InverseTransformDirection(worldDirection.normalized);
+                    desiredRotation = Quaternion.LookRotation(localDirection, Vector3.up);
+                }
+            }
+
+            visual.localRotation = Quaternion.Slerp(
+                visual.localRotation,
+                desiredRotation,
+                18f * Time.deltaTime);
         }
 
         private void OnShot()

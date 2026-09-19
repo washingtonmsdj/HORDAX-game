@@ -87,6 +87,28 @@ namespace HORDAX.Enemies
             return queue;
         }
 
+        private static void CreateVisualPart(
+            Transform parent,
+            PrimitiveType type,
+            string label,
+            Vector3 localPosition,
+            Vector3 localScale)
+        {
+            GameObject part = GameObject.CreatePrimitive(type);
+            part.name = label;
+            part.transform.SetParent(parent, false);
+            part.transform.localPosition = localPosition;
+            part.transform.localScale = localScale;
+
+            Renderer renderer = part.GetComponent<Renderer>();
+            if (renderer != null)
+                renderer.sharedMaterial = PrototypeMaterials.Enemy;
+
+            Collider collider = part.GetComponent<Collider>();
+            if (collider != null)
+                Destroy(collider);
+        }
+
         private EnemyAgent CreateAgent(GameObject prefab)
         {
             GameObject enemy;
@@ -96,11 +118,54 @@ namespace HORDAX.Enemies
             }
             else
             {
-                enemy = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                enemy = new GameObject("Prototype Enemy");
                 enemy.transform.SetParent(transform, false);
-                enemy.transform.localScale = new Vector3(0.9f, 1.2f, 0.9f);
-                Renderer renderer = enemy.GetComponentInChildren<Renderer>();
-                if (renderer != null) renderer.sharedMaterial = PrototypeMaterials.Enemy;
+
+                BoxCollider collider = enemy.AddComponent<BoxCollider>();
+                collider.center = Vector3.zero;
+                collider.size = new Vector3(0.82f, 1.75f, 0.72f);
+
+                CreateVisualPart(
+                    enemy.transform,
+                    PrimitiveType.Cube,
+                    "Body",
+                    new Vector3(0f, 0.10f, 0f),
+                    new Vector3(0.72f, 0.88f, 0.46f));
+
+                CreateVisualPart(
+                    enemy.transform,
+                    PrimitiveType.Sphere,
+                    "Head",
+                    new Vector3(0f, 0.83f, 0f),
+                    Vector3.one * 0.46f);
+
+                CreateVisualPart(
+                    enemy.transform,
+                    PrimitiveType.Cube,
+                    "Left Arm",
+                    new Vector3(-0.49f, 0.12f, 0f),
+                    new Vector3(0.18f, 0.72f, 0.18f));
+
+                CreateVisualPart(
+                    enemy.transform,
+                    PrimitiveType.Cube,
+                    "Right Arm",
+                    new Vector3(0.49f, 0.12f, 0f),
+                    new Vector3(0.18f, 0.72f, 0.18f));
+
+                CreateVisualPart(
+                    enemy.transform,
+                    PrimitiveType.Cube,
+                    "Left Leg",
+                    new Vector3(-0.20f, -0.62f, 0f),
+                    new Vector3(0.22f, 0.72f, 0.24f));
+
+                CreateVisualPart(
+                    enemy.transform,
+                    PrimitiveType.Cube,
+                    "Right Leg",
+                    new Vector3(0.20f, -0.62f, 0f),
+                    new Vector3(0.22f, 0.72f, 0.24f));
             }
 
             enemy.name = $"Enemy_Pooled_{createdCount:000}";

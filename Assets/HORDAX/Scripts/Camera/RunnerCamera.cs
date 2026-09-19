@@ -1,4 +1,6 @@
 using UnityEngine;
+using HORDAX.Core;
+using HORDAX.World;
 
 namespace HORDAX.CameraSystem
 {
@@ -8,12 +10,17 @@ namespace HORDAX.CameraSystem
         [SerializeField] private float lookAhead = 8f;
         [SerializeField] private float smoothTime = 0.12f;
         [SerializeField] private float maxShake = 0.45f;
+        [SerializeField] private bool frameTrackCenter;
+        [SerializeField] private float trackCenterX;
+        [SerializeField] private float bossZoomOut = 2.2f;
+        [SerializeField] private float bossLookAheadBonus = 3.0f;
 
         private Transform target;
         private Vector3 velocity;
         private float shakeAmplitude;
         private float shakeRemaining;
         private float shakeDuration;
+        private float bossBlend;
 
         public static RunnerCamera Instance { get; private set; }
 
@@ -27,13 +34,23 @@ namespace HORDAX.CameraSystem
             if (Instance == this) Instance = null;
         }
 
+        public void ConfigureTrackFraming(float centerX)
+        {
+            frameTrackCenter = true;
+            trackCenterX = centerX;
+            offset = new Vector3(0f, 11.8f, -15.2f);
+            lookAhead = 10.5f;
+            smoothTime = 0.14f;
+        }
+
         public void SetTarget(Transform value)
         {
             target = value;
             if (target != null)
             {
-                transform.position = target.position + offset;
-                transform.LookAt(target.position + Vector3.forward * lookAhead);
+                Vector3 focus = GetFocusPoint();
+                transform.position = focus + offset;
+                transform.LookAt(focus + Vector3.forward * lookAhead);
             }
         }
 
@@ -48,7 +65,30 @@ namespace HORDAX.CameraSystem
         {
             if (target == null) return;
 
-            Vector3 desired = target.position + offset;
+            Vector3 focus = GetFocusPoint();
+            bool bossEncounter = GameManager.Instance != null &&
+                GameManager.Instance.TryGetActiveBossBarrier(out _);
+
+            bossBlend = Mathf.MoveTowards(
+                bossBlend,
+                bossEncounter ? 1f : 0f,
+                Time.deltaTime * 2.4f);
+
+            Vector3 dynamicOffset = offset;
+            float dynamicLookAhead = lookAhead;
+
+            if (bossBlend > 0f)
+            {
+                dynamicOffset.y += bossZoomOut * 0.55f * bossBlend;
+                dynamicOffset.z -= bossZoomOut * bossBlend;
+                dynamicLookAhead += bossLookAheadBonus * bossBlend;
+                focus.x = Mathf.Lerp(
+                    focus.x,
+                    TrackLayout.HordeCenterX,
+                    0.22f * bossBlend);
+            }
+
+            Vector3 desired = focus + dynamicOffset;
             Vector3 smoothed = Vector3.SmoothDamp(transform.position, desired, ref velocity, smoothTime);
 
             if (shakeRemaining > 0f)
@@ -64,7 +104,15 @@ namespace HORDAX.CameraSystem
             }
 
             transform.position = smoothed;
-            transform.LookAt(target.position + Vector3.forward * lookAhead + Vector3.up * 0.5f);
+            transform.LookAt(focus + Vector3.forward * dynamicLookAhead + Vector3.up * 0.5f);
+        }
+
+        private Vector3 GetFocusPoint()
+        {
+            Vector3 focus = target.position;
+            if (frameTrackCenter)
+                focus.x = trackCenterX;
+            return focus;
         }
     }
 }

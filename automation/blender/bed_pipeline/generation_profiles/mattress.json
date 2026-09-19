@@ -1,0 +1,30 @@
+{
+  "id": "mattress_v1",
+  "component": "mattress",
+  "script_path": "automation/blender/bed_pipeline/parts/mattress_part.py",
+  "label": "mattress-ordax-061",
+  "reset_scene": true,
+  "save_target_path": "Artifacts/Blender/mattress_generation_pass_061_validated.blend",
+  "max_objects": 40,
+  "capture": true,
+  "capture_required": true,
+  "rollback_on_failure": true,
+  "expected": {
+    "dimensions_m": [
+      0.88,
+      1.88,
+      0.3
+    ],
+    "origin": "bottom_center",
+    "bevel_m": 0.07,
+    "material": "ORDAX_MAT_Mattress"
+  },
+  "gates": [
+    "part_validation",
+    "rich_scene_snapshot",
+    "isolated_scene",
+    "viewport_capture",
+    "managed_checkpoint",
+    "final_blend_save"
+  ]
+}

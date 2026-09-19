@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using HORDAX.Core;
 
@@ -9,6 +10,8 @@ namespace HORDAX.Player
 
         private float baseMaxHealth;
 
+        public event Action<float> Damaged;
+
         public float MaxHealth => maxHealth;
         public float CurrentHealth { get; private set; }
         public float Normalized => maxHealth <= 0f ? 0f : CurrentHealth / maxHealth;
@@ -16,6 +19,13 @@ namespace HORDAX.Player
         private void Awake()
         {
             baseMaxHealth = Mathf.Max(1f, maxHealth);
+            maxHealth = baseMaxHealth;
+            CurrentHealth = maxHealth;
+        }
+
+        public void ConfigureBaseHealth(float value)
+        {
+            baseMaxHealth = Mathf.Max(1f, value);
             maxHealth = baseMaxHealth;
             CurrentHealth = maxHealth;
         }
@@ -31,6 +41,8 @@ namespace HORDAX.Player
             if (amount <= 0f || CurrentHealth <= 0f) return;
 
             CurrentHealth = Mathf.Max(0f, CurrentHealth - amount);
+            Damaged?.Invoke(amount);
+
             if (CurrentHealth <= 0f && GameManager.Instance != null)
                 GameManager.Instance.Lose();
         }

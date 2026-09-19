@@ -9,6 +9,7 @@ namespace HORDAX.Enemies
 {
     public sealed class EnemyAgent : ShootableTarget
     {
+        private static int nextBossBarrierOwnerId = 1;
         [SerializeField] private float maxHealth = 5f;
         [SerializeField] private float moveSpeed = 3.2f;
         [SerializeField] private float contactDamage = 8f;
@@ -35,8 +36,16 @@ namespace HORDAX.Enemies
         private float logicTimer;
         private float cachedDistance = float.MaxValue;
         private Vector3 cachedDirection;
+        private int bossBarrierOwnerId;
+        private bool laneConstrained;
+        private float laneTargetX;
+        private bool breachedPlayerLine;
+
+        public static EnemyAgent ActiveBoss { get; private set; }
 
         public EnemyRank Rank => rank;
+        public float CurrentHealth => Mathf.Max(0f, health);
+        public float HealthNormalized => maxHealth <= 0f ? 0f : Mathf.Clamp01(health / maxHealth);
         public override Vector3 TargetPoint => transform.position + Vector3.up * Mathf.Max(0.55f, transform.localScale.y * 0.45f);
 
         public void Initialize(
@@ -47,14 +56,21 @@ namespace HORDAX.Enemies
             EnemyPool pool,
             EnemyRank enemyRank = EnemyRank.Grunt,
             int coins = 1,
-            int score = 10)
+            int score = 10,
+            bool constrainToLane = false,
+            float targetLaneX = 0f)
         {
+            ReleaseBossBarrier();
+
             player = runner;
             playerHealth = runner != null ? runner.GetComponent<PlayerHealth>() : null;
             ownerPool = pool;
             rank = enemyRank;
             coinReward = Mathf.Max(0, coins);
             scoreReward = Mathf.Max(0, score);
+            laneConstrained = constrainToLane;
+            laneTargetX = targetLaneX;
+            breachedPlayerLine = false;
             maxHealth = Mathf.Max(1f, healthValue);
             moveSpeed = Mathf.Max(0f, speedValue);
             contactDamage = Mathf.Max(0f, damageValue);
@@ -62,9 +78,27 @@ namespace HORDAX.Enemies
             attackTimer = Random.Range(0f, attackInterval * 0.5f);
             punch = 0f;
             baseScale = transform.localScale;
-            logicTimer = Random.Range(0f, nearLogicInterval);
+            logicTimer = 0f;
             cachedDistance = float.MaxValue;
-            cachedDirection = Vector3.back;
+            cachedDirection = Vector3.zero;
+            RefreshSteering();
+
+            if (rank == EnemyRank.Boss)
+            {
+                ActiveBoss = this;
+
+                if (GameManager.Instance != null)
+                {
+                    bossBarrierOwnerId = nextBossBarrierOwnerId++;
+                    if (nextBossBarrierOwnerId == int.MaxValue)
+                        nextBossBarrierOwnerId = 1;
+
+                    float barrierOffset = Mathf.Max(6f, transform.localScale.z * 2.5f);
+                    GameManager.Instance.RegisterBossBarrier(
+                        bossBarrierOwnerId,
+                        transform.position.z - barrierOffset);
+                }
+            }
         }
 
         protected override void OnEnable()
@@ -73,9 +107,18 @@ namespace HORDAX.Enemies
             health = maxHealth;
         }
 
+        protected override void OnDisable()
+        {
+            if (ActiveBoss == this)
+                ActiveBoss = null;
+
+            ReleaseBossBarrier();
+            base.OnDisable();
+        }
+
         private void Start()
         {
-            if (player == null) player = FindObjectOfType<RunnerController>();
+            if (player == null) player = FindAnyObjectByType<RunnerController>();
             if (player != null && playerHealth == null) playerHealth = player.GetComponent<PlayerHealth>();
             if (health <= 0f) health = maxHealth;
             if (baseScale == Vector3.zero) baseScale = transform.localScale;
@@ -87,6 +130,12 @@ namespace HORDAX.Enemies
 
             if (player == null || GameManager.Instance == null || GameManager.Instance.State != GameState.Playing) return;
 
+            if (laneConstrained)
+            {
+                UpdateLaneMovement();
+                return;
+            }
+
             logicTimer -= Time.deltaTime;
             if (logicTimer <= 0f)
                 RefreshSteering();
@@ -97,17 +146,72 @@ namespace HORDAX.Enemies
             }
             else
             {
-                attackTimer -= Time.deltaTime;
-                if (attackTimer <= 0f)
-                {
-                    playerHealth?.Damage(contactDamage);
-                    attackTimer = attackInterval;
-                }
+                AttackPlayer();
             }
+        }
+
+        private void UpdateLaneMovement()
+        {
+            float lineDistance = transform.position.z - player.transform.position.z;
+            float stopDistance = rank == EnemyRank.Boss ? Mathf.Max(2.2f, attackDistance) : 0.45f;
+
+            Vector3 position = transform.position;
+            position.x = Mathf.MoveTowards(position.x, laneTargetX, moveSpeed * 0.65f * Time.deltaTime);
+
+            if (lineDistance > stopDistance)
+            {
+                position.z -= moveSpeed * Time.deltaTime;
+                transform.position = position;
+                transform.forward = Vector3.back;
+                return;
+            }
+
+            transform.position = position;
+
+            if (rank == EnemyRank.Boss)
+            {
+                AttackPlayer();
+                return;
+            }
+
+            BreachPlayerLine();
+        }
+
+        private void AttackPlayer()
+        {
+            attackTimer -= Time.deltaTime;
+            if (attackTimer > 0f) return;
+
+            playerHealth?.Damage(contactDamage);
+            attackTimer = attackInterval;
+        }
+
+        private void BreachPlayerLine()
+        {
+            if (breachedPlayerLine) return;
+            breachedPlayerLine = true;
+
+            GameManager.Instance?.RegisterEnemyBreach();
+            playerHealth?.Damage(contactDamage);
+            RunnerCamera.Instance?.Shake(rank == EnemyRank.Elite ? 0.16f : 0.08f, 0.10f);
+            CombatFxPool.Instance?.PlayDeath(
+                transform.position + Vector3.up * Mathf.Max(0.55f, baseScale.y * 0.45f),
+                Mathf.Max(0.35f, baseScale.magnitude * 0.24f),
+                rank);
+
+            Die();
         }
 
         private void RefreshSteering()
         {
+            if (laneConstrained)
+            {
+                cachedDistance = Mathf.Max(0f, transform.position.z - player.transform.position.z);
+                cachedDirection = Vector3.back;
+                logicTimer = nearLogicInterval;
+                return;
+            }
+
             Vector3 toPlayer = player.transform.position - transform.position;
             Vector3 planar = new Vector3(toPlayer.x, 0f, toPlayer.z);
             cachedDistance = planar.magnitude;
@@ -146,7 +250,8 @@ namespace HORDAX.Enemies
             float rankScale = rank == EnemyRank.Boss ? 2f : rank == EnemyRank.Elite ? 1.35f : 1f;
             CombatFxPool.Instance?.PlayDeath(
                 transform.position + Vector3.up * Mathf.Max(0.55f, baseScale.y * 0.45f),
-                Mathf.Max(0.45f, baseScale.magnitude * 0.38f) * rankScale);
+                Mathf.Max(0.45f, baseScale.magnitude * 0.38f) * rankScale,
+                rank);
 
             if (rank == EnemyRank.Boss)
                 RunnerCamera.Instance?.Shake(0.32f, 0.28f);
@@ -158,6 +263,7 @@ namespace HORDAX.Enemies
 
         private void Die()
         {
+            ReleaseBossBarrier();
             transform.localScale = baseScale;
 
             if (ownerPool != null)
@@ -167,6 +273,14 @@ namespace HORDAX.Enemies
             }
 
             Destroy(gameObject);
+        }
+
+        private void ReleaseBossBarrier()
+        {
+            if (bossBarrierOwnerId == 0) return;
+
+            GameManager.Instance?.ReleaseBossBarrier(bossBarrierOwnerId);
+            bossBarrierOwnerId = 0;
         }
     }
 }
