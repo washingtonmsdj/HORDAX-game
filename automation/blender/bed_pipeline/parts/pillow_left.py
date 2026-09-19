@@ -1,0 +1,1 @@
+from pillow_part import build\nif __name__=="__main__":\n    print("PART_REPORT",build("pillow_left",export=True)[1])\n
