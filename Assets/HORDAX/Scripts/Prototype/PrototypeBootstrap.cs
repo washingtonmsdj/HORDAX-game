@@ -240,6 +240,18 @@ namespace HORDAX.Prototype
 
             PrototypeWeaponView weaponView = root.AddComponent<PrototypeWeaponView>();
             weaponView.Initialize(playerWeapon, weaponVisual.transform);
+
+            GameObject defenseLine = CreateBlock(
+                "Horde Defense Line",
+                root.transform.position,
+                new Vector3(TrackLayout.LaneHalfWidth * 2f - 0.35f, 0.05f, 0.28f),
+                PrototypeMaterials.Boss,
+                root.transform,
+                false);
+            defenseLine.transform.localPosition = new Vector3(
+                TrackLayout.HordeCenterX - TrackLayout.ArsenalCenterX,
+                -0.77f,
+                0f);
         }
 
         private void ApplyStartingLoadout()
