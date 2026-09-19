@@ -34,6 +34,7 @@ namespace HORDAX.Combat
         private int upgradeLevel = 1;
         private float permanentDamageMultiplier = 1f;
         private float permanentFireRateMultiplier = 1f;
+        private ShootableTarget currentTarget;
 
         public event Action ShotFired;
         public event Action WeaponChanged;
@@ -49,6 +50,18 @@ namespace HORDAX.Combat
         public float RecoilKick => recoilKick;
         public int UpgradeLevel => upgradeLevel;
         public WeaponData Definition => weaponData;
+
+        public bool TryGetAimPoint(out Vector3 point)
+        {
+            if (currentTarget != null && currentTarget.CanBeTargeted)
+            {
+                point = currentTarget.TargetPoint;
+                return true;
+            }
+
+            point = Vector3.zero;
+            return false;
+        }
 
         public void SetMuzzle(Transform value) => muzzle = value;
 
@@ -214,15 +227,18 @@ namespace HORDAX.Combat
                 if (flashTimer <= 0f && muzzleFlash != null) muzzleFlash.SetActive(false);
             }
 
-            if (GameManager.Instance == null || GameManager.Instance.State != GameState.Playing) return;
+            if (GameManager.Instance == null || GameManager.Instance.State != GameState.Playing)
+            {
+                currentTarget = null;
+                return;
+            }
+
+            currentTarget = SelectTarget();
 
             shotTimer -= Time.deltaTime;
-            if (shotTimer > 0f) return;
+            if (shotTimer > 0f || currentTarget == null) return;
 
-            ShootableTarget target = SelectTarget();
-            if (target == null) return;
-
-            Fire(target);
+            Fire(currentTarget);
             shotTimer = 1f / Mathf.Max(0.01f, fireRate);
         }
 
@@ -241,7 +257,9 @@ namespace HORDAX.Combat
                 if (offset.z < -0.5f || offset.z > range) continue;
                 if (Mathf.Abs(offset.x) > 8f) continue;
 
-                float score = offset.z * offset.z + offset.x * offset.x * 1.75f;
+                // HORDAX uses adjacent arsenal/horde lanes, so lateral distance must not
+                // overpower breach urgency. Forward distance remains the main threat score.
+                float score = offset.z * offset.z + offset.x * offset.x * 0.35f;
                 if (score >= bestScore) continue;
 
                 best = candidate;
@@ -312,6 +330,15 @@ namespace HORDAX.Combat
                 if (collider != null) Destroy(collider);
                 Renderer renderer = instance.GetComponent<Renderer>();
                 if (renderer != null) renderer.sharedMaterial = PrototypeMaterials.Bullet;
+
+                TrailRenderer trail = instance.AddComponent<TrailRenderer>();
+                trail.time = 0.09f;
+                trail.startWidth = 0.10f;
+                trail.endWidth = 0.015f;
+                trail.minVertexDistance = 0.04f;
+                trail.sharedMaterial = PrototypeMaterials.Bullet;
+                trail.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                trail.receiveShadows = false;
             }
 
             Bullet bullet = instance.GetComponent<Bullet>();
