@@ -1,0 +1,28 @@
+{
+  "integration": "unity-official-agent-plugin",
+  "provider": "Unity Technologies",
+  "repository": "Unity-Technologies/unity-agent-plugin",
+  "minimum_unity": "6.0",
+  "codex_plugin": "unity@unity-agent-plugin",
+  "role": "unity_knowledge_and_workflow_skills",
+  "execution_authority": "ordax-dev-agent",
+  "current_agent_actions": [
+    "unity.compile",
+    "unity.validate",
+    "unity.run_method",
+    "unity.capture"
+  ],
+  "workflow": [
+    "load_relevant_unity_skill",
+    "implement_project_change",
+    "unity.compile",
+    "unity.validate",
+    "unity.capture_if_visual",
+    "fix_until_green"
+  ],
+  "non_goals": [
+    "replace_ordax_dev_agent",
+    "install_as_unity_package",
+    "bypass_local_validation"
+  ]
+}
