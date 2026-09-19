@@ -23,6 +23,13 @@ namespace HORDAX.Player
             CurrentHealth = maxHealth;
         }
 
+        public void ConfigureBaseHealth(float value)
+        {
+            baseMaxHealth = Mathf.Max(1f, value);
+            maxHealth = baseMaxHealth;
+            CurrentHealth = maxHealth;
+        }
+
         public void SetPermanentHealthMultiplier(float multiplier)
         {
             maxHealth = Mathf.Max(1f, baseMaxHealth * Mathf.Max(0.01f, multiplier));
