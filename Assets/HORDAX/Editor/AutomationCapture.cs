@@ -153,7 +153,9 @@ namespace HORDAX.EditorTools
         private static void WriteSnapshot(string screenshotPath, Camera camera)
         {
             RunnerController player = UnityEngine.Object.FindFirstObjectByType<RunnerController>();
+            PlayerHealth health = player != null ? player.GetComponent<PlayerHealth>() : null;
             WeaponController weapon = player != null ? player.GetComponent<WeaponController>() : null;
+            EnemyPool enemyPool = UnityEngine.Object.FindFirstObjectByType<EnemyPool>();
             EnemyAgent boss = EnemyAgent.ActiveBoss;
             EnemyAgent[] enemies = UnityEngine.Object.FindObjectsByType<EnemyAgent>(FindObjectsSortMode.None);
 
@@ -182,6 +184,9 @@ namespace HORDAX.EditorTools
                 weaponLevel = weapon != null ? weapon.UpgradeLevel : 0,
                 weaponDamage = weapon != null ? weapon.Damage : 0f,
                 weaponFireRate = weapon != null ? weapon.FireRate : 0f,
+                playerHealthNormalized = health != null ? health.Normalized : 0f,
+                enemyPoolCreated = enemyPool != null ? enemyPool.CreatedCount : 0,
+                enemyPoolAvailable = enemyPool != null ? enemyPool.AvailableCount : 0,
                 arsenalLaneCenterX = TrackLayout.ArsenalCenterX,
                 hordeLaneCenterX = TrackLayout.HordeCenterX,
                 laneHalfWidth = TrackLayout.LaneHalfWidth
@@ -209,6 +214,9 @@ namespace HORDAX.EditorTools
             public int weaponLevel;
             public float weaponDamage;
             public float weaponFireRate;
+            public float playerHealthNormalized;
+            public int enemyPoolCreated;
+            public int enemyPoolAvailable;
             public float arsenalLaneCenterX;
             public float hordeLaneCenterX;
             public float laneHalfWidth;
