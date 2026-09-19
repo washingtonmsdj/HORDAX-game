@@ -44,6 +44,7 @@ namespace HORDAX.Enemies
         public static EnemyAgent ActiveBoss { get; private set; }
 
         public EnemyRank Rank => rank;
+        public float CurrentHealth => Mathf.Max(0f, health);
         public float HealthNormalized => maxHealth <= 0f ? 0f : Mathf.Clamp01(health / maxHealth);
         public override Vector3 TargetPoint => transform.position + Vector3.up * Mathf.Max(0.55f, transform.localScale.y * 0.45f);
 
