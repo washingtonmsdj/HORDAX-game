@@ -42,8 +42,8 @@ namespace HORDAX.Player
             position.x = Mathf.MoveTowards(position.x, desiredX, dragSensitivity * Time.deltaTime);
             position.z += currentForwardSpeed * Time.deltaTime;
 
-            if (GameManager.Instance.BossBarrierActive)
-                position.z = Mathf.Min(position.z, GameManager.Instance.BossBarrierZ);
+            if (GameManager.Instance.TryGetActiveBossBarrier(out float bossBarrierZ))
+                position.z = Mathf.Min(position.z, bossBarrierZ);
 
             transform.position = position;
         }
