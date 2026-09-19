@@ -55,8 +55,8 @@ namespace HORDAX.Enemies
 
         private void Start()
         {
-            if (player == null) player = FindObjectOfType<RunnerController>();
-            pool = FindObjectOfType<EnemyPool>();
+            if (player == null) player = FindFirstObjectByType<RunnerController>();
+            pool = FindFirstObjectByType<EnemyPool>();
 
             if (pool == null)
             {
