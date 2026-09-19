@@ -269,7 +269,18 @@ namespace HORDAX.Combat
             // reducing weapon DPS.
             while (shotTimer <= 0f && shotsThisFrame < maxCatchUpShotsPerFrame)
             {
-                Fire(currentTarget);
+                // Re-evaluate after every reserved volley. The previous shot may
+                // already have enough damage in flight to finish its target.
+                ShootableTarget shotTarget = SelectTarget();
+                if (shotTarget == null)
+                {
+                    currentTarget = null;
+                    shotTimer = 0f;
+                    break;
+                }
+
+                currentTarget = shotTarget;
+                Fire(shotTarget);
                 shotTimer += interval;
                 shotsThisFrame++;
             }
