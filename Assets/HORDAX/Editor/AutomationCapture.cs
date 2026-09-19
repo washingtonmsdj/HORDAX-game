@@ -162,6 +162,7 @@ namespace HORDAX.EditorTools
             EnemyPool enemyPool = UnityEngine.Object.FindAnyObjectByType<EnemyPool>();
             EnemyAgent boss = EnemyAgent.ActiveBoss;
             EnemyAgent[] enemies = UnityEngine.Object.FindObjectsByType<EnemyAgent>(FindObjectsSortMode.None);
+            HordeSpawner[] spawners = UnityEngine.Object.FindObjectsByType<HordeSpawner>(FindObjectsSortMode.None);
 
             int elites = 0;
             int bosses = 0;
@@ -172,6 +173,26 @@ namespace HORDAX.EditorTools
                 else if (enemies[i].Rank == EnemyRank.Elite) elites++;
             }
 
+            int activatedSpawners = 0;
+            int pendingSpawners = 0;
+            float nextEncounterZ = float.PositiveInfinity;
+            float playerZ = player != null ? player.transform.position.z : 0f;
+
+            for (int i = 0; i < spawners.Length; i++)
+            {
+                HordeSpawner spawner = spawners[i];
+                if (spawner == null) continue;
+
+                if (spawner.Activated)
+                    activatedSpawners++;
+                else
+                    pendingSpawners++;
+
+                if (spawner.EncounterZ >= playerZ && spawner.EncounterZ < nextEncounterZ)
+                    nextEncounterZ = spawner.EncounterZ;
+            }
+
+            bool hasNextEncounter = !float.IsPositiveInfinity(nextEncounterZ);
             CaptureSnapshot snapshot = new CaptureSnapshot
             {
                 capturedAtUtc = DateTime.UtcNow.ToString("o"),
@@ -183,12 +204,21 @@ namespace HORDAX.EditorTools
                 activeElites = elites,
                 activeBosses = bosses,
                 enemyBreaches = GameManager.Instance != null ? GameManager.Instance.EnemyBreaches : 0,
+                enemyKills = GameManager.Instance != null ? GameManager.Instance.EnemyKills : 0,
+                bossKills = GameManager.Instance != null ? GameManager.Instance.BossKills : 0,
+                runCoins = GameManager.Instance != null ? GameManager.Instance.RunCoins : 0,
+                score = GameManager.Instance != null ? GameManager.Instance.Score : 0,
                 bossHealthNormalized = boss != null ? boss.HealthNormalized : 0f,
                 weaponName = weapon != null ? weapon.DisplayName : string.Empty,
                 weaponLevel = weapon != null ? weapon.UpgradeLevel : 0,
                 weaponDamage = weapon != null ? weapon.Damage : 0f,
                 weaponFireRate = weapon != null ? weapon.FireRate : 0f,
                 playerHealthNormalized = health != null ? health.Normalized : 0f,
+                playerForwardSpeed = player != null ? player.ForwardSpeed : 0f,
+                activatedSpawners = activatedSpawners,
+                pendingSpawners = pendingSpawners,
+                nextEncounterZ = hasNextEncounter ? nextEncounterZ : -1f,
+                distanceToNextEncounter = hasNextEncounter ? Mathf.Max(0f, nextEncounterZ - playerZ) : -1f,
                 enemyPoolCreated = enemyPool != null ? enemyPool.CreatedCount : 0,
                 enemyPoolAvailable = enemyPool != null ? enemyPool.AvailableCount : 0,
                 arsenalLaneCenterX = TrackLayout.ArsenalCenterX,
@@ -213,12 +243,21 @@ namespace HORDAX.EditorTools
             public int activeElites;
             public int activeBosses;
             public int enemyBreaches;
+            public int enemyKills;
+            public int bossKills;
+            public int runCoins;
+            public int score;
             public float bossHealthNormalized;
             public string weaponName;
             public int weaponLevel;
             public float weaponDamage;
             public float weaponFireRate;
             public float playerHealthNormalized;
+            public float playerForwardSpeed;
+            public int activatedSpawners;
+            public int pendingSpawners;
+            public float nextEncounterZ;
+            public float distanceToNextEncounter;
             public int enemyPoolCreated;
             public int enemyPoolAvailable;
             public float arsenalLaneCenterX;
