@@ -493,17 +493,17 @@ collection = ensure_collection()
 # palette
 # ---------------------------------------------------------------------------
 
-walnut = wood_material(PREFIX + "Walnut", (0.34, 0.13, 0.045))
-walnut_dark = wood_material(PREFIX + "Walnut_Dark", (0.19, 0.055, 0.020))
-taupe = fabric_material(PREFIX + "Headboard_Taupe", (0.48, 0.40, 0.31), 0.90, 180.0, 0.13)
-ivory = fabric_material(PREFIX + "Ivory_Linen", (0.91, 0.875, 0.79), 0.90, 225.0, 0.09)
-ivory_bright = fabric_material(PREFIX + "Ivory_Bright", (0.97, 0.945, 0.89), 0.89, 240.0, 0.08)
-sage = fabric_material(PREFIX + "Sage_Olive", (0.37, 0.39, 0.29), 0.93, 195.0, 0.15)
-sage_dark = fabric_material(PREFIX + "Sage_Dark", (0.31, 0.33, 0.24), 0.92, 205.0, 0.13)
-terracotta = fabric_material(PREFIX + "Terracotta", (0.60, 0.28, 0.14), 0.90, 205.0, 0.12)
-mattress_mat = fabric_material(PREFIX + "Mattress", (0.90, 0.89, 0.84), 0.86, 260.0, 0.08)
+walnut = wood_material(PREFIX + "Walnut", (0.138, 0.068, 0.034))
+walnut_dark = wood_material(PREFIX + "Walnut_Dark", (0.075, 0.032, 0.015))
+taupe = fabric_material(PREFIX + "Headboard_Taupe", (0.386, 0.301, 0.231), 0.90, 180.0, 0.13)
+ivory = fabric_material(PREFIX + "Ivory_Linen", (0.720, 0.655, 0.590), 0.90, 225.0, 0.09)
+ivory_bright = fabric_material(PREFIX + "Ivory_Bright", (0.807, 0.738, 0.680), 0.89, 240.0, 0.08)
+sage = fabric_material(PREFIX + "Sage_Olive", (0.098, 0.087, 0.051), 0.93, 195.0, 0.15)
+sage_dark = fabric_material(PREFIX + "Sage_Dark", (0.078, 0.069, 0.042), 0.92, 205.0, 0.13)
+terracotta = fabric_material(PREFIX + "Terracotta", (0.305, 0.120, 0.061), 0.90, 205.0, 0.12)
+mattress_mat = fabric_material(PREFIX + "Mattress", (0.730, 0.710, 0.660), 0.86, 260.0, 0.08)
 piping = simple_material(PREFIX + "Piping", (0.28, 0.20, 0.14), 0.65)
-floor_mat = simple_material(PREFIX + "Studio_Floor", (0.74, 0.70, 0.64), 0.95)
+floor_mat = simple_material(PREFIX + "Studio_Floor", (0.738, 0.701, 0.658), 0.95)
 
 
 # ---------------------------------------------------------------------------
@@ -766,6 +766,7 @@ add_area_light(collection, "Fill", (-1.85, BED_Y - 0.35, 2.30), 620, 2.6, (0.82,
 add_area_light(collection, "Head_Rim", (0.0, BED_Y + 1.75, 2.65), 500, 2.2, (1.0, 0.78, 0.62), (0.0, head_y, 1.45))
 
 scene = bpy.context.scene
+scene.render.engine = "BLENDER_EEVEE_NEXT"
 scene.render.resolution_x = 1280
 scene.render.resolution_y = 960
 scene.render.resolution_percentage = 100
@@ -780,8 +781,8 @@ if scene.world is not None:
     scene.world.use_nodes = True
     background = scene.world.node_tree.nodes.get("Background")
     if background is not None:
-        background.inputs["Color"].default_value = (0.055, 0.050, 0.045, 1.0)
-        background.inputs["Strength"].default_value = 0.28
+        background.inputs["Color"].default_value = (0.738, 0.701, 0.658, 1.0)
+        background.inputs["Strength"].default_value = 0.72
 
 window = bpy.context.window
 screen = window.screen if window else None
@@ -791,13 +792,12 @@ if screen:
             continue
         space = area.spaces.active
         try:
-            space.shading.type = "MATERIAL"
-            space.shading.light = "STUDIO"
+            space.shading.type = "RENDERED"
             space.shading.show_shadows = True
             space.shading.show_cavity = True
             space.shading.cavity_type = "WORLD"
-            space.shading.use_scene_world = False
-            space.shading.use_scene_lights = False
+            space.shading.use_scene_world = True
+            space.shading.use_scene_lights = True
         except Exception:
             pass
 
