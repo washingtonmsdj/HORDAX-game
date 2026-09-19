@@ -448,7 +448,10 @@ namespace HORDAX.Prototype
 
         private void BuildDefaultLevel()
         {
-            CreateHorde("Wave 01", 30f, 30, 6, 5f, 3.1f, 7f);
+            // The prototype is tuned as a readable power curve: early leaks hurt,
+            // but a single imperfect wave should not end the run before the player
+            // reaches the weapon/upgrade loop.
+            CreateHorde("Wave 01", 30f, 30, 6, 5f, 3.1f, 3f);
             CreateGate("Gate 50", 54f, 50f);
             CreateWeaponPickup(
                 "SMG Pickup",
@@ -457,12 +460,13 @@ namespace HORDAX.Prototype
                 WeaponArchetype.SMG,
                 "SMG");
 
-            CreateHorde("Wave 02", 88f, 48, 8, 8f, 3.45f, 8f);
-            CreateHorde("Elite Squad", 116f, 4, 4, 26f, 3.8f, 12f, null, EnemyRank.Elite, 8, 90, 1.35f, true);
+            CreateHorde("Wave 02", 88f, 48, 8, 8f, 3.45f, 4f);
+            CreateHorde("Elite Squad", 116f, 4, 4, 26f, 3.8f, 8f, null, EnemyRank.Elite, 8, 90, 1.35f, true);
             CreateGate("Gate 120", 134f, 120f);
             CreateUpgrade("Upgrade 01", 141f, 3f, 1.12f, "+POWER");
+            CreateHealPickup("Recovery 01", 151f, 0f, 28f, "+28 HP");
 
-            CreateHorde("Wave 03", 166f, 72, 9, 11f, 3.8f, 9f);
+            CreateHorde("Wave 03", 166f, 72, 9, 11f, 3.8f, 5f);
             CreateGate("Gate 230", 196f, 230f);
             CreateWeaponPickup(
                 "Shotgun Pickup",
@@ -470,15 +474,16 @@ namespace HORDAX.Prototype
                 PrototypeArmoryCatalog.GetById("shotgun")?.WeaponData,
                 WeaponArchetype.Shotgun,
                 "SHOTGUN");
+            CreateHealPickup("Recovery 02", 216f, 0f, 32f, "+32 HP");
 
-            CreateHorde("Wave 04", 228f, 96, 10, 14f, 4.0f, 10f);
+            CreateHorde("Wave 04", 228f, 96, 10, 14f, 4.0f, 6f);
             CreateWeaponPickup(
                 "Minigun Pickup",
                 252f,
                 PrototypeArmoryCatalog.GetById("minigun")?.WeaponData,
                 WeaponArchetype.Minigun,
                 "MINIGUN");
-            CreateHorde("BLOCK BOSS", 276f, 1, 1, 450f, 2.6f, 25f, null, EnemyRank.Boss, 125, 1500, 2.5f, true);
+            CreateHorde("BLOCK BOSS", 276f, 1, 1, 450f, 2.6f, 12f, null, EnemyRank.Boss, 125, 1500, 2.5f, true);
 
             CreateFinish(finishZ);
         }
