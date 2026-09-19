@@ -9,6 +9,7 @@ namespace HORDAX.Enemies
 {
     public sealed class EnemyAgent : ShootableTarget
     {
+        private static int nextBossBarrierOwnerId = 1;
         [SerializeField] private float maxHealth = 5f;
         [SerializeField] private float moveSpeed = 3.2f;
         [SerializeField] private float contactDamage = 8f;
@@ -84,7 +85,9 @@ namespace HORDAX.Enemies
             if (rank == EnemyRank.Boss && GameManager.Instance != null)
             {
                 ActiveBoss = this;
-                bossBarrierOwnerId = GetInstanceID();
+                bossBarrierOwnerId = nextBossBarrierOwnerId++;
+                if (nextBossBarrierOwnerId == int.MaxValue)
+                    nextBossBarrierOwnerId = 1;
                 float barrierOffset = Mathf.Max(6f, transform.localScale.z * 2.5f);
                 GameManager.Instance.RegisterBossBarrier(bossBarrierOwnerId, transform.position.z - barrierOffset);
             }
