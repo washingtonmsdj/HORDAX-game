@@ -116,13 +116,16 @@ namespace HORDAX.Enemies
             float size = enemyData != null ? enemyData.ScaleMultiplier : scaleMultiplier;
             GameObject requestedPrefab = enemyData != null && enemyData.VisualPrefab != null ? enemyData.VisualPrefab : enemyPrefab;
 
-            int col = index % columns;
-            int row = index / columns;
-            float availableWidth = constrainToLane ? laneHalfWidth * 2f : Mathf.Max(0f, (columns - 1) * maxSpacingX);
-            float spacingX = columns > 1
-                ? Mathf.Min(maxSpacingX, availableWidth / Mathf.Max(1, columns - 1))
+            int effectiveColumns = constrainToLane ? Mathf.Clamp(columns, 1, 6) : columns;
+            int col = index % effectiveColumns;
+            int row = index / effectiveColumns;
+            float availableWidth = constrainToLane
+                ? laneHalfWidth * 2f
+                : Mathf.Max(0f, (effectiveColumns - 1) * maxSpacingX);
+            float spacingX = effectiveColumns > 1
+                ? Mathf.Min(maxSpacingX, availableWidth / Mathf.Max(1, effectiveColumns - 1))
                 : 0f;
-            float widthOffset = (columns - 1) * spacingX * 0.5f;
+            float widthOffset = (effectiveColumns - 1) * spacingX * 0.5f;
             float localX = col * spacingX - widthOffset + Random.Range(-spawnJitter, spawnJitter);
             float x = constrainToLane
                 ? Mathf.Clamp(laneCenterX + localX, laneCenterX - laneHalfWidth, laneCenterX + laneHalfWidth)
