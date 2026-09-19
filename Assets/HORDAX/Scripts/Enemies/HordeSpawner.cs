@@ -33,6 +33,12 @@ namespace HORDAX.Enemies
         private float spawnTimer;
         private bool forceConfiguredRank;
 
+        public bool Activated => activated;
+        public int SpawnedCount => spawnedCount;
+        public int RemainingCount => Mathf.Max(0, count - spawnedCount);
+        public EnemyRank ConfiguredRank => enemyRank;
+        public float EncounterZ => transform.position.z;
+
         public void Configure(
             RunnerController runner,
             int enemyCount,
