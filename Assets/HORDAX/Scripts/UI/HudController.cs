@@ -11,12 +11,15 @@ namespace HORDAX.UI
 {
     public sealed class HudController : MonoBehaviour
     {
+        private const string PrototypeRevision = "TWO-LANE CORE / PASS 1";
+
         private RunnerController runner;
         private PlayerHealth health;
         private WeaponController weapon;
         private Text statusText;
         private Text statsText;
         private Text encounterText;
+        private Text revisionText;
         private Image healthFill;
         private Image progressFill;
         private GameObject resultControls;
@@ -165,9 +168,19 @@ namespace HORDAX.UI
             statsRect.anchorMax = new Vector2(0f, 1f);
             statsRect.pivot = new Vector2(0f, 1f);
             statsRect.anchoredPosition = new Vector2(40f, -22f);
-            statsRect.sizeDelta = new Vector2(1840f, 92f);
+            statsRect.sizeDelta = new Vector2(1460f, 92f);
             statsText.horizontalOverflow = HorizontalWrapMode.Overflow;
             statsText.verticalOverflow = VerticalWrapMode.Overflow;
+
+            revisionText = CreateText("Prototype Revision", topPanel.transform, font, 22, TextAnchor.UpperRight);
+            RectTransform revisionRect = revisionText.rectTransform;
+            revisionRect.anchorMin = new Vector2(1f, 1f);
+            revisionRect.anchorMax = new Vector2(1f, 1f);
+            revisionRect.pivot = new Vector2(1f, 1f);
+            revisionRect.anchoredPosition = new Vector2(-40f, -24f);
+            revisionRect.sizeDelta = new Vector2(420f, 46f);
+            revisionText.color = new Color(0.38f, 0.86f, 1f, 1f);
+            revisionText.text = PrototypeRevision;
 
             encounterText = CreateText("Encounter Status", transform, font, 34, TextAnchor.MiddleCenter);
             RectTransform encounterRect = encounterText.rectTransform;
