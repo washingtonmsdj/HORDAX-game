@@ -112,10 +112,54 @@ namespace HORDAX.Prototype
             root.AddComponent<PlayerHealth>();
             playerWeapon = root.AddComponent<WeaponController>();
 
-            GameObject visual = CreatePrimitiveWithoutCollider(PrimitiveType.Capsule, "Player Visual", root.transform);
-            visual.transform.localPosition = Vector3.zero;
-            visual.transform.localScale = new Vector3(0.7f, 0.8f, 0.7f);
-            visual.GetComponent<Renderer>().sharedMaterial = PrototypeMaterials.Player;
+            GameObject visualRoot = new GameObject("Player Visual");
+            visualRoot.transform.SetParent(root.transform, false);
+
+            GameObject torso = CreatePrimitiveWithoutCollider(PrimitiveType.Capsule, "Torso", visualRoot.transform);
+            torso.transform.localPosition = new Vector3(0f, 0.08f, 0f);
+            torso.transform.localScale = new Vector3(0.58f, 0.58f, 0.52f);
+            torso.GetComponent<Renderer>().sharedMaterial = PrototypeMaterials.Player;
+
+            GameObject head = CreatePrimitiveWithoutCollider(PrimitiveType.Sphere, "Head", visualRoot.transform);
+            head.transform.localPosition = new Vector3(0f, 0.82f, 0.02f);
+            head.transform.localScale = Vector3.one * 0.42f;
+            head.GetComponent<Renderer>().sharedMaterial = PrototypeMaterials.Player;
+
+            GameObject leftArm = CreateBlock(
+                "Left Arm",
+                root.transform.position,
+                new Vector3(0.16f, 0.62f, 0.16f),
+                PrototypeMaterials.Player,
+                visualRoot.transform,
+                false);
+            leftArm.transform.localPosition = new Vector3(-0.47f, 0.10f, 0.05f);
+
+            GameObject rightArm = CreateBlock(
+                "Right Arm",
+                root.transform.position,
+                new Vector3(0.16f, 0.62f, 0.16f),
+                PrototypeMaterials.Player,
+                visualRoot.transform,
+                false);
+            rightArm.transform.localPosition = new Vector3(0.47f, 0.10f, 0.05f);
+
+            GameObject leftLeg = CreateBlock(
+                "Left Leg",
+                root.transform.position,
+                new Vector3(0.20f, 0.68f, 0.22f),
+                PrototypeMaterials.Player,
+                visualRoot.transform,
+                false);
+            leftLeg.transform.localPosition = new Vector3(-0.20f, -0.62f, 0f);
+
+            GameObject rightLeg = CreateBlock(
+                "Right Leg",
+                root.transform.position,
+                new Vector3(0.20f, 0.68f, 0.22f),
+                PrototypeMaterials.Player,
+                visualRoot.transform,
+                false);
+            rightLeg.transform.localPosition = new Vector3(0.20f, -0.62f, 0f);
 
             GameObject weaponVisual = CreateBlock("Weapon", root.transform.position + new Vector3(0.45f, 0.35f, 0.55f), new Vector3(0.18f, 0.18f, 1.1f), PrototypeMaterials.Rail, root.transform, false);
             weaponVisual.transform.localPosition = new Vector3(0.45f, 0.35f, 0.55f);
