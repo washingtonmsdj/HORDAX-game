@@ -47,7 +47,18 @@ PART_OFFSETS={
 }
 
 
+def _remove_obsolete_source_collections():
+    for name in ("ORDAX_PART_FRAME","ORDAX_PART_HEADBOARD","ORDAX_PART_PILLOW_SAGE","ORDAX_PART_PILLOW_TERRACOTTA"):
+        col=bpy.data.collections.get(name)
+        if col is None:
+            continue
+        for obj in list(col.objects):
+            bpy.data.objects.remove(obj,do_unlink=True)
+        bpy.data.collections.remove(col)
+
+
 def build_parts():
+    _remove_obsolete_source_collections()
     reports={}
     collections={}
 
