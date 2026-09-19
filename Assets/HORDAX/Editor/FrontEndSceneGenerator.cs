@@ -23,11 +23,13 @@ namespace HORDAX.EditorTools
                 return;
             }
 
-            if (!File.Exists(ScenePath))
-                GenerateScene();
+            if (!File.Exists(ScenePath) && !GenerateScene())
+                return;
 
             EnsureInBuildSettings();
-            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+
+            if (SceneManager.GetActiveScene().path != ScenePath)
+                EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
         }
 
         [MenuItem("HORDAX/Open Front End", true)]
@@ -53,11 +55,15 @@ namespace HORDAX.EditorTools
                     "Regenerate",
                     "Cancel");
 
-                if (!confirmed) return;
+                if (!confirmed)
+                    return;
             }
 
-            GenerateScene();
-            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            if (!GenerateScene())
+                return;
+
+            if (SceneManager.GetActiveScene().path != ScenePath)
+                EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
         }
 
         [MenuItem("HORDAX/Generate Front End Scene", true)]
@@ -66,29 +72,69 @@ namespace HORDAX.EditorTools
             return !EditorApplication.isPlayingOrWillChangePlaymode;
         }
 
-        private static void GenerateScene()
+        private static bool GenerateScene()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
             {
                 Debug.LogWarning("HORDAX scene generation is unavailable during Play Mode.");
-                return;
+                return false;
             }
+
+            if (!CanReplaceCurrentScene())
+                return false;
 
             if (!Directory.Exists(SceneFolder))
                 Directory.CreateDirectory(SceneFolder);
 
-            Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
+            Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             GameObject root = new GameObject("HORDAX Front End");
             SceneManager.MoveGameObjectToScene(root, scene);
             root.AddComponent<MetaMenuController>();
 
-            EditorSceneManager.SaveScene(scene, ScenePath);
-            EditorSceneManager.CloseScene(scene, true);
+            if (!EditorSceneManager.SaveScene(scene, ScenePath))
+            {
+                Debug.LogError("Failed to save HORDAX front-end scene at " + ScenePath);
+                return false;
+            }
+
             EnsureInBuildSettings();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
             Debug.Log("HORDAX front-end scene generated at " + ScenePath);
+            return true;
+        }
+
+        private static bool CanReplaceCurrentScene()
+        {
+            Scene active = SceneManager.GetActiveScene();
+            if (!active.IsValid())
+                return true;
+
+            if (string.IsNullOrEmpty(active.path) && IsDefaultUntitledScene(active))
+                return true;
+
+            return EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
+        }
+
+        private static bool IsDefaultUntitledScene(Scene scene)
+        {
+            GameObject[] roots = scene.GetRootGameObjects();
+            if (roots.Length != 2)
+                return false;
+
+            bool hasMainCamera = false;
+            bool hasDirectionalLight = false;
+
+            for (int i = 0; i < roots.Length; i++)
+            {
+                if (roots[i].name == "Main Camera")
+                    hasMainCamera = true;
+                else if (roots[i].name == "Directional Light")
+                    hasDirectionalLight = true;
+            }
+
+            return hasMainCamera && hasDirectionalLight;
         }
 
         private static void EnsureInBuildSettings()
