@@ -187,6 +187,13 @@ namespace HORDAX.UI
             backdropRect.sizeDelta = new Vector2(1120f, 470f);
             resultBackdrop.GetComponent<Image>().color = new Color(0.02f, 0.03f, 0.05f, 0.90f);
 
+            statusText.transform.SetParent(resultBackdrop.transform, false);
+            RectTransform resultStatusRect = statusText.rectTransform;
+            resultStatusRect.anchorMin = Vector2.zero;
+            resultStatusRect.anchorMax = Vector2.one;
+            resultStatusRect.offsetMin = new Vector2(40f, 185f);
+            resultStatusRect.offsetMax = new Vector2(-40f, -30f);
+
             resultControls = new GameObject("Result Controls", typeof(RectTransform));
             resultControls.transform.SetParent(resultBackdrop.transform, false);
             RectTransform resultRect = resultControls.GetComponent<RectTransform>();
