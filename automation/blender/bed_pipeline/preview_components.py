@@ -40,6 +40,11 @@ def build():
             copy.location.x += offset[0]
             copy.location.y += offset[1] + 13.0
             copy.location.z += offset[2]
+            # Preview copies are deliberately outside the validated asset
+            # namespace so they cannot duplicate roles/object IDs.
+            for key in ("ordax_asset", "ordax_component", "ordax_role", "ordax_object_id", "ordax_standard_version"):
+                if key in copy:
+                    del copy[key]
             copy["ordax_stage_source"] = source.name
             copy["ordax_stage_component"] = component
             stage.objects.link(copy)
