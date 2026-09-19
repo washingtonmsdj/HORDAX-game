@@ -50,6 +50,7 @@ namespace HORDAX.EditorTools
             public string id;
             public string action;
             public string outputPath;
+            public string scenePath;
             public int width = 1280;
             public int height = 720;
             public int warmupFrames = 120;
@@ -190,6 +191,10 @@ namespace HORDAX.EditorTools
                         Validate(command);
                         break;
 
+                    case "scene_open":
+                        OpenScene(command);
+                        break;
+
                     case "scene_summary":
                         SceneSummary(command, false);
                         break;
@@ -253,6 +258,40 @@ namespace HORDAX.EditorTools
             response.validationErrors = new List<string>(report.Errors).ToArray();
             response.validationWarnings = new List<string>(report.Warnings).ToArray();
             SaveResponse(response);
+        }
+
+        private static void OpenScene(AgentCommand command)
+        {
+            if (EditorApplication.isCompiling || EditorApplication.isUpdating)
+            {
+                WriteResponse(command, false, "Unity Editor is compiling or importing.");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(command.scenePath) ||
+                !command.scenePath.StartsWith("Assets/", StringComparison.Ordinal) ||
+                !command.scenePath.EndsWith(".unity", StringComparison.OrdinalIgnoreCase))
+            {
+                WriteResponse(command, false, "scenePath must be a project-relative Assets/*.unity path.");
+                return;
+            }
+
+            string fullPath = Path.GetFullPath(Path.Combine(ProjectRoot, command.scenePath));
+            if (!fullPath.StartsWith(ProjectRoot, StringComparison.OrdinalIgnoreCase) || !File.Exists(fullPath))
+            {
+                WriteResponse(command, false, "Scene does not exist inside the HORDAX project.");
+                return;
+            }
+
+            Scene active = SceneManager.GetActiveScene();
+            if (active.IsValid() && active.isDirty)
+            {
+                WriteResponse(command, false, "Active scene has unsaved changes.");
+                return;
+            }
+
+            EditorSceneManager.OpenScene(command.scenePath, OpenSceneMode.Single);
+            WriteResponse(command, true, "Scene opened: " + command.scenePath);
         }
 
         private static void SceneSummary(AgentCommand command, bool physicsAudit)
