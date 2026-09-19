@@ -1,0 +1,61 @@
+{
+  "id": "bed_structure_v1",
+  "component": "bed_structure",
+  "script_path": "automation/blender/bed_pipeline/parts/bed_structure_part.py",
+  "label": "bed-structure-ordax-060",
+  "save_target_path": "Artifacts/Blender/bed_structure_generation_pass_060.blend",
+  "max_objects": 180,
+  "capture": true,
+  "capture_required": true,
+  "rollback_on_failure": true,
+  "contact_pairs": [
+    [
+      "PART_Bed_Headboard_Channel_0",
+      "PART_Bed_Headboard_Channel_1"
+    ],
+    [
+      "PART_Bed_Headboard_Channel_1",
+      "PART_Bed_Headboard_Channel_2"
+    ],
+    [
+      "PART_Bed_Headboard_Channel_2",
+      "PART_Bed_Headboard_Channel_3"
+    ],
+    [
+      "PART_Bed_Headboard_Channel_3",
+      "PART_Bed_Headboard_Channel_4"
+    ],
+    [
+      "PART_Bed_Headboard_Channel_4",
+      "PART_Bed_Headboard_Channel_5"
+    ],
+    [
+      "PART_Bed_Headboard_Channel_5",
+      "PART_Bed_Headboard_Channel_6"
+    ],
+    [
+      "PART_Bed_Left_Rail",
+      "PART_Bed_Right_Rail"
+    ]
+  ],
+  "expected": {
+    "bed_legs": 4,
+    "rear_legs_are_headboard_posts": true,
+    "headboard_channels": 7,
+    "total_height_m": 1.56,
+    "frame_length_m": 2.02,
+    "mattress_reference_m": [
+      0.88,
+      1.88,
+      0.3
+    ]
+  },
+  "gates": [
+    "part_validation",
+    "rich_scene_snapshot",
+    "bvh_no_intersection",
+    "viewport_capture",
+    "managed_checkpoint",
+    "final_blend_save"
+  ]
+}
