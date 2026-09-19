@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using HORDAX.Data;
+using HORDAX.Prototype;
 
 namespace HORDAX.EditorTools
 {
@@ -35,6 +36,7 @@ namespace HORDAX.EditorTools
             List<string> warnings = new List<string>();
 
             ValidateWeapons(errors, warnings);
+            ValidatePrototypeArmory(errors, warnings);
             ValidateEnemies(errors, warnings);
             ValidateLevels(errors, warnings);
             ValidateCampaigns(errors, warnings);
@@ -86,6 +88,41 @@ namespace HORDAX.EditorTools
                     if (modifier == null)
                         warnings.Add($"Weapon '{name}' contains a null modifier at index {modifierIndex}.");
                 }
+            }
+        }
+
+        private static void ValidatePrototypeArmory(List<string> errors, List<string> warnings)
+        {
+            IReadOnlyList<WeaponUnlockDefinition> entries = PrototypeArmoryCatalog.All;
+            HashSet<string> ids = new HashSet<string>();
+
+            for (int i = 0; i < entries.Count; i++)
+            {
+                WeaponUnlockDefinition entry = entries[i];
+                if (entry == null)
+                {
+                    errors.Add($"Prototype armory contains a null entry at index {i}.");
+                    continue;
+                }
+
+                if (string.IsNullOrWhiteSpace(entry.WeaponId))
+                    errors.Add($"Prototype armory entry {i} has no weapon id.");
+                else if (!ids.Add(entry.WeaponId))
+                    errors.Add($"Prototype armory contains duplicate weapon id '{entry.WeaponId}'.");
+
+                if (entry.WeaponData == null)
+                {
+                    errors.Add($"Prototype armory weapon '{entry.DisplayName}' has no WeaponData.");
+                    continue;
+                }
+
+                if (entry.WeaponData.Archetype != entry.PrototypeWeapon)
+                    errors.Add(
+                        $"Prototype armory weapon '{entry.DisplayName}' archetype mismatch: " +
+                        $"unlock={entry.PrototypeWeapon}, data={entry.WeaponData.Archetype}.");
+
+                if (entry.WeaponData.Damage <= 0f || entry.WeaponData.FireRate <= 0f || entry.WeaponData.Range <= 0f)
+                    errors.Add($"Prototype armory weapon '{entry.DisplayName}' has invalid runtime combat stats.");
             }
         }
 
