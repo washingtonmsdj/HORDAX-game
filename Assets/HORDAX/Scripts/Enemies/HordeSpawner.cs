@@ -109,7 +109,8 @@ namespace HORDAX.Enemies
             GameObject enemy = agent.gameObject;
             enemy.name = $"{name}_Enemy_{index:000}";
             enemy.transform.SetParent(null, true);
-            enemy.transform.position = transform.position + new Vector3(x, 0.6f * size, z);
+            float spawnHeight = requestedPrefab == null ? 0.95f : 0.6f;
+            enemy.transform.position = transform.position + new Vector3(x, spawnHeight * size, z);
             enemy.transform.rotation = Quaternion.Euler(0f, 180f + Random.Range(-6f, 6f), 0f);
             enemy.transform.localScale = new Vector3(0.86f, Random.Range(1.05f, 1.28f), 0.86f) * size;
 
