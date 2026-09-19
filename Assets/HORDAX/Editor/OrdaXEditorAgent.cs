@@ -173,6 +173,14 @@ namespace HORDAX.EditorTools
                         BeginCapture(command);
                         break;
 
+                    case "play_start":
+                        StartPlay(command);
+                        break;
+
+                    case "play_stop":
+                        StopPlay(command);
+                        break;
+
                     default:
                         WriteResponse(command, false, "Unsupported Unity editor-agent action: " + command.action);
                         break;
@@ -214,6 +222,79 @@ namespace HORDAX.EditorTools
             response.errorCount = report.ErrorCount;
             response.warningCount = report.WarningCount;
             SaveResponse(response);
+        }
+
+        private static void StartPlay(AgentCommand command)
+        {
+            if (EditorApplication.isCompiling || EditorApplication.isUpdating)
+            {
+                WriteResponse(command, false, "Unity Editor is compiling or importing.");
+                return;
+            }
+
+            if (EditorApplication.isPlaying)
+            {
+                WriteResponse(command, true, "Unity Editor is already in Play Mode.");
+                return;
+            }
+
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                WriteResponse(command, false, "Unity Editor is already changing Play Mode state.");
+                return;
+            }
+
+            Scene active = SceneManager.GetActiveScene();
+            if (active.IsValid() && active.path != PrototypeScenePath && active.isDirty)
+            {
+                WriteResponse(
+                    command,
+                    false,
+                    "Play Mode start deferred because the active Unity scene has unsaved changes.");
+                return;
+            }
+
+            if (active.path != PrototypeScenePath)
+            {
+                if (!File.Exists(Path.Combine(ProjectRoot, PrototypeScenePath)))
+                {
+                    WriteResponse(command, false, "Prototype scene is missing.");
+                    return;
+                }
+
+                EditorSceneManager.OpenScene(PrototypeScenePath, OpenSceneMode.Single);
+            }
+
+            WriteResponse(command, true, "Play Mode start requested.");
+            EditorApplication.delayCall += () =>
+            {
+                if (!EditorApplication.isPlayingOrWillChangePlaymode &&
+                    !EditorApplication.isPlaying)
+                {
+                    EditorApplication.EnterPlaymode();
+                }
+            };
+        }
+
+        private static void StopPlay(AgentCommand command)
+        {
+            if (!EditorApplication.isPlaying &&
+                !EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                WriteResponse(command, true, "Unity Editor is already outside Play Mode.");
+                return;
+            }
+
+            WriteResponse(command, true, "Play Mode stop requested.");
+            EditorApplication.delayCall += () =>
+            {
+                if (EditorApplication.isPlaying ||
+                    EditorApplication.isPlayingOrWillChangePlaymode)
+                {
+                    Time.timeScale = 1f;
+                    EditorApplication.ExitPlaymode();
+                }
+            };
         }
 
         private static void BeginCapture(AgentCommand command)
