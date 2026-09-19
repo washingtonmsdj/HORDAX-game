@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/HORDAX/Scenes/FrontEnd.unity
+    guid: 77e75971e30ef274f80f8846b7c1c312
+  - enabled: 1
+    path: Assets/HORDAX/Scenes/Prototype.unity
+    guid: 3f0736abde66800489d2df03969f2810
   m_configObjects: {}
