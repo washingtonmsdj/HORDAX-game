@@ -1,6 +1,7 @@
 """Machine-readable quality gate for the modular bed pipeline."""
 
 from pathlib import Path
+from datetime import datetime, timezone
 import json
 import math
 import sys
@@ -117,8 +118,20 @@ def validate(*, raise_on_error=True):
                        f"{role}: max_y={hi.y:.4f}, headboard_front={head_front_y:.4f}")
 
     report["ok"] = not report["errors"]
+    report["validated_at"] = datetime.now(timezone.utc).isoformat()
     bpy.context.scene["ordax_validation_report"] = json.dumps(report, sort_keys=True)
     bpy.context.scene["ordax_validation_ok"] = report["ok"]
+
+    # Persist a lightweight validation history outside source control. This is
+    # feedback data for future generators: dimensions, failures and metrics.
+    project_root = HERE.parents[2]
+    validation_dir = project_root / "Artifacts" / "Blender" / "validation"
+    validation_dir.mkdir(parents=True, exist_ok=True)
+    latest = validation_dir / "bed_latest.json"
+    history = validation_dir / "bed_history.jsonl"
+    latest.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    with history.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(report, ensure_ascii=False) + "\n")
 
     if raise_on_error and not report["ok"]:
         raise RuntimeError("OrdaX asset validation failed: " + json.dumps(report["errors"], ensure_ascii=False))
