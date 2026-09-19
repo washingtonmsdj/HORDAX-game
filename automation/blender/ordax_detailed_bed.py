@@ -229,19 +229,31 @@ def add_cube(collection, name, location, dimensions, mat, bevel=0.025, segments=
 
 
 def add_tapered_leg(collection, name, location, height, mat):
-    bpy.ops.mesh.primitive_cone_add(
-        vertices=32,
-        radius1=0.045,
-        radius2=0.031,
-        depth=height,
-        location=location,
-    )
-    obj = bpy.context.object
-    obj.name = PREFIX + name
-    move_to_collection(obj, collection)
+    """Square tapered walnut leg matching the reference furniture."""
+    x0, y0, z0 = location
+    bottom = 0.070
+    top = 0.052
+    z_bottom = -height / 2
+    z_top = height / 2
+    verts = [
+        (-bottom/2, -bottom/2, z_bottom), (bottom/2, -bottom/2, z_bottom),
+        (bottom/2, bottom/2, z_bottom), (-bottom/2, bottom/2, z_bottom),
+        (-top/2, -top/2, z_top), (top/2, -top/2, z_top),
+        (top/2, top/2, z_top), (-top/2, top/2, z_top),
+    ]
+    faces = [
+        (0,1,2,3), (4,7,6,5),
+        (0,4,5,1), (1,5,6,2), (2,6,7,3), (3,7,4,0),
+    ]
+    mesh = bpy.data.meshes.new(PREFIX + name + "_Mesh")
+    mesh.from_pydata(verts, [], faces)
+    mesh.update()
+    obj = bpy.data.objects.new(PREFIX + name, mesh)
+    obj.location = (x0, y0, z0)
+    collection.objects.link(obj)
     obj.data.materials.append(mat)
     bevel = obj.modifiers.new("Rounded leg edges", "BEVEL")
-    bevel.width = 0.007
+    bevel.width = 0.008
     bevel.segments = 3
     return obj
 
@@ -288,15 +300,13 @@ def add_rect_piping(collection, name, center, width, length, z, mat, thickness=0
 
 
 def add_soft_pillow(collection, name, location, dimensions, mat, piping, rotation_z=0.0, rotation_x=0.0):
-    """Rounded upholstered pillow with slightly pinched perimeter."""
-    x0, y0, z0 = location
+    """Soft closed pillow mesh with local-space rotation and fitted piping."""
     w, d, h = dimensions
-    cols = 18
-    rows = 14
+    cols = 20
+    rows = 16
     verts = []
     faces = []
 
-    # Closed box-like mesh made from a rounded top and bottom surface.
     for layer in (-1, 1):
         for row in range(rows):
             fy = row / (rows - 1)
@@ -307,11 +317,14 @@ def add_soft_pillow(collection, name, location, dimensions, mat, piping, rotatio
                 px = (fx - 0.5) * w
                 ex = abs(fx - 0.5) * 2.0
                 edge = max(ex, ey)
-                bulge = (1.0 - edge ** 2.2)
-                pz = layer * (h * 0.32 + h * 0.18 * max(0.0, bulge))
-                # slight central compression
-                pz -= layer * h * 0.035 * math.exp(-((px / (w * 0.30)) ** 2 + (py / (d * 0.30)) ** 2))
-                verts.append((x0 + px, y0 + py, z0 + pz))
+                bulge = max(0.0, 1.0 - edge ** 2.15)
+                pz = layer * (h * 0.31 + h * 0.19 * bulge)
+                pz -= layer * h * 0.028 * math.exp(
+                    -((px / (w * 0.32)) ** 2 + (py / (d * 0.32)) ** 2)
+                )
+                # subtle organic wrinkle, strongest away from the center
+                pz += layer * h * 0.012 * math.sin(fx * math.pi * 4.0) * (0.35 + edge)
+                verts.append((px, py, pz))
 
     layer_size = rows * cols
     for layer_index in range(2):
@@ -320,24 +333,14 @@ def add_soft_pillow(collection, name, location, dimensions, mat, piping, rotatio
             for col in range(cols - 1):
                 a = base + row * cols + col
                 b = a + 1
-                c = a + cols + 1
-                d_idx = a + cols
-                if layer_index == 0:
-                    faces.append((a, d_idx, c, b))
-                else:
-                    faces.append((a, b, c, d_idx))
+                cc = a + cols + 1
+                dd = a + cols
+                faces.append((a, dd, cc, b) if layer_index == 0 else (a, b, cc, dd))
 
-    # perimeter sides
-    perimeter = []
-    for col in range(cols):
-        perimeter.append(col)
-    for row in range(1, rows):
-        perimeter.append(row * cols + (cols - 1))
-    for col in range(cols - 2, -1, -1):
-        perimeter.append((rows - 1) * cols + col)
-    for row in range(rows - 2, 0, -1):
-        perimeter.append(row * cols)
-
+    perimeter = list(range(cols))
+    perimeter += [row * cols + cols - 1 for row in range(1, rows)]
+    perimeter += [(rows - 1) * cols + col for col in range(cols - 2, -1, -1)]
+    perimeter += [row * cols for row in range(rows - 2, 0, -1)]
     for idx, a in enumerate(perimeter):
         b = perimeter[(idx + 1) % len(perimeter)]
         faces.append((a, b, b + layer_size, a + layer_size))
@@ -347,9 +350,10 @@ def add_soft_pillow(collection, name, location, dimensions, mat, piping, rotatio
     mesh.update()
 
     obj = bpy.data.objects.new(PREFIX + name, mesh)
+    obj.location = location
+    obj.rotation_euler = (math.radians(rotation_x), 0.0, math.radians(rotation_z))
     collection.objects.link(obj)
     obj.data.materials.append(mat)
-    obj.rotation_euler = (math.radians(rotation_x), 0.0, math.radians(rotation_z))
 
     sub = obj.modifiers.new("Soft pillow", "SUBSURF")
     sub.levels = 2
@@ -357,19 +361,29 @@ def add_soft_pillow(collection, name, location, dimensions, mat, piping, rotatio
     for poly in obj.data.polygons:
         poly.use_smooth = True
 
-    # Small decorative piping loop near the pillow face.
-    add_rect_piping(
-        collection,
-        name + "_Piping",
-        (x0, y0),
-        w * 0.92,
-        d * 0.90,
-        z0 + h * 0.48,
-        piping,
-        thickness=0.0035,
-    )
-    return obj
+    # Local piping follows the pillow rotation instead of floating separately.
+    curve = bpy.data.curves.new(PREFIX + name + "_Piping_Curve", "CURVE")
+    curve.dimensions = "3D"
+    curve.bevel_depth = 0.0035
+    curve.bevel_resolution = 3
+    spline = curve.splines.new("POLY")
+    spline.points.add(3)
+    pw = w * 0.90
+    pd = d * 0.88
+    pz = h * 0.47
+    for point, xyz in zip(
+        spline.points,
+        ((-pw/2, -pd/2, pz), (pw/2, -pd/2, pz), (pw/2, pd/2, pz), (-pw/2, pd/2, pz)),
+    ):
+        point.co = (*xyz, 1.0)
+    spline.use_cyclic_u = True
+    pipe_obj = bpy.data.objects.new(PREFIX + name + "_Piping", curve)
+    pipe_obj.location = location
+    pipe_obj.rotation_euler = obj.rotation_euler
+    curve.materials.append(piping)
+    collection.objects.link(pipe_obj)
 
+    return obj
 
 def add_draped_cloth(
     collection,
@@ -581,9 +595,9 @@ add_cube(
     5,
 )
 
-channel_count = 7
-usable_w = 0.91
-channel_gap = 0.010
+channel_count = 8
+usable_w = 0.92
+channel_gap = 0.009
 channel_w = usable_w / channel_count
 for index in range(channel_count):
     x = -usable_w / 2 + channel_w / 2 + index * channel_w
@@ -597,16 +611,17 @@ for index in range(channel_count):
         8,
     )
 
-# rounded walnut top corners / thin cap
-add_cube(
-    collection,
-    "Headboard_Top_Cap",
-    (0.0, head_y, 2.095),
-    (1.08, 0.13, 0.070),
-    walnut,
-    0.030,
-    5,
-)
+# Reference has no continuous top rail: only rounded wood post caps.
+for index, x in enumerate((-0.515, 0.515)):
+    add_cube(
+        collection,
+        f"Headboard_Post_Cap_{index}",
+        (x, head_y, 2.105),
+        (0.088, 0.145, 0.095),
+        walnut,
+        0.032,
+        6,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -662,17 +677,16 @@ add_draped_cloth(
     asymmetry=0.02,
 )
 
-# top rolled/folded edge of duvet, visible just below ivory band
-duvet_roll = add_round_cylinder(
+# Broad soft folded edge, like the reference rather than a cylindrical roll.
+add_cube(
     collection,
-    "Duvet_Fold_Roll",
-    (0.0, BED_Y + 0.18, 0.91),
-    0.035,
-    0.91,
+    "Duvet_Fold",
+    (0.0, BED_Y + 0.18, 0.905),
+    (0.93, 0.18, 0.060),
     sage_dark,
-    rotation=(0.0, math.radians(90.0), 0.0),
+    0.028,
+    7,
 )
-duvet_roll.scale.y = 0.70
 
 
 # ---------------------------------------------------------------------------
@@ -683,8 +697,8 @@ duvet_roll.scale.y = 0.70
 add_soft_pillow(
     collection,
     "Back_Ivory_Pillow",
-    (0.0, BED_Y + 0.64, 1.11),
-    (0.74, 0.34, 0.30),
+    (0.0, BED_Y + 0.66, 1.16),
+    (0.76, 0.38, 0.34),
     ivory_bright,
     piping,
     rotation_z=0.0,
@@ -695,8 +709,8 @@ add_soft_pillow(
 add_soft_pillow(
     collection,
     "Sage_Pillow",
-    (-0.16, BED_Y + 0.48, 1.05),
-    (0.52, 0.30, 0.28),
+    (-0.15, BED_Y + 0.49, 1.08),
+    (0.50, 0.30, 0.29),
     sage_dark,
     piping,
     rotation_z=-5.0,
@@ -707,8 +721,8 @@ add_soft_pillow(
 add_soft_pillow(
     collection,
     "Terracotta_Accent",
-    (0.07, BED_Y + 0.39, 1.08),
-    (0.52, 0.27, 0.27),
+    (0.06, BED_Y + 0.39, 1.09),
+    (0.50, 0.27, 0.27),
     terracotta,
     piping,
     rotation_z=3.0,
@@ -719,8 +733,8 @@ add_soft_pillow(
 add_soft_pillow(
     collection,
     "Sage_Lumbar",
-    (0.10, BED_Y + 0.24, 0.99),
-    (0.52, 0.20, 0.18),
+    (0.09, BED_Y + 0.25, 1.00),
+    (0.51, 0.20, 0.18),
     sage,
     piping,
     rotation_z=1.0,
