@@ -40,7 +40,7 @@ def build():
 
     fitted = add_cube(
         col, "Fitted_Sheet", "mattress", "fitted_sheet",
-        (OX, OY-0.005, 0.775),
+        (OX, OY-0.005, 0.785),
         (mw-0.010, ml-0.016, 0.050),
         ivory,
         bevel=0.028, segments=6,
