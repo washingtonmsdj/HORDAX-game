@@ -17,11 +17,9 @@ namespace HORDAX.Core
         public int RunCoins { get; private set; }
         public int Score { get; private set; }
         public float FinishZ { get; set; } = 165f;
-        public float BossBarrierZ { get; set; } = -1f;
         public string CurrentLevelId { get; private set; } = "prototype_level";
         public int RequiredBossKills { get; private set; }
         public bool CanFinish => BossKills >= RequiredBossKills;
-        public bool BossBarrierActive => !CanFinish && BossBarrierZ > 0f;
         public int EarnedStars { get; private set; }
         public int ObjectiveCompletedCount { get; private set; }
         public int ObjectiveBonusCoins { get; private set; }
@@ -30,6 +28,7 @@ namespace HORDAX.Core
         public event Action Changed;
 
         private readonly List<LevelObjective> objectives = new List<LevelObjective>();
+        private readonly Dictionary<int, float> activeBossBarriers = new Dictionary<int, float>();
         private int completionCoins = 75;
         private int completionScore = 500;
         private int twoStarScore = 1400;
@@ -86,6 +85,7 @@ namespace HORDAX.Core
             ObjectiveCompletedCount = 0;
             ObjectiveBonusCoins = 0;
             finalHealthNormalized = 1f;
+            activeBossBarriers.Clear();
             State = GameState.Playing;
             Changed?.Invoke();
         }
@@ -93,6 +93,29 @@ namespace HORDAX.Core
         public void RegisterEnemyKill()
         {
             RegisterEnemyKill(EnemyRank.Grunt, 1, 10);
+        }
+
+        public void RegisterBossBarrier(int ownerId, float barrierZ)
+        {
+            if (ownerId == 0) return;
+            activeBossBarriers[ownerId] = Mathf.Max(0f, barrierZ);
+        }
+
+        public void ReleaseBossBarrier(int ownerId)
+        {
+            if (ownerId == 0) return;
+            activeBossBarriers.Remove(ownerId);
+        }
+
+        public bool TryGetActiveBossBarrier(out float barrierZ)
+        {
+            barrierZ = float.PositiveInfinity;
+            if (activeBossBarriers.Count == 0) return false;
+
+            foreach (KeyValuePair<int, float> entry in activeBossBarriers)
+                barrierZ = Mathf.Min(barrierZ, entry.Value);
+
+            return !float.IsPositiveInfinity(barrierZ);
         }
 
         public void RegisterEnemyKill(EnemyRank rank, int coinReward, int scoreReward)
