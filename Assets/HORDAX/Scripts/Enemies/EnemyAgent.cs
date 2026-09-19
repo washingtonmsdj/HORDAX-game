@@ -163,7 +163,8 @@ namespace HORDAX.Enemies
             float rankScale = rank == EnemyRank.Boss ? 2f : rank == EnemyRank.Elite ? 1.35f : 1f;
             CombatFxPool.Instance?.PlayDeath(
                 transform.position + Vector3.up * Mathf.Max(0.55f, baseScale.y * 0.45f),
-                Mathf.Max(0.45f, baseScale.magnitude * 0.38f) * rankScale);
+                Mathf.Max(0.45f, baseScale.magnitude * 0.38f) * rankScale,
+                rank);
 
             if (rank == EnemyRank.Boss)
                 RunnerCamera.Instance?.Shake(0.32f, 0.28f);
