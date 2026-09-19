@@ -43,8 +43,9 @@ SPECS={
         "role":"duvet",
         "name":"PART_Duvet",
         "width":1.52,"length":2.14,"center_y":-0.10,"z":0.42,
-        "cols":36,"rows":52,"frames":46,
+        "cols":40,"rows":72,"frames":50,
         "thickness":0.010,"solidify":0.012,
+        "quality":10,"collision_quality":8,
         "color":(0.098,0.087,0.051),
         "roughness":0.94,"weave":190.0,"bump":0.15,
     }
@@ -166,7 +167,9 @@ def build(part_id: str,*,export=True):
 
     simulate_cloth(
         cloth,end_frame=spec["frames"],
-        thickness=spec["thickness"],self_collision=True
+        thickness=spec["thickness"],self_collision=True,
+        quality=spec.get("quality",6),
+        collision_quality=spec.get("collision_quality",5),
     )
     _set_visual_thickness(cloth,spec["solidify"])
 
