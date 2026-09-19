@@ -17,7 +17,10 @@ namespace HORDAX.Enemies
         [SerializeField] private int coinReward = 1;
         [SerializeField] private int scoreReward = 10;
         [SerializeField] private float scaleMultiplier = 1f;
-        [SerializeField] private float spawnJitter = 0.24f;
+        [SerializeField] private float spawnJitter = 0.18f;
+        [SerializeField] private float laneCenterX;
+        [SerializeField] private float laneHalfWidth = 2.75f;
+        [SerializeField] private bool constrainToLane;
         [SerializeField, Min(1)] private int spawnPerFrame = 24;
         [SerializeField] private EnemyData enemyData;
         [SerializeField] private GameObject enemyPrefab;
@@ -51,6 +54,13 @@ namespace HORDAX.Enemies
             coinReward = Mathf.Max(0, fallbackCoinReward);
             scoreReward = Mathf.Max(0, fallbackScoreReward);
             scaleMultiplier = Mathf.Max(0.1f, fallbackScale);
+        }
+
+        public void ConfigureLane(float centerX, float halfWidth)
+        {
+            laneCenterX = centerX;
+            laneHalfWidth = Mathf.Max(0.5f, halfWidth);
+            constrainToLane = true;
         }
 
         private void Start()
@@ -87,7 +97,7 @@ namespace HORDAX.Enemies
 
         private void SpawnOne(int index)
         {
-            const float spacingX = 1.24f;
+            const float maxSpacingX = 1.08f;
             const float spacingZ = 1.10f;
 
             float health = enemyData != null ? enemyData.Health : enemyHealth;
@@ -101,8 +111,15 @@ namespace HORDAX.Enemies
 
             int col = index % columns;
             int row = index / columns;
+            float availableWidth = constrainToLane ? laneHalfWidth * 2f : Mathf.Max(0f, (columns - 1) * maxSpacingX);
+            float spacingX = columns > 1
+                ? Mathf.Min(maxSpacingX, availableWidth / Mathf.Max(1, columns - 1))
+                : 0f;
             float widthOffset = (columns - 1) * spacingX * 0.5f;
-            float x = col * spacingX - widthOffset + Random.Range(-spawnJitter, spawnJitter);
+            float localX = col * spacingX - widthOffset + Random.Range(-spawnJitter, spawnJitter);
+            float x = constrainToLane
+                ? Mathf.Clamp(laneCenterX + localX, laneCenterX - laneHalfWidth, laneCenterX + laneHalfWidth)
+                : localX;
             float z = row * spacingZ + Random.Range(-spawnJitter, spawnJitter);
 
             EnemyAgent agent = pool.Acquire(requestedPrefab);
@@ -110,7 +127,7 @@ namespace HORDAX.Enemies
             enemy.name = $"{name}_Enemy_{index:000}";
             enemy.transform.SetParent(null, true);
             float spawnHeight = requestedPrefab == null ? 0.95f : 0.6f;
-            enemy.transform.position = transform.position + new Vector3(x, spawnHeight * size, z);
+            enemy.transform.position = new Vector3(x, transform.position.y + spawnHeight * size, transform.position.z + z);
             enemy.transform.rotation = Quaternion.Euler(0f, 180f + Random.Range(-6f, 6f), 0f);
             enemy.transform.localScale = new Vector3(0.86f, Random.Range(1.05f, 1.28f), 0.86f) * size;
 
@@ -125,7 +142,17 @@ namespace HORDAX.Enemies
                     renderers[rendererIndex].sharedMaterial = material;
             }
 
-            agent.Initialize(player, health, speed, damage, pool, rank, coins, score);
+            agent.Initialize(
+                player,
+                health,
+                speed,
+                damage,
+                pool,
+                rank,
+                coins,
+                score,
+                constrainToLane,
+                x);
             enemy.SetActive(true);
         }
     }
