@@ -94,6 +94,7 @@ def _proxy():
     foot=_add_proxy_cube(
         col,"PART_Cloth_Proxy_Foot_Rail","proxy_foot_rail",
         (0,-0.975,FRAME_FOOT_Z),(1.02,0.07,0.26),bevel=0.020,
+        collision_thickness=0.012,
     )
 
     # Last-resort runaway guard only. It is intentionally below the frame and
