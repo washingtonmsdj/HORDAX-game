@@ -213,9 +213,36 @@ namespace HORDAX.EditorTools
                 return;
             }
 
+            if (EditorApplication.isPlaying)
+            {
+                string liveOutput = ResolveCaptureOutput(command);
+                try
+                {
+                    AutomationCapture.CaptureCameraTo(
+                        liveOutput,
+                        Mathf.Clamp(command.width <= 0 ? 1280 : command.width, 320, 3840),
+                        Mathf.Clamp(command.height <= 0 ? 720 : command.height, 180, 2160));
+
+                    AgentResponse liveResponse = BaseResponse(command);
+                    liveResponse.ok = true;
+                    liveResponse.summary = "Captured current Unity Play Mode without interrupting it.";
+                    liveResponse.artifact = liveOutput;
+                    liveResponse.snapshotPath = Path.ChangeExtension(liveOutput, ".json");
+                    SaveResponse(liveResponse);
+                }
+                catch (Exception error)
+                {
+                    WriteResponse(
+                        command,
+                        false,
+                        error.GetType().Name + ": " + error.Message);
+                }
+                return;
+            }
+
             if (EditorApplication.isPlayingOrWillChangePlaymode)
             {
-                WriteResponse(command, false, "Unity Editor is already entering or running Play Mode.");
+                WriteResponse(command, false, "Unity Editor is changing Play Mode state.");
                 return;
             }
 
@@ -241,13 +268,7 @@ namespace HORDAX.EditorTools
                 EditorSceneManager.OpenScene(PrototypeScenePath, OpenSceneMode.Single);
             }
 
-            string output = string.IsNullOrWhiteSpace(command.outputPath)
-                ? Path.Combine(ProjectRoot, "Artifacts", "UnityCaptures", "prototype-agent.png")
-                : Path.GetFullPath(command.outputPath);
-
-            string directory = Path.GetDirectoryName(output);
-            if (!string.IsNullOrWhiteSpace(directory))
-                Directory.CreateDirectory(directory);
+            string output = ResolveCaptureOutput(command);
 
             SessionState.SetString(CaptureCommandIdKey, command.id);
             SessionState.SetString(CaptureResponsePathKey, ResponsePath(command.id));
@@ -262,6 +283,19 @@ namespace HORDAX.EditorTools
 
             Debug.Log("[OrdaX Agent] Entering Play Mode for autonomous HORDAX capture.");
             EditorApplication.EnterPlaymode();
+        }
+
+        private static string ResolveCaptureOutput(AgentCommand command)
+        {
+            string output = string.IsNullOrWhiteSpace(command.outputPath)
+                ? Path.Combine(ProjectRoot, "Artifacts", "UnityCaptures", "prototype-agent.png")
+                : Path.GetFullPath(command.outputPath);
+
+            string directory = Path.GetDirectoryName(output);
+            if (!string.IsNullOrWhiteSpace(directory))
+                Directory.CreateDirectory(directory);
+
+            return output;
         }
 
         private static void TickCapture()
