@@ -103,7 +103,26 @@ def _presentation():
                     pass
 
 
+def _purge_legacy_generated_bed():
+    """Remove the pre-pipeline generated bed, never unrelated scene content."""
+    legacy = bpy.data.collections.get("ORDAX_DETAILED_BED_TEST")
+    if legacy is None:
+        return 0
+    removed = 0
+    for obj in list(legacy.objects):
+        bpy.data.objects.remove(obj, do_unlink=True)
+        removed += 1
+    try:
+        bpy.data.collections.remove(legacy)
+    except Exception:
+        pass
+    return removed
+
+
 def build():
+    legacy_removed = _purge_legacy_generated_bed()
+    bpy.context.scene["ordax_legacy_bed_objects_removed"] = legacy_removed
+
     # This order is the contract. Each stage can also be run alone.
     frame.build()
     mattress.build()
