@@ -55,7 +55,6 @@ namespace HORDAX.EditorTools
             scene.name = "IslandReferenceBenchmark";
 
             GameObject root = new GameObject("Island Reference Benchmark");
-            root.tag = "EditorOnly";
 
             CreateWater(root.transform);
             CreateShallows(root.transform, -5.9f);
