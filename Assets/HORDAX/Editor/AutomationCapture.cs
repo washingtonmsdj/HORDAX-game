@@ -231,6 +231,8 @@ namespace HORDAX.EditorTools
                 weaponLevel = weapon != null ? weapon.UpgradeLevel : 0,
                 weaponDamage = weapon != null ? weapon.Damage : 0f,
                 weaponFireRate = weapon != null ? weapon.FireRate : 0f,
+                weaponReservedTargets = weapon != null ? weapon.ReservedTargetCount : 0,
+                weaponReservedDamage = weapon != null ? weapon.ReservedDamageTotal : 0f,
                 playerHealthNormalized = health != null ? health.Normalized : 0f,
                 playerForwardSpeed = player != null ? player.ForwardSpeed : 0f,
                 activatedSpawners = activatedSpawners,
@@ -274,6 +276,8 @@ namespace HORDAX.EditorTools
             public int weaponLevel;
             public float weaponDamage;
             public float weaponFireRate;
+            public int weaponReservedTargets;
+            public float weaponReservedDamage;
             public float playerHealthNormalized;
             public float playerForwardSpeed;
             public int activatedSpawners;
