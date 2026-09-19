@@ -10,32 +10,32 @@
   "rollback_on_failure": true,
   "contact_pairs": [
     [
-      "PART_Bed_Headboard_Channel_0",
-      "PART_Bed_Headboard_Channel_1"
+      "ORDAX_BED_PART_Bed_Headboard_Channel_0",
+      "ORDAX_BED_PART_Bed_Headboard_Channel_1"
     ],
     [
-      "PART_Bed_Headboard_Channel_1",
-      "PART_Bed_Headboard_Channel_2"
+      "ORDAX_BED_PART_Bed_Headboard_Channel_1",
+      "ORDAX_BED_PART_Bed_Headboard_Channel_2"
     ],
     [
-      "PART_Bed_Headboard_Channel_2",
-      "PART_Bed_Headboard_Channel_3"
+      "ORDAX_BED_PART_Bed_Headboard_Channel_2",
+      "ORDAX_BED_PART_Bed_Headboard_Channel_3"
     ],
     [
-      "PART_Bed_Headboard_Channel_3",
-      "PART_Bed_Headboard_Channel_4"
+      "ORDAX_BED_PART_Bed_Headboard_Channel_3",
+      "ORDAX_BED_PART_Bed_Headboard_Channel_4"
     ],
     [
-      "PART_Bed_Headboard_Channel_4",
-      "PART_Bed_Headboard_Channel_5"
+      "ORDAX_BED_PART_Bed_Headboard_Channel_4",
+      "ORDAX_BED_PART_Bed_Headboard_Channel_5"
     ],
     [
-      "PART_Bed_Headboard_Channel_5",
-      "PART_Bed_Headboard_Channel_6"
+      "ORDAX_BED_PART_Bed_Headboard_Channel_5",
+      "ORDAX_BED_PART_Bed_Headboard_Channel_6"
     ],
     [
-      "PART_Bed_Left_Rail",
-      "PART_Bed_Right_Rail"
+      "ORDAX_BED_PART_Bed_Left_Rail",
+      "ORDAX_BED_PART_Bed_Right_Rail"
     ]
   ],
   "expected": {
