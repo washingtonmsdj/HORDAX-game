@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "slug": "diorama-jesus-samaritana-10cm",
+  "family": "dioramas-biblicos",
+  "title": "Diorama Jesus e a Mulher Samaritana — 10 cm",
+  "backup_repository": "washingtonmsdj/HORDAX-game",
+  "backup_path": "Projects/dioramas-biblicos/diorama-jesus-samaritana-10cm",
+  "local_path_committed": false,
+  "large_assets": "git-lfs",
+  "mcp_repository": "washingtonmsdj/mcp-blender"
+}
