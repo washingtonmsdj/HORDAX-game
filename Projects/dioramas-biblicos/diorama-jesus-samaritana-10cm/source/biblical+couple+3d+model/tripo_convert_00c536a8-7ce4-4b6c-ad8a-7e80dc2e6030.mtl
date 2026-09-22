@@ -1,0 +1,16 @@
+# Blender 5.0.1 MTL File: 'None'
+# www.blender.org
+
+newmtl tripo_mat_00c536a8-7ce4-4b6c-ad8a-7e80dc2e6030
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd biblical_couple_3d_model_basecolor.JPEG
+map_Ns biblical_couple_3d_model_roughness.JPEG
+map_Pr biblical_couple_3d_model_roughness.JPEG
+map_refl biblical_couple_3d_model_metallic.JPEG
+map_Pm biblical_couple_3d_model_metallic.JPEG
+map_Bump -bm 1.000000 biblical_couple_3d_model_normal.JPEG
