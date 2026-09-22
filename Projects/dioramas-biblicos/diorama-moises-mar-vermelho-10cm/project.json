@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "slug": "diorama-moises-mar-vermelho-10cm",
+  "family": "dioramas-biblicos",
+  "title": "Diorama Moisés — Mar Vermelho — 10 cm",
+  "scale": "1:32",
+  "box": "universal-10cm",
+  "backup_repository": "washingtonmsdj/HORDAX-game",
+  "backup_path": "Projects/dioramas-biblicos/diorama-moises-mar-vermelho-10cm",
+  "local_path_committed": false,
+  "large_assets": "git-lfs",
+  "mcp_repository": "washingtonmsdj/mcp-blender"
+}
