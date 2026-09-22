@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "slug": "dioramas-biblicos-master",
+  "family": "dioramas-biblicos",
+  "title": "Dioramas Bíblicos — Master de Produção",
+  "role": "working-master",
+  "backup_repository": "washingtonmsdj/HORDAX-game",
+  "backup_path": "Projects/dioramas-biblicos/dioramas-biblicos-master",
+  "local_path_committed": false,
+  "large_assets": "git-lfs",
+  "mcp_repository": "washingtonmsdj/mcp-blender"
+}
